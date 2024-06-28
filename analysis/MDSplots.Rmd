@@ -1,0 +1,83 @@
+---
+title: "MDS_plots"
+output: html_document
+date: "2024-06-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(edgeR)
+#loading in count data
+countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
+```
+Checking the count data:
+```{r}
+head(countdata)
+```
+Loading in the sample metadata:
+```{r}
+sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
+
+#assigning "Batch information as a character/factor instead of integer
+sampleinfo$Batch<- as.character(sampleinfo$Batch)
+sampleinfo$Batch<- factor(c(sampleinfo$Batch))
+```
+Checking the sample metadata:
+```{r}
+head(sampleinfo)
+```
+Putting data it a DGElist object:
+```{r}
+y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
+head(y)
+```
+
+## MDS Plots
+Setting up columns to colour code MDS plots based on patient, growth pattern, batch, and media:
+```{r}
+#assigning colours for MDS plots based on patient, growth patters, batch, and media
+col.patient <-c("red", "orange", "yellow","lightgreen", "lightblue", "purple", "magenta")[sampleinfo$PATIENT]
+col.pattern <-c("red", "orange", "green")[sampleinfo$PATTERN]
+col.batch <-c("red", "orange", "green")[sampleinfo$Batch]
+col.media <- c("red", "orange")[sampleinfo$Media]
+```
+Generating plots:
+```{r, echo=FALSE}
+#creating MDS plots 
+MDS_patient<- plotMDS(y, col=col.patient)
+legend("topleft", fill= c("red", "orange", "yellow","lightgreen", "lightblue", "purple", "magenta"), legend=levels(sampleinfo$PATIENT))
+title("Patient")
+
+MDS_pattern <- plotMDS(y, col=col.pattern)
+legend("topleft", fill= c("red", "orange", "green"), legend=levels(sampleinfo$PATTERN))
+title("Growth Pattern")
+
+MDS_batch<- plotMDS(y, col=col.batch)
+legend("topleft", fill= c("red", "orange", "green"), legend=levels(sampleinfo$Batch))
+title("Batch")
+
+MDS_media<- plotMDS(y, col=col.media)
+legend("topleft", fill= c("red", "orange"), legend=levels(sampleinfo$Media))
+title("Media")
+```
+
+Notes: 
+
+• Samples cluster together based on patient from which the sample was taken from
+
+• test
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
