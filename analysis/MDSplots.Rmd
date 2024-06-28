@@ -46,12 +46,14 @@ col.batch <-c("red", "orange", "green")[sampleinfo$Batch]
 col.media <- c("red", "orange")[sampleinfo$Media]
 ```
 Generating plots:
-```{r, echo=FALSE}
+```{r MDS_patient, echo=FALSE}
 #creating MDS plots 
 MDS_patient<- plotMDS(y, col=col.patient)
 legend("topleft", fill= c("red", "orange", "yellow","lightgreen", "lightblue", "purple", "magenta"), legend=levels(sampleinfo$PATIENT))
 title("Patient")
+```
 
+```{r}
 MDS_pattern <- plotMDS(y, col=col.pattern)
 legend("topleft", fill= c("red", "orange", "green"), legend=levels(sampleinfo$PATTERN))
 title("Growth Pattern")
