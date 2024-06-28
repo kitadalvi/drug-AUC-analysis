@@ -46,14 +46,12 @@ col.batch <-c("red", "orange", "green")[sampleinfo$Batch]
 col.media <- c("red", "orange")[sampleinfo$Media]
 ```
 Generating plots:
-```{r MDS_patient, echo=FALSE}
+```{r, echo=FALSE}
 #creating MDS plots 
 MDS_patient<- plotMDS(y, col=col.patient)
 legend("topleft", fill= c("red", "orange", "yellow","lightgreen", "lightblue", "purple", "magenta"), legend=levels(sampleinfo$PATIENT))
 title("Patient")
-```
 
-```{r}
 MDS_pattern <- plotMDS(y, col=col.pattern)
 legend("topleft", fill= c("red", "orange", "green"), legend=levels(sampleinfo$PATTERN))
 title("Growth Pattern")
@@ -69,17 +67,33 @@ title("Media")
 
 Notes: 
 
-• Samples cluster together based on patient from which the sample was taken from
+• Samples cluster together based on patient from which the sample was taken from, with ORG71 being the most dissimilar
 
-• test
+• Samples do not seem to cluster based on growth pattern or media
+
+• Samples show some clustering based on batch - may need to remove ORG71 from this to get a better idea 
 
 
-## Including Plots
+### MDS plot of batch and growth pattern without ORG71
+```{r, echo=FALSE}
+#remove ORG71
+y2<- y[,-c(10)]
+sampleinfo2 <- sampleinfo[-c(10),]
+col.batch2 <-c("red","orange", "green")[sampleinfo$Batch]
+col.pattern2 <-c("red","orange", "green")[sampleinfo$PATTERN]
 
-You can also embed plots, for example:
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+MDS_pattern2<- plotMDS(y2, col=col.pattern2)
+legend("topleft", fill= c("red","orange","green"), legend=levels(sampleinfo2$PATTERN))
+title("Growth Pattern")
+
+MDS_batch2<- plotMDS(y2, col=col.batch2)
+legend("topleft", fill= c("red","orange","green"), legend=levels(sampleinfo2$Batch))
+title("Batch")
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Notes: 
+
+• Tight clustering of samples that were run together in batch 1 (ORG38, ORG41)
+
+• No clustering based on growth pattern
