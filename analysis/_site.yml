@@ -1,7 +1,7 @@
-name: "drug-AUC-analysis"
+name: drug-AUC-analysis
 output_dir: ../docs
 navbar:
-  title: "drug-AUC-analysis"
+  title: drug-AUC-analysis
   left:
   - text: Home
     href: index.html
@@ -9,6 +9,10 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  right:
+  - icon: fab fa-github
+    text: Source code
+    href: https://github.com/kitadalvi/drug-AUC-analysis
 output:
   workflowr::wflow_html:
     toc: yes
