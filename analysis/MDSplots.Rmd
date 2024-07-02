@@ -36,7 +36,7 @@ y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
 head(y)
 ```
 
-## MDS Plots
+# MDS Plots
 Setting up columns to colour code MDS plots based on patient, growth pattern, batch, and media:
 ```{r}
 #assigning colours for MDS plots based on patient, growth patters, batch, and media
@@ -74,7 +74,7 @@ Notes:
 • Samples show some clustering based on batch - may need to remove ORG71 from this to get a better idea 
 
 
-### MDS plot of batch and growth pattern without ORG71
+## MDS plot of batch and growth pattern without ORG71
 ```{r, echo=FALSE}
 #remove ORG71
 y2<- y[,-c(10)]
@@ -97,3 +97,17 @@ Notes:
 • Tight clustering of samples that were run together in batch 1 (ORG38, ORG41)
 
 • No clustering based on growth pattern
+
+• Factors to include in design matrix: Patient and Batch
+
+# Design Matrix 
+```{r}
+#creating design matrix of factors affecting RNA
+group <- paste(sampleinfo$PATIENT,sampleinfo$Batch,sep=".")
+group <- factor(group)
+table(group)
+design <- model.matrix(~0+group)
+rownames(design)<- sampleinfo$`Sample ID`
+colnames(design)<- levels(group)
+design
+```
