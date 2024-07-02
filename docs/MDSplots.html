@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree6b88c5acdbb764e543fa806b050b80fb6936b853targetblank6b88c5aa">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree86c7854167e3ab64d10eb0ff096e1d5b0ba9d635targetblank86c7854a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/6b88c5acdbb764e543fa806b050b80fb6936b853" target="_blank">6b88c5a</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/86c7854167e3ab64d10eb0ff096e1d5b0ba9d635" target="_blank">86c7854</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree6b88c5acdbb764e543fa806b050b80fb6936b853targetblank6b88c5aa"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree86c7854167e3ab64d10eb0ff096e1d5b0ba9d635targetblank86c7854a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/6b88c5acdbb764e543fa806b050b80fb6936b853" target="_blank">6b88c5a</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/86c7854167e3ab64d10eb0ff096e1d5b0ba9d635" target="_blank">86c7854</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,10 +558,8 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  analysis/AUC_analysis.Rmd
-
 Unstaged changes:
+    Deleted:    analysis/AUC_analysis.Rmd
     Modified:   analysis/MDSplots.Rmd
     Modified:   analysis/index.Rmd
 
@@ -609,6 +607,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/86c7854167e3ab64d10eb0ff096e1d5b0ba9d635/analysis/MDSplots.Rmd" target="_blank">86c7854</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+added AUC_analysis.html
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/86c7854167e3ab64d10eb0ff096e1d5b0ba9d635/docs/MDSplots.html" target="_blank">86c7854</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+added AUC_analysis.html
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1327,7 +1359,8 @@ attr(,&quot;contrasts&quot;)$group
 print(is_full_rank)</code></pre>
 <pre><code>[1] TRUE</code></pre>
 <p>#Filtering and normalisation Next, we need to filter out genes with
-low read counts, and calulate normalization factors for each sample:</p>
+low read counts, and calculate normalization factors for each
+sample:</p>
 <pre class="r"><code>#filtering to remove low counts
 keep &lt;- filterByExpr(y, design = design)
 table(keep)</code></pre>
