@@ -12,7 +12,7 @@
 
 <meta name="date" content="2024-06-28" />
 
-<title>MDS_plots</title>
+<title>MDS plots</title>
 
 <script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -327,7 +327,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">drug-AUC-analysis.Rproj</a>
+      <a class="navbar-brand" href="index.html">drug-AUC-analysis</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -358,7 +358,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">MDS_plots</h1>
+<h1 class="title toc-ignore">MDS plots</h1>
 <h4 class="date">2024-06-28</h4>
 
 </div>
@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreefb82ddd9cf4c89dae47a65564cb81b37de46f9dftargetblankfb82ddda">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree6b88c5acdbb764e543fa806b050b80fb6936b853targetblank6b88c5aa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/fb82ddd9cf4c89dae47a65564cb81b37de46f9df" target="_blank">fb82ddd</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/6b88c5acdbb764e543fa806b050b80fb6936b853" target="_blank">6b88c5a</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreefb82ddd9cf4c89dae47a65564cb81b37de46f9dftargetblankfb82ddda"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree6b88c5acdbb764e543fa806b050b80fb6936b853targetblank6b88c5aa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/fb82ddd9cf4c89dae47a65564cb81b37de46f9df" target="_blank">fb82ddd</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/6b88c5acdbb764e543fa806b050b80fb6936b853" target="_blank">6b88c5a</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,10 +558,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  analysis/AUC_analysis.Rmd
+
 Unstaged changes:
-    Modified:   README.md
     Modified:   analysis/MDSplots.Rmd
-    Modified:   analysis/_site.yml
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -607,6 +609,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/6b88c5acdbb764e543fa806b050b80fb6936b853/analysis/MDSplots.Rmd" target="_blank">6b88c5a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+updated MDSplots.rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/6b88c5acdbb764e543fa806b050b80fb6936b853/docs/MDSplots.html" target="_blank">6b88c5a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+updated MDSplots.rmd
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -1290,7 +1326,7 @@ attr(,&quot;contrasts&quot;)$group
 <pre class="r"><code>is_full_rank &lt;- is.fullrank(design)
 print(is_full_rank)</code></pre>
 <pre><code>[1] TRUE</code></pre>
-<p>##Filtering and normalisation Next, we need to filter out genes with
+<p>#Filtering and normalisation Next, we need to filter out genes with
 low read counts, and calulate normalization factors for each sample:</p>
 <pre class="r"><code>#filtering to remove low counts
 keep &lt;- filterByExpr(y, design = design)

@@ -1,5 +1,5 @@
 ---
-title: "MDS_plots"
+title: "MDS plots"
 output: html_document
 date: "2024-06-28"
 ---
@@ -130,18 +130,3 @@ is_full_rank <- is.fullrank(design)
 print(is_full_rank)
 ```
 
-##Filtering and normalisation
-Next, we need to filter out genes with low read counts, and calulate normalization factors for each sample:
-```{r}
-#filtering to remove low counts
-keep <- filterByExpr(y, design = design)
-table(keep)
-y <- y[keep, , keep.lib.sizes=FALSE]
-
-#normalizing library sizes
-y <- calcNormFactors(y)
-
-#fit GLMs
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-```

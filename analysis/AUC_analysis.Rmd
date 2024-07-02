@@ -1,0 +1,26 @@
+---
+title: "Correlation between drug response (AUC) and gene expression"
+output: html_document
+date: "2024-07-02"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Filtering and normalisation
+First, we need to filter out genes with low read counts, and calculate normalization factors for each sample:
+```{r}
+#filtering to remove low counts
+keep <- filterByExpr(y, design = design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y <- calcNormFactors(y)
+
+#fit GLMs
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmFit(y, design)
+```
+
