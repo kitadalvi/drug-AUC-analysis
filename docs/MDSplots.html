@@ -327,7 +327,7 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">drug-AUC-analysis</a>
+      <a class="navbar-brand" href="index.html">organoid-RNAseq-analysis</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
@@ -343,7 +343,7 @@ div.tocify {
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/kitadalvi/drug-AUC-analysis">
+  <a href="https://github.com/kitadalvi/organoid-RNAseq-analysis">
     <span class="fab fa-github"></span>
      
     Source code
@@ -367,7 +367,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -378,8 +378,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -392,9 +392,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>drug-AUC-analysis/</code> <span
@@ -417,21 +417,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -522,15 +519,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree89e2093ffe5cf2d2ae24e02a1a20e1a7183399abtargetblank89e2093a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreef4bd692fa2b512314e82dfba74d0d437e2a484fetargetblankf4bd692a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/89e2093ffe5cf2d2ae24e02a1a20e1a7183399ab" target="_blank">89e2093</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/f4bd692fa2b512314e82dfba74d0d437e2a484fe" target="_blank">f4bd692</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree89e2093ffe5cf2d2ae24e02a1a20e1a7183399abtargetblank89e2093a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreef4bd692fa2b512314e82dfba74d0d437e2a484fetargetblankf4bd692a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +537,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/89e2093ffe5cf2d2ae24e02a1a20e1a7183399ab" target="_blank">89e2093</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/f4bd692fa2b512314e82dfba74d0d437e2a484fe" target="_blank">f4bd692</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -557,10 +554,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
 
 Unstaged changes:
-    Modified:   analysis/MDSplots.Rmd
+    Modified:   README.md
+    Modified:   analysis/_site.yml
 
 </code></pre>
 <p>
@@ -606,6 +603,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/f4bd692fa2b512314e82dfba74d0d437e2a484fe/analysis/MDSplots.Rmd" target="_blank">f4bd692</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+Title update
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/653baec39f641b06269cee7e34c7a0f8d8696113/analysis/MDSplots.Rmd" target="_blank">653baec</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+completed design matrix
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/653baec39f641b06269cee7e34c7a0f8d8696113/docs/MDSplots.html" target="_blank">653baec</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+completed design matrix
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -1221,6 +1269,21 @@ attr(,&quot;contrasts&quot;)$group
 <pre class="r"><code>is_full_rank &lt;- is.fullrank(design)
 print(is_full_rank)</code></pre>
 <pre><code>[1] TRUE</code></pre>
+<p>##Filtering and normalisation</p>
+<pre class="r"><code>#filtering to remove low counts
+keep &lt;- filterByExpr(y, design = design)
+table(keep)</code></pre>
+<pre><code>keep
+FALSE  TRUE 
+20942 17841 </code></pre>
+<pre class="r"><code>y &lt;- y[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y &lt;- calcNormFactors(y)
+
+#fit GLMs
+y &lt;- estimateDisp(y, design, robust=TRUE)
+fit &lt;- glmFit(y, design)</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1253,16 +1316,17 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] jsonlite_1.8.8    highr_0.11        compiler_4.4.0    promises_1.3.0   
  [5] Rcpp_1.0.12       stringr_1.5.1     git2r_0.33.0      callr_3.7.6      
- [9] later_1.3.2       jquerylib_0.1.4   statmod_1.5.0     yaml_2.3.8       
-[13] fastmap_1.2.0     lattice_0.22-6    R6_2.5.1          knitr_1.47       
-[17] tibble_3.2.1      rprojroot_2.0.4   bslib_0.7.0       pillar_1.9.0     
-[21] rlang_1.1.3       utf8_1.2.4        cachem_1.1.0      stringi_1.8.4    
-[25] httpuv_1.6.15     xfun_0.44         getPass_0.2-4     fs_1.6.4         
-[29] sass_0.4.9        cli_3.6.2         magrittr_2.0.3    ps_1.7.6         
-[33] grid_4.4.0        locfit_1.5-9.9    digest_0.6.35     processx_3.8.4   
-[37] rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.23    
-[41] glue_1.7.0        whisker_0.4.1     fansi_1.0.6       rmarkdown_2.27   
-[45] httr_1.4.7        tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
+ [9] later_1.3.2       jquerylib_0.1.4   splines_4.4.0     statmod_1.5.0    
+[13] yaml_2.3.8        fastmap_1.2.0     lattice_0.22-6    R6_2.5.1         
+[17] knitr_1.47        tibble_3.2.1      rprojroot_2.0.4   bslib_0.7.0      
+[21] pillar_1.9.0      rlang_1.1.3       utf8_1.2.4        cachem_1.1.0     
+[25] stringi_1.8.4     httpuv_1.6.15     xfun_0.44         getPass_0.2-4    
+[29] fs_1.6.4          sass_0.4.9        cli_3.6.2         magrittr_2.0.3   
+[33] ps_1.7.6          grid_4.4.0        locfit_1.5-9.9    digest_0.6.35    
+[37] processx_3.8.4    rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5      
+[41] evaluate_0.23     glue_1.7.0        whisker_0.4.1     fansi_1.0.6      
+[45] rmarkdown_2.27    httr_1.4.7        tools_4.4.0       pkgconfig_2.0.3  
+[49] htmltools_0.5.8.1</code></pre>
 </div>
 </div>
 </div>
