@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(edgeR)
+library(limma)
 #loading in count data
 countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
 ```
@@ -101,13 +102,29 @@ Notes:
 • Factors to include in design matrix: Patient and Batch
 
 # Design Matrix 
+From the MDS plots it can be seen that the factors affecting RNA include: 
+• the patient from which each organoid sample has originated, and 
+
+• the batch that the organoid has been sequenced in
+
+We'll assign these factors to a "group" variable:
 ```{r}
-#creating design matrix of factors affecting RNA
-group <- paste(sampleinfo$PATIENT,sampleinfo$Batch,sep=".")
-group <- factor(group)
+group <- factor(c(paste(sampleinfo$PATIENT,sampleinfo$Batch, sep = '.')))
 table(group)
-design <- model.matrix(~0+group)
+```
+
+We also want to include drug response values (AUC) as continuous variables in the design matrix, which we can reference directly from the sampleinfo dataframe.
+
+In the design matrix: need to define the drug (AUC) values as response variables on the left hand side, and patient and batch as predictor factors on the right hand side:
+
+```{r}
+design <- model.matrix(Mitomycin+Doxorubicin+Staurosporine+Topotecan+Irinotecan+Oxaliplatin+Gemcitabine+Carboplatin+Docetaxel+Cisplatin+Paclitaxel+Cetxuimab~0+group, data=sampleinfo)
 rownames(design)<- sampleinfo$`Sample ID`
-colnames(design)<- levels(group)
 design
+```
+
+Next, check if design matrix is of full rank:
+```{r}
+is_full_rank <- is.fullrank(design)
+print(is_full_rank)
 ```
