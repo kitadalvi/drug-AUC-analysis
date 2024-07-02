@@ -123,6 +123,7 @@ rownames(design)<- sampleinfo$`Sample ID`
 design
 ```
 
+### Check if design matrix is of full rank
 Next, check if design matrix is of full rank:
 ```{r}
 is_full_rank <- is.fullrank(design)

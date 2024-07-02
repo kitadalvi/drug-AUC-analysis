@@ -367,7 +367,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -378,8 +378,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -392,9 +392,9 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>drug-AUC-analysis/</code> <span
@@ -417,18 +417,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -519,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreeb45ef44ba6e1205ec223cbc0d2e7f8d3ab1ffd27targetblankb45ef44a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree89e2093ffe5cf2d2ae24e02a1a20e1a7183399abtargetblank89e2093a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/b45ef44ba6e1205ec223cbc0d2e7f8d3ab1ffd27" target="_blank">b45ef44</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/89e2093ffe5cf2d2ae24e02a1a20e1a7183399ab" target="_blank">89e2093</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreeb45ef44ba6e1205ec223cbc0d2e7f8d3ab1ffd27targetblankb45ef44a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree89e2093ffe5cf2d2ae24e02a1a20e1a7183399abtargetblank89e2093a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -537,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/b45ef44ba6e1205ec223cbc0d2e7f8d3ab1ffd27" target="_blank">b45ef44</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/89e2093ffe5cf2d2ae24e02a1a20e1a7183399ab" target="_blank">89e2093</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -554,6 +557,10 @@ were generated:
 Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/figure/
+
+Unstaged changes:
+    Modified:   analysis/MDSplots.Rmd
 
 </code></pre>
 <p>
@@ -599,6 +606,40 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/89e2093ffe5cf2d2ae24e02a1a20e1a7183399ab/analysis/MDSplots.Rmd" target="_blank">89e2093</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+Update MDSplots.Rmd
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/53fc1d80707fba54089869ad3d8d0caa66675511/docs/MDSplots.html" target="_blank">53fc1d8</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-02
+</td>
+<td>
+Update MDSplots.html
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -761,7 +802,8 @@ initial commit
 </div>
 <pre class="r"><code>library(edgeR)</code></pre>
 <pre><code>Loading required package: limma</code></pre>
-<pre class="r"><code>#loading in count data
+<pre class="r"><code>library(limma)
+#loading in count data
 countdata &lt;- read.delim(&quot;/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv&quot;, check.names = FALSE, stringsAsFactors = FALSE)</code></pre>
 <p>Checking the count data:</p>
 <pre class="r"><code>head(countdata)</code></pre>
@@ -1123,35 +1165,62 @@ kitadalvi
 </div>
 <div id="design-matrix" class="section level1">
 <h1>Design Matrix</h1>
-<pre class="r"><code>#creating design matrix of factors affecting RNA
-group &lt;- paste(sampleinfo$PATIENT,sampleinfo$Batch,sep=&quot;.&quot;)
-group &lt;- factor(group)
+<p>From the MDS plots it can be seen that the factors affecting RNA
+include: • the patient from which each organoid sample has originated,
+and</p>
+<p>• the batch that the organoid has been sequenced in</p>
+<p>We’ll assign these factors to a “group” variable:</p>
+<pre class="r"><code>group &lt;- factor(c(paste(sampleinfo$PATIENT,sampleinfo$Batch, sep = &#39;.&#39;)))
 table(group)</code></pre>
 <pre><code>group
 ORG38.1 ORG41.1 ORG49.2 ORG60.2 ORG66.3 ORG71.3 ORG73.3 
       5       1       1       1       1       1       2 </code></pre>
-<pre class="r"><code>design &lt;- model.matrix(~0+group)
+<p>We also want to include drug response values (AUC) as continuous
+variables in the design matrix, which we can reference directly from the
+sampleinfo dataframe.</p>
+<p>In the design matrix: need to define the drug (AUC) values as
+response variables on the left hand side, and patient and batch as
+predictor factors on the right hand side:</p>
+<pre class="r"><code>design &lt;- model.matrix(Mitomycin+Doxorubicin+Staurosporine+Topotecan+Irinotecan+Oxaliplatin+Gemcitabine+Carboplatin+Docetaxel+Cisplatin+Paclitaxel+Cetxuimab~0+group, data=sampleinfo)
 rownames(design)&lt;- sampleinfo$`Sample ID`
-colnames(design)&lt;- levels(group)
 design</code></pre>
-<pre><code>                  ORG38.1 ORG41.1 ORG49.2 ORG60.2 ORG66.3 ORG71.3 ORG73.3
-ORG-38-HANS             1       0       0       0       0       0       0
-ORG-38-HANS-LIGHT       1       0       0       0       0       0       0
-ORG-38-ORG              1       0       0       0       0       0       0
-ORG-38-ORG-DARK         1       0       0       0       0       0       0
-ORG-38-ORG-LIGHT        1       0       0       0       0       0       0
-ORG41                   0       1       0       0       0       0       0
-ORG49                   0       0       1       0       0       0       0
-ORG60                   0       0       0       1       0       0       0
-ORG66                   0       0       0       0       1       0       0
-ORG71                   0       0       0       0       0       1       0
-ORG73                   0       0       0       0       0       0       1
-ORG73R                  0       0       0       0       0       0       1
+<pre><code>                  groupORG38.1 groupORG41.1 groupORG49.2 groupORG60.2
+ORG-38-HANS                  1            0            0            0
+ORG-38-HANS-LIGHT            1            0            0            0
+ORG-38-ORG                   1            0            0            0
+ORG-38-ORG-DARK              1            0            0            0
+ORG-38-ORG-LIGHT             1            0            0            0
+ORG41                        0            1            0            0
+ORG49                        0            0            1            0
+ORG60                        0            0            0            1
+ORG66                        0            0            0            0
+ORG71                        0            0            0            0
+ORG73                        0            0            0            0
+ORG73R                       0            0            0            0
+                  groupORG66.3 groupORG71.3 groupORG73.3
+ORG-38-HANS                  0            0            0
+ORG-38-HANS-LIGHT            0            0            0
+ORG-38-ORG                   0            0            0
+ORG-38-ORG-DARK              0            0            0
+ORG-38-ORG-LIGHT             0            0            0
+ORG41                        0            0            0
+ORG49                        0            0            0
+ORG60                        0            0            0
+ORG66                        1            0            0
+ORG71                        0            1            0
+ORG73                        0            0            1
+ORG73R                       0            0            1
 attr(,&quot;assign&quot;)
 [1] 1 1 1 1 1 1 1
 attr(,&quot;contrasts&quot;)
 attr(,&quot;contrasts&quot;)$group
 [1] &quot;contr.treatment&quot;</code></pre>
+<div id="check-if-design-matrix-is-of-full-rank" class="section level3">
+<h3>Check if design matrix is of full rank</h3>
+<p>Next, check if design matrix is of full rank:</p>
+<pre class="r"><code>is_full_rank &lt;- is.fullrank(design)
+print(is_full_rank)</code></pre>
+<pre><code>[1] TRUE</code></pre>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1194,6 +1263,7 @@ loaded via a namespace (and not attached):
 [37] rstudioapi_0.16.0 lifecycle_1.0.4   vctrs_0.6.5       evaluate_0.23    
 [41] glue_1.7.0        whisker_0.4.1     fansi_1.0.6       rmarkdown_2.27   
 [45] httr_1.4.7        tools_4.4.0       pkgconfig_2.0.3   htmltools_0.5.8.1</code></pre>
+</div>
 </div>
 </div>
 
