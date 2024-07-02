@@ -131,6 +131,7 @@ print(is_full_rank)
 ```
 
 ##Filtering and normalisation
+Next, we need to filter out genes with low read counts, and calulate normalization factors for each sample:
 ```{r}
 #filtering to remove low counts
 keep <- filterByExpr(y, design = design)

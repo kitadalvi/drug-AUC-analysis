@@ -1,4 +1,4 @@
-# drug-AUC-analysis.Rproj
+# drug-AUC-analysis
 
 A [workflowr][] project.
 

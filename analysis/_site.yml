@@ -1,7 +1,7 @@
-name: drug-AUC-analysis.Rproj
+name: drug-AUC-analysis
 output_dir: ../docs
 navbar:
-  title: drug-AUC-analysis.Rproj
+  title: drug-AUC-analysis
   left:
   - text: Home
     href: index.html
