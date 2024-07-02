@@ -129,3 +129,18 @@ Next, check if design matrix is of full rank:
 is_full_rank <- is.fullrank(design)
 print(is_full_rank)
 ```
+
+##Filtering and normalisation
+```{r}
+#filtering to remove low counts
+keep <- filterByExpr(y, design = design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y <- calcNormFactors(y)
+
+#fit GLMs
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmFit(y, design)
+```

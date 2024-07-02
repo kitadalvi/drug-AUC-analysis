@@ -1,7 +1,7 @@
-name: drug-AUC-analysis
+name: organoid-RNAseq-analysis
 output_dir: ../docs
 navbar:
-  title: drug-AUC-analysis
+  title: organoid-RNAseq-analysis
   left:
   - text: Home
     href: index.html
