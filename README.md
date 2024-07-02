@@ -1,4 +1,4 @@
-# organoid-RNAseq-analysis
+# drug-AUC-analysis.Rproj
 
 A [workflowr][] project.
 
