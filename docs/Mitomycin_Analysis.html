@@ -426,10 +426,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreeb75b2693f0e0ab84eeb20393d77d1c17b29f6ea9targetblankb75b269a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreecb8736fb468202ed6c0c7395fc3cc79ff7bb10f9targetblankcb8736fa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/b75b2693f0e0ab84eeb20393d77d1c17b29f6ea9" target="_blank">b75b269</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9" target="_blank">cb8736f</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreeb75b2693f0e0ab84eeb20393d77d1c17b29f6ea9targetblankb75b269a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreecb8736fb468202ed6c0c7395fc3cc79ff7bb10f9targetblankcb8736fa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/b75b2693f0e0ab84eeb20393d77d1c17b29f6ea9" target="_blank">b75b269</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9" target="_blank">cb8736f</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -558,12 +558,8 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
-Untracked files:
-    Untracked:  analysis/Mitomycin_Analysis.Rmd
-
 Unstaged changes:
-    Modified:   analysis/MDSplots.Rmd
-    Modified:   analysis/index.Rmd
+    Modified:   analysis/Mitomycin_Analysis.Rmd
 
 </code></pre>
 <p>
@@ -578,10 +574,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Mitomycin_Analysis.Rmd</code>)
+and HTML (<code>docs/Mitomycin_Analysis.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/analysis/Mitomycin_Analysis.Rmd" target="_blank">cb8736f</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-17
+</td>
+<td>
+Added correlation analysis for Mitomycin
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/docs/Mitomycin_Analysis.html" target="_blank">cb8736f</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-17
+</td>
+<td>
+Added correlation analysis for Mitomycin
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -674,7 +734,121 @@ sig_genes[0:10,]</code></pre>
 <div id="plotting-gene-expression-vs-mitomycin-response"
 class="section level1">
 <h1>Plotting Gene expression VS Mitomycin response</h1>
-<p><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/docs/figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-1.png" target="_blank">cb8736f</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-2">
+Past versions of unnamed-chunk-7-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/docs/figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-2.png" target="_blank">cb8736f</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-3">
+Past versions of unnamed-chunk-7-3.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-3" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/docs/figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-3.png" target="_blank">cb8736f</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-17
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Mitomycin_Analysis.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">

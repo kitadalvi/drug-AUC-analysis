@@ -118,7 +118,7 @@ old_options <- options(ggpubr.parse_aes = FALSE)
 p1 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y = 'IGFL2', 
-                title="IGFL2 expression VS Mitomycin response", 
+                title="IGFL2", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -130,7 +130,7 @@ p1 <- ggscatter(sig_genes_cpm,
 p2 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y = 'MYO3A', 
-                title="MYO3A expression VS Mitomycin response", 
+                title="MYO3A", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -141,7 +141,7 @@ p2 <- ggscatter(sig_genes_cpm,
 p3 <- ggscatter(sig_genes_cpm, 
                 x ='Mitomycin', 
                 y = 'LHFP', 
-                title="LHFP expression VS Mitomycin response", 
+                title="LHFP", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -152,7 +152,7 @@ p3 <- ggscatter(sig_genes_cpm,
 p4 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y ="LRRTM1", 
-                title="LRRTM1 expression VS Mitomycin response", 
+                title="LRRTM1", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -163,7 +163,7 @@ p4 <- ggscatter(sig_genes_cpm,
 p5 <- ggscatter(sig_genes_cpm, 
                 x ='Mitomycin', 
                 y ="SNORD3A", 
-                title="SNORD3A expression VS Mitomycin response",
+                title="SNORD3A",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -174,7 +174,7 @@ p5 <- ggscatter(sig_genes_cpm,
 p6 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y ="DSG3", 
-                title="DSG3 expression VS Mitomycin response", 
+                title="DSG3", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -185,7 +185,7 @@ p6 <- ggscatter(sig_genes_cpm,
 p7 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y ="HEPH", 
-                title="HEPH expression VS Mitomycin response",
+                title="HEPH",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -196,7 +196,7 @@ p7 <- ggscatter(sig_genes_cpm,
 p8 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y ="ISL1",
-                title="ISL1 expression VS Mitomycin response",
+                title="ISL1",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -207,31 +207,31 @@ p8 <- ggscatter(sig_genes_cpm,
 p9 <- ggscatter(sig_genes_cpm, 
                 x = 'Mitomycin', 
                 y ="STXBP5L", 
-                title="STXBP5L expression VS Mitomycin response",
+                title="STXBP5L",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
                 cor.coef = TRUE, cor.method = "pearson") +
   geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()+
-  theme(plot.title=element_text(size=10))
+  theme_linedraw()
 
 p10 <- ggscatter(sig_genes_cpm, 
                  x = 'Mitomycin', 
                  y ="TMPRSS13", 
-                 title="TMPRSS13 expression VS Mitomycin response",
+                 title="TMPRSS13",
                  xlab="response (AUC)",
                  ylab= "log(cpm)",
                  color='Batch',
                  cor.coef = TRUE, cor.method = "pearson") +
   geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()+
-  theme(plot.title=element_text(size=10))
+  theme_linedraw()
 
 options(old_options)
 
 #Arrange plots
-ggarrange(p1,p2,p3,p4, ncol=2, nrow=2)
-ggarrange(p5,p6,p7,p8, ncol=2, nrow=2)
-ggarrange(p9,p10, ncol=2, nrow=2)
+ggarrange(p1,p2, ncol=2, nrow=1)
+ggarrange(p3,p4, ncol=2, nrow=1)
+ggarrange(p5,p6, ncol=2, nrow=1)
+ggarrange(p7,p8, ncol=2, nrow=1)
+ggarrange(p9,p10, ncol=2, nrow=1)
 ```
