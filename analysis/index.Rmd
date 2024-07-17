@@ -12,4 +12,6 @@ Welcome to my research website.
 
 [Filtering and MDS plots](MDSplots.html)
 
-[Mitomycin response VS GE](Mitomycin_Analysis.html)
+[Mitomycin correlation analysis](Mitomycin_Analysis.html)
+
+[Irinotecan correlation analysis](Irinotecan_Analysis.html)
