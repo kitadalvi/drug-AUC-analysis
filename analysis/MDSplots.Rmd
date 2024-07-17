@@ -101,46 +101,6 @@ Notes:
 
 • Factors to include in design matrix: Patient and Batch
 
-# Design Matrix 
-From the MDS plots it can be seen that the factors affecting RNA include: 
-• the patient from which each organoid sample has originated, and 
 
-• the batch that the organoid has been sequenced in
 
-We'll assign these factors to a "group" variable:
-```{r}
-group <- factor(c(paste(sampleinfo$PATIENT,sampleinfo$Batch, sep = '.')))
-table(group)
-```
 
-We also want to include drug response values (AUC) as continuous variables in the design matrix, which we can reference directly from the sampleinfo dataframe.
-
-In the design matrix: need to define the drug (AUC) values as response variables on the left hand side, and patient and batch as predictor factors on the right hand side:
-
-```{r}
-design <- model.matrix(Mitomycin+Doxorubicin+Staurosporine+Topotecan+Irinotecan+Oxaliplatin+Gemcitabine+Carboplatin+Docetaxel+Cisplatin+Paclitaxel+Cetxuimab~0+group, data=sampleinfo)
-rownames(design)<- sampleinfo$`Sample ID`
-design
-```
-
-### Check if design matrix is of full rank
-Next, check if design matrix is of full rank:
-```{r}
-is_full_rank <- is.fullrank(design)
-print(is_full_rank)
-```
-#Filtering and normalisation
-Next, we need to filter out genes with low read counts, and calculate normalization factors for each sample:
-```{r}
-#filtering to remove low counts
-keep <- filterByExpr(y, design = design)
-table(keep)
-y <- y[keep, , keep.lib.sizes=FALSE]
-
-#normalizing library sizes
-y <- calcNormFactors(y)
-
-#fit GLMs
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-```
