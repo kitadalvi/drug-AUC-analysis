@@ -140,19 +140,17 @@ emapplot(x,layout.params=list(layout='circle'))+
 ```
 ### Category Netplot
 ```{r top1_cnetPlot}
-by_pval <- cnetplot(top1_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
+cnetplot(top1_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
-by_all <- cnetplot(top1_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(top1_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By both gene category and name")
 
-by_category <- cnetplot(top1_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
+cnetplot(top1_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
 
-by_gene <- cnetplot(top1_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(top1_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
-
-ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)
 ```
 ### Ridgeplot 
 ```{r top1__ridgeplot}
@@ -222,19 +220,18 @@ emapplot(x, showCategory=40)+
 ```
 ### Category Netplot
 ```{r platinum_compounds_cnetPlot}
-by_pval <- cnetplot(gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
+cnetplot(gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
-by_all <- cnetplot(gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By both gene category and name")
 
-by_category <- cnetplot(gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
+cnetplot(gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
 
-by_gene <- cnetplot(gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
 
-ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)
 ```
 ### Ridgeplot 
 ```{r platinum_compounds_ridgeplot}
@@ -243,7 +240,6 @@ ridgeplot(gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
 ```
 
 ## Analysis of significantly correlated genes across cytotoxic antibiotics
-
 ```{r, include=FALSE}
 #loading in count data
 countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
@@ -306,19 +302,18 @@ emapplot(x, showCategory=40)+
 ```
 ### Category Netplot
 ```{r cytotoxic_antibiotics_cnetPlot, message=FALSE, warning=FALSE}
-by_pval <- cnetplot(ca_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
+cnetplot(ca_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
-by_all <- cnetplot(ca_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(ca_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By both gene category and name")
 
-by_category <- cnetplot(ca_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
+cnetplot(ca_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
 
-by_gene <- cnetplot(ca_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(ca_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
 
-ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)
 ```
 ### Ridgeplot 
 ```{r cytotoxic_antibiotics_ridgeplot, message=FALSE, warning=FALSE}
@@ -388,19 +383,18 @@ emapplot(x, showCategory=40)+
 ```
 ### Category Netplot
 ```{r taxanes_cnetPlot, warning=FALSE}
-by_pval <- cnetplot(tax_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
+cnetplot(tax_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
-by_all <- cnetplot(tax_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(tax_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By both gene category and name")
 
-by_category <- cnetplot(tax_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
+cnetplot(tax_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
 
-by_gene <- cnetplot(tax_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
+cnetplot(tax_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
 
-ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)
 ```
 ### Ridgeplot 
 ```{r taxanes_ridgeplot, warning=FALSE}
