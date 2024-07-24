@@ -10,8 +10,9 @@
 
 
 
+<meta name="date" content="2024-07-22" />
 
-<title>Home</title>
+<title>Docetaxel Analysis</title>
 
 <script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -29,6 +30,9 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
@@ -231,6 +235,69 @@ $(document).ready(function () {
 
 
 
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
 
 </head>
 
@@ -238,6 +305,16 @@ $(document).ready(function () {
 
 
 <div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
 
 
 
@@ -281,7 +358,8 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Home</h1>
+<h1 class="title toc-ignore">Docetaxel Analysis</h1>
+<h4 class="date">2024-07-22</h4>
 
 </div>
 
@@ -314,7 +392,7 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 1
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span> 1
 </p>
@@ -348,12 +426,96 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongEnvironmentstrongempty">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Environment:</strong> empty </a>
+</p>
+</div>
+<div id="strongEnvironmentstrongempty" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! The global environment was empty. Objects defined in the
+global environment can affect the analysis in your R Markdown file in
+unknown ways. For reproduciblity it’s best to always run the code in an
+empty environment.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSeedstrongcodesetseed20240628code">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Seed:</strong>
+<code>set.seed(20240628)</code> </a>
+</p>
+</div>
+<div id="strongSeedstrongcodesetseed20240628code"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>The command <code>set.seed(20240628)</code> was run prior to running
+the code in the R Markdown file. Setting a seed ensures that any results
+that rely on randomness, e.g. subsampling or permutations, are
+reproducible.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongSessioninformationstrongrecorded">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Session information:</strong>
+recorded </a>
+</p>
+</div>
+<div id="strongSessioninformationstrongrecorded"
+class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Recording the operating system, R version, and package
+versions is critical for reproducibility.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongCachestrongnone">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>Cache:</strong> none </a>
+</p>
+</div>
+<div id="strongCachestrongnone" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Nice! There were no cached chunks for this analysis, so you can be
+confident that you successfully produced the results during this
+run.</p>
+</div>
+</div>
+</div>
+<div class="panel panel-default">
+<div class="panel-heading">
+<p class="panel-title">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongFilepathsstrongrelative">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>File paths:</strong> relative </a>
+</p>
+</div>
+<div id="strongFilepathsstrongrelative" class="panel-collapse collapse">
+<div class="panel-body">
+<p>Great job! Using relative paths to the files within your workflowr
+project makes it easier to run your code on other machines.</p>
 </div>
 </div>
 </div>
@@ -427,306 +589,135 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/index.Rmd</code>) and HTML
-(<code>docs/index.html</code>) files. If you’ve configured a remote Git
-repository (see <code>?wflow_git_remote</code>), click on the hyperlinks
-in the table below to view the files as they were in that past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/d0214cf12ffcebda331d79114f1198e00c3b231a/analysis/index.Rmd" target="_blank">d0214cf</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-17
-</td>
-<td>
-Added Irinotecan analysis
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/d0214cf12ffcebda331d79114f1198e00c3b231a/docs/index.html" target="_blank">d0214cf</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-17
-</td>
-<td>
-Added Irinotecan analysis
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/analysis/index.Rmd" target="_blank">cb8736f</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-17
-</td>
-<td>
-Added correlation analysis for Mitomycin
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/cb8736fb468202ed6c0c7395fc3cc79ff7bb10f9/docs/index.html" target="_blank">cb8736f</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-17
-</td>
-<td>
-Added correlation analysis for Mitomycin
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/b75b2693f0e0ab84eeb20393d77d1c17b29f6ea9/analysis/index.Rmd" target="_blank">b75b269</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-02
-</td>
-<td>
-restructuring files
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/b75b2693f0e0ab84eeb20393d77d1c17b29f6ea9/docs/index.html" target="_blank">b75b269</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-02
-</td>
-<td>
-restructuring files
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/86c7854167e3ab64d10eb0ff096e1d5b0ba9d635/analysis/index.Rmd" target="_blank">86c7854</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-02
-</td>
-<td>
-added AUC_analysis.html
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/86c7854167e3ab64d10eb0ff096e1d5b0ba9d635/docs/index.html" target="_blank">86c7854</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-02
-</td>
-<td>
-added AUC_analysis.html
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/5b78ccd5fbb6a547b7d1d84467f8394fa0191138/docs/index.html" target="_blank">5b78ccd</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-06-28
-</td>
-<td>
-index moved
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/d2b67942f3c985584663fc8abb8f188787d8f80c/docs/index.html" target="_blank">d2b6794</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-06-28
-</td>
-<td>
-Moving index file
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/a25120ecdd5de8f8f444dfc8308af849d5953dc8/docs/index.html" target="_blank">a25120e</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-06-28
-</td>
-<td>
-Build site.
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/9c721b65297f01372769f261bcfbc188c53a191d/analysis/index.Rmd" target="_blank">9c721b6</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-06-28
-</td>
-<td>
-initial commit
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/9c721b65297f01372769f261bcfbc188c53a191d/docs/index.html" target="_blank">9c721b6</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-06-28
-</td>
-<td>
-initial commit
-</td>
-</tr>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/f4924870567a5a9dd88b113d608459e41a5c0eb0/analysis/index.Rmd" target="_blank">f492487</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-06-28
-</td>
-<td>
-Start workflowr project.
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<p>Welcome to my research website.</p>
-<p><a href="MDSplots.html">Filtering and MDS plots</a></p>
-<p><a href="Mitomycin_Analysis.html">Mitomycin correlation
-analysis</a></p>
-<p><a href="Irinotecan_Analysis.html">Irinotecan correlation
-analysis</a></p>
-<p><a href="Topotecan_Analysis.html">Topotecan correlation
-analysis</a></p>
-<p><a href="Doxorubicin_Analysis.html">Doxorubicin correlation
-analysis</a></p>
-<p><a href="Carboplatin_Analysis.html">Carboplatin correlation
-analysis</a></p>
-<p><a href="Oxaliplatin_Analysis.html">Oxaliplatin correlation
-analysis</a></p>
-<p><a href="Cisplatin_Analysis.html">Cisplatin correlation
-analysis</a></p>
-<p><a href="Gemcitabine_Analysis.html">Gemcitabine correlation
-analysis</a></p>
-<p><a href="Docetaxel_Analysis.html">Docetaxel correlation
-analysis</a></p>
-<p><a href="Paclitaxel_Analysis.html">Paclitaxel correlation
-analysis</a></p>
-<p><a href="Cetxuimab_Analysis.html">Cetuximab correlation
-analysis</a></p>
-<p><a href="gene_set_analysis.html">Gene Set Enrichment Analysis</a></p>
+<div id="design-matrix" class="section level1">
+<h1>Design Matrix</h1>
+<p>To include in design matrix:</p>
+<p>• Batch (combining batch 2+3 into a single batch)</p>
+<p>• Docetaxel response AUC Values</p>
+<p>Defining design matrix:</p>
+<pre class="r"><code>design &lt;- model.matrix(~batch+Docetaxel)</code></pre>
+<p>Check if design matrix is of full rank:</p>
+<pre class="r"><code>is_full_rank &lt;- is.fullrank(design)
+print(is_full_rank)</code></pre>
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div id="fitting-glms" class="section level1">
+<h1>Fitting GLMs</h1>
+<div id="filtering-and-normalisation" class="section level3">
+<h3>Filtering and normalisation</h3>
+<p>Filter out genes with low read counts, and calculate normalization
+factors for each sample:</p>
+<pre class="r"><code>#filtering to remove low counts
+keep &lt;- filterByExpr(y, design = design)
+table(keep)</code></pre>
+<pre><code>keep
+FALSE  TRUE 
+22572 16211 </code></pre>
+<pre class="r"><code>y &lt;- y[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y &lt;- calcNormFactors(y)
+
+#fit GLMs
+y &lt;- estimateDisp(y, design, robust=TRUE)</code></pre>
+</div>
+<div id="generating-cpm-matrix-of-gene-expression"
+class="section level3">
+<h3>Generating cpm matrix of gene expression</h3>
+<pre class="r"><code>my_cpm &lt;- cpm(y, normalized.lib.sizes=TRUE,log = TRUE)
+rownames(my_cpm)&lt;- y$genes$genes</code></pre>
+</div>
+</div>
+<div id="correlation-analysis" class="section level1">
+<h1>Correlation Analysis</h1>
+<div id="identifying-genes-of-interest" class="section level3">
+<h3>Identifying genes of interest</h3>
+<pre class="r"><code>#fitting the GLM model
+fit &lt;- glmFit(y, design)
+
+#Define Docetaxel AUC values as factor of interest in design matrix for correlation analysis 
+lrt&lt;- glmLRT(fit, coef=3)
+
+#Retrieve significantly correlated genes using topTags, sorting by p-value
+sig_genes &lt;- topTags(lrt, p.value=0.05, n=500)
+sig_genes[0:10,]</code></pre>
+<pre><code>Coefficient:  Docetaxel 
+           genes       logFC    logCPM       LR       PValue          FDR
+35604      ZFPM2  0.27482855 1.8303183 94.89757 2.004959e-22 3.250239e-18
+11741      ENPEP -0.18420203 0.4348554 78.73489 7.102982e-19 5.757322e-15
+2186  AC022596.1  0.13529842 1.3217118 54.34064 1.685789e-13 9.109443e-10
+2173  AC022389.1  0.20301510 2.2684719 50.86308 9.903891e-13 4.013800e-09
+12706      FOXE1  0.25050557 0.8994287 43.89291 3.468427e-11 1.095676e-07
+8440    CCDC144A  0.09740651 3.7045550 43.58697 4.055305e-11 1.095676e-07
+14673      IGFL2 -0.12888533 1.3587261 42.93294 5.664869e-11 1.311903e-07
+8520       CCDC8  0.14291839 2.2723799 41.70193 1.063039e-10 2.034377e-07
+29932     SEMA3D  0.21844208 0.2504118 41.52640 1.162899e-10 2.034377e-07
+13959       HEPH -0.15172282 5.3537659 41.37750 1.254936e-10 2.034377e-07</code></pre>
+</div>
+</div>
+<div id="plotting-gene-expression-vs-docetaxel-response"
+class="section level1">
+<h1>Plotting Gene expression VS Docetaxel response</h1>
+<p><img src="figure/Docetaxel_Analysis.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Docetaxel_Analysis.Rmd/unnamed-chunk-8-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Docetaxel_Analysis.Rmd/unnamed-chunk-8-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Docetaxel_Analysis.Rmd/unnamed-chunk-8-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Docetaxel_Analysis.Rmd/unnamed-chunk-8-5.png" width="672" style="display: block; margin: auto;" /></p>
+<br>
+<p>
+<button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
+<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+Session information
+</button>
+</p>
+<div id="workflowr-sessioninfo" class="collapse">
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>R version 4.4.0 (2024-04-24)
+Platform: aarch64-apple-darwin20
+Running under: macOS Sonoma 14.4.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Australia/Melbourne
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+[1] ggpubr_0.6.0    ggplot2_3.5.1   edgeR_4.3.5     limma_3.61.4   
+[5] workflowr_1.7.1
+
+loaded via a namespace (and not attached):
+ [1] gtable_0.3.5      xfun_0.46         bslib_0.7.0       processx_3.8.4   
+ [5] rstatix_0.7.2     lattice_0.22-6    callr_3.7.6       vctrs_0.6.5      
+ [9] tools_4.4.0       ps_1.7.7          generics_0.1.3    tibble_3.2.1     
+[13] fansi_1.0.6       highr_0.11        pkgconfig_2.0.3   Matrix_1.7-0     
+[17] lifecycle_1.0.4   farver_2.1.2      compiler_4.4.0    stringr_1.5.1    
+[21] git2r_0.33.0      statmod_1.5.0     munsell_0.5.1     getPass_0.2-4    
+[25] carData_3.0-5     httpuv_1.6.15     htmltools_0.5.8.1 sass_0.4.9       
+[29] yaml_2.3.9        later_1.3.2       pillar_1.9.0      car_3.1-2        
+[33] jquerylib_0.1.4   whisker_0.4.1     tidyr_1.3.1       cachem_1.1.0     
+[37] abind_1.4-5       nlme_3.1-165      tidyselect_1.2.1  locfit_1.5-9.10  
+[41] digest_0.6.36     stringi_1.8.4     dplyr_1.1.4       purrr_1.0.2      
+[45] labeling_0.4.3    splines_4.4.0     cowplot_1.1.3     rprojroot_2.0.4  
+[49] fastmap_1.2.0     grid_4.4.0        colorspace_2.1-0  cli_3.6.3        
+[53] magrittr_2.0.3    utf8_1.2.4        broom_1.0.6       withr_3.0.0      
+[57] scales_1.3.0      promises_1.3.0    backports_1.5.0   rmarkdown_2.27   
+[61] httr_1.4.7        ggsignif_0.6.4    evaluate_0.24.0   knitr_1.48       
+[65] mgcv_1.9-1        rlang_1.1.4       Rcpp_1.0.13       glue_1.7.0       
+[69] rstudioapi_0.16.0 jsonlite_1.8.8    R6_2.5.1          fs_1.6.4         </code></pre>
+</div>
+</div>
 
 
 <!-- Adjust MathJax settings so that all math formulae are shown using
@@ -744,6 +735,8 @@ footer is added to webpages before the MathJax javascript. -->
 
 
 
+</div>
+</div>
 
 </div>
 
@@ -776,6 +769,35 @@ $(document).ready(function () {
 
 <!-- code folding -->
 
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>

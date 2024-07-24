@@ -1,7 +1,7 @@
 ---
-title: "Mitomycin Analysis"
+title: "Cisplatin Analysis"
 output: html_document
-date: "2024-07-13"
+date: "2024-07-22"
 ---
 
 ```{r setup, include=FALSE}
@@ -19,17 +19,17 @@ To include in design matrix:
 
 • Batch (combining batch 2+3 into a single batch)
 
-• Mitomycin response AUC Values
+• Cisplatin response AUC Values
 
 ```{r, echo=FALSE}
 batch <- factor(c(1,1,1,1,1,1,2,2,2,2,2,2))
-Mitomycin <- sampleinfo$Mitomycin
+Cisplatin <- sampleinfo$Cisplatin
 ```
 
 Defining design matrix:
 
 ```{r}
-design <- model.matrix(~batch+Mitomycin)
+design <- model.matrix(~batch+Cisplatin)
 ```
  
 Check if design matrix is of full rank:
@@ -66,18 +66,18 @@ rownames(my_cpm)<- y$genes$genes
 #fitting the GLM model
 fit <- glmFit(y, design)
 
-#Define Mitomycin AUC values as factor of interest in design matrix for correlation analysis 
+#Define Cisplatin AUC values as factor of interest in design matrix for correlation analysis 
 lrt<- glmLRT(fit, coef=3)
 
 #Retrieve significantly correlated genes using topTags, sorting by p-value
 sig_genes <- topTags(lrt, p.value=0.05, n=500)
 sig_genes[0:10,]
 ```
-
 ```{r, include=FALSE}
-write.table(sig_genes, quote=F, row.names=F, col.names = TRUE, file='/Users/dalvinikita/Documents/Drug Response Analysis/mitomycin_topGenes.txt', sep='\t')
+write.table(sig_genes, quote=F, row.names=F, col.names = TRUE, file='/Users/dalvinikita/Documents/Drug Response Analysis/cisplatin_topGenes.txt', sep='\t')
 ```
-# Plotting Gene expression VS Mitomycin response 
+
+# Plotting Gene expression VS Cisplatin response 
 
 ```{r, echo=FALSE, warning=FALSE, message=FALSE}
 #creating dataframe of log(CPM) with gene names as columns 
@@ -85,7 +85,7 @@ write.table(sig_genes, quote=F, row.names=F, col.names = TRUE, file='/Users/dalv
 genes_to_add <- c(sig_genes$table$genes)
 
 # Create a new dataframe to store selected rows as columns
-sig_genes_cpm <- data.frame(Mitomycin, check.names = FALSE)
+sig_genes_cpm <- data.frame(Cisplatin, check.names = FALSE)
 
 # Loop through each row name in row_names_to_select
 for (gene in genes_to_add) {
@@ -106,9 +106,9 @@ library(ggpubr)
 old_options <- options(ggpubr.parse_aes = FALSE)
 
 p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y = 'IGFL2', 
-                title="IGFL2", 
+                x = 'Cisplatin', 
+                y = 'CCDC43', 
+                title="CCDC43", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -118,9 +118,9 @@ p1 <- ggscatter(sig_genes_cpm,
   
 
 p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y = 'MYO3A', 
-                title="MYO3A", 
+                x = 'Cisplatin', 
+                y = 'GPATCH8', 
+                title="GPATCH8", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -129,9 +129,9 @@ p2 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p3 <- ggscatter(sig_genes_cpm, 
-                x ='Mitomycin', 
-                y = 'LHFP', 
-                title="LHFP", 
+                x ='Cisplatin', 
+                y = 'RASL11A', 
+                title="RASL11A", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -140,9 +140,9 @@ p3 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="LRRTM1", 
-                title="LRRTM1", 
+                x = 'Cisplatin', 
+                y ="ACLY", 
+                title="ACLY", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -151,9 +151,9 @@ p4 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p5 <- ggscatter(sig_genes_cpm, 
-                x ='Mitomycin', 
-                y ="SNORD3A", 
-                title="SNORD3A",
+                x ='Cisplatin', 
+                y ="C5orf17", 
+                title="C5orf17",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -162,9 +162,9 @@ p5 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="DSG3", 
-                title="DSG3", 
+                x = 'Cisplatin', 
+                y ="EFTUD2", 
+                title="EFTUD2", 
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -173,9 +173,9 @@ p6 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="HEPH", 
-                title="HEPH",
+                x = 'Cisplatin', 
+                y ="MAP3K14", 
+                title="MAP3K14",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -184,9 +184,9 @@ p7 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="ISL1",
-                title="ISL1",
+                x = 'Cisplatin', 
+                y ="NMT1",
+                title="NMT1",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -195,9 +195,9 @@ p8 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="STXBP5L", 
-                title="STXBP5L",
+                x = 'Cisplatin', 
+                y ="KLHL11", 
+                title="KLHL11",
                 xlab="response (AUC)", 
                 ylab= "log(cpm)",
                 color='Batch',
@@ -206,9 +206,9 @@ p9 <- ggscatter(sig_genes_cpm,
   theme_linedraw()
 
 p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Mitomycin', 
-                 y ="TMPRSS13", 
-                 title="TMPRSS13",
+                 x = 'Cisplatin', 
+                 y ="DCAKD", 
+                 title="DCAKD",
                  xlab="response (AUC)",
                  ylab= "log(cpm)",
                  color='Batch',

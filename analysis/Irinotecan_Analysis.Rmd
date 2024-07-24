@@ -1,5 +1,5 @@
 ---
-title: "Irinotecan_analysis"
+title: "Irinotecan Analysis"
 output: html_document
 date: "2024-07-17"
 ---
@@ -11,7 +11,6 @@ library(limma)
 #loading in count data
 countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
 sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
-#assigning "Batch information as a character/factor instead of integer
 y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
 ```
 
@@ -31,7 +30,6 @@ Defining design matrix:
 
 ```{r}
 design <- model.matrix(~batch+Irinotecan)
-design
 ```
 
 # Fitting GLMs
@@ -66,8 +64,12 @@ fit <- glmFit(y, design)
 lrt<- glmLRT(fit, coef=3)
 
 #Retrieve significantly correlated genes using topTags, sorting by p-value
-sig_genes <- topTags(lrt,p.value = 0.05)
+sig_genes <- topTags(lrt, p.value=0.05, n=500)
 sig_genes[0:10,]
+```
+
+```{r, include=FALSE}
+write.table(sig_genes, quote=F, row.names=F, col.names = TRUE, file='/Users/dalvinikita/Documents/Drug Response Analysis/irinotecan_topGenes.txt', sep='\t')
 ```
 
 # Plotting Gene expression VS Irinotecan response 

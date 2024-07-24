@@ -10,9 +10,9 @@
 
 
 
-<meta name="date" content="2024-07-17" />
+<meta name="date" content="2024-07-22" />
 
-<title>Irinotecan Analysis</title>
+<title>Gene Set Analysis</title>
 
 <script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -358,8 +358,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Irinotecan Analysis</h1>
-<h4 class="date">2024-07-17</h4>
+<h1 class="title toc-ignore">Gene Set Analysis</h1>
+<h4 class="date">2024-07-22</h4>
 
 </div>
 
@@ -388,7 +388,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-23
+<strong>Last updated:</strong> 2024-07-24
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -426,10 +426,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown file has unstaged changes. To know which version of
-the R Markdown file created these results, you’ll want to first commit
-it to the Git repo. If you’re still working on the analysis, you can
-ignore this warning. When you’re finished, you can run
+<p>The R Markdown is untracked by Git. To know which version of the R
+Markdown file created these results, you’ll want to first commit it to
+the Git repo. If you’re still working on the analysis, you can ignore
+this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -589,144 +589,288 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
-
 <p>
-These are the previous versions of the repository in which changes were
-made to the R Markdown (<code>analysis/Irinotecan_Analysis.Rmd</code>)
-and HTML (<code>docs/Irinotecan_Analysis.html</code>) files. If you’ve
-configured a remote Git repository (see <code>?wflow_git_remote</code>),
-click on the hyperlinks in the table below to view the files as they
-were in that past version.
+There are no past versions. Publish this analysis with
+<code>wflow_publish()</code> to start tracking its development.
 </p>
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-File
-</th>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-<th>
-Message
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-Rmd
-</td>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/d0214cf12ffcebda331d79114f1198e00c3b231a/analysis/Irinotecan_Analysis.Rmd" target="_blank">d0214cf</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-17
-</td>
-<td>
-Added Irinotecan analysis
-</td>
-</tr>
-<tr>
-<td>
-html
-</td>
-<td>
-<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/d0214cf12ffcebda331d79114f1198e00c3b231a/docs/Irinotecan_Analysis.html" target="_blank">d0214cf</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-17
-</td>
-<td>
-Added Irinotecan analysis
-</td>
-</tr>
-</tbody>
-</table>
-</div>
 <hr>
 </div>
 </div>
 </div>
-<div id="design-matrix" class="section level1">
-<h1>Design Matrix</h1>
-<p>To include in design matrix:</p>
-<p>• Batch (combining batch 2+3 into a single batch)</p>
-<p>• Irinotecan response AUC Values</p>
-<p>Defining design matrix:</p>
-<pre class="r"><code>design &lt;- model.matrix(~batch+Irinotecan)</code></pre>
+<div id="overviewnotes" class="section level2">
+<h2>Overview/Notes</h2>
+<p>Plots used for analysis: • Dot plot:number of genes belonging to each
+GO-term and associated adjusted p-values</p>
+<p>• Enrichment map: Shows overlap between genes in different GO
+terms</p>
+<p>• Category Net plot:Linkages of genes and biological concepts as a
+network</p>
+<p>• Ridge Plot: Density pltos of expression for different gene sets to
+determine up/downregulated pathways</p>
 </div>
-<div id="fitting-glms" class="section level1">
-<h1>Fitting GLMs</h1>
-<div id="filtering-and-normalisation" class="section level3">
-<h3>Filtering and normalisation</h3>
-<p>Filter out genes with low read counts, and calculate normalization
-factors for each sample:</p>
-<pre class="r"><code>#filtering to remove low counts
-keep &lt;- filterByExpr(y, design = design)
-table(keep)</code></pre>
-<pre><code>keep
-FALSE  TRUE 
-22572 16211 </code></pre>
-<pre class="r"><code>y &lt;- y[keep, , keep.lib.sizes=FALSE]
+<div
+id="analysis-of-significantly-correlated-genes-across-top1-inhibitors"
+class="section level2">
+<h2>Analysis of significantly correlated genes across TOP1
+inhibitors</h2>
+<div id="significant-genes" class="section level3">
+<h3>Significant genes</h3>
+<pre class="r"><code>#loading in data
+top1_sig_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt&#39;, header=T)
+head(top1_sig_genes)</code></pre>
+<pre><code>       genes      logFC    logCPM       LR       PValue          FDR
+1      ZFPM2  0.3087779 1.8306206 93.88924 3.336836e-22 5.409345e-18
+2      IGFL2 -0.1536392 1.3589416 84.83488 3.243520e-20 2.629035e-16
+3 AL157931.2  0.3432817 5.6722277 64.93880 7.726072e-16 4.174912e-12
+4 AC022596.1  0.1622893 1.3221242 54.86168 1.293179e-13 5.240931e-10
+5     NUS1P2  0.3051329 5.2650851 51.62835 6.706618e-13 2.133393e-09
+6      PALMD  0.2111364 0.3114543 51.30781 7.896094e-13 2.133393e-09</code></pre>
+</div>
+<div id="preparing-input" class="section level3">
+<h3>Preparing input</h3>
+<pre class="r"><code>gene_list &lt;- top1_sig_genes$logFC
+names(gene_list)&lt;- top1_sig_genes$genes
+gene_list=sort(gene_list, decreasing = TRUE)
 
-#normalizing library sizes
-y &lt;- calcNormFactors(y)
+top1_gse &lt;- gseGO(geneList=gene_list, 
+             ont =&quot;ALL&quot;, 
+             keyType = &quot;ALIAS&quot;, 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.05, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = &quot;none&quot;)</code></pre>
+</div>
+<div id="dotplot" class="section level3">
+<h3>DotPlot</h3>
+<pre class="r"><code>require(DOSE)
+dotplot(top1_gse, showCategory=8,split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle(&quot;dotplot for TOP1 inhibitors&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/top1_dotplot-1.png" width="672" style="display: block; margin: auto;" />
+### Enrichment Map</p>
+<pre class="r"><code>x&lt;- pairwise_termsim(top1_gse)
+emapplot(x,layout.params=list(layout=&#39;circle&#39;))+
+  ggtitle(&quot;enrichment map for TOP1 inhibitors&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/top1_enrichment_map-1.png" width="672" style="display: block; margin: auto;" />
+### Category Netplot</p>
+<pre class="r"><code>by_pval &lt;- cnetplot(top1_gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
+  ggtitle(&quot;By p-value&quot;)
 
-#fit GLMs
-y &lt;- estimateDisp(y, design, robust=TRUE)</code></pre>
-</div>
-<div id="generating-cpm-matrix-of-gene-expression"
-class="section level3">
-<h3>Generating cpm matrix of gene expression</h3>
-<pre class="r"><code>my_cpm &lt;- cpm(y, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)&lt;- y$genes$genes</code></pre>
-</div>
-</div>
-<div id="correlation-analysis" class="section level1">
-<h1>Correlation Analysis</h1>
-<div id="identifying-genes-of-interest" class="section level3">
-<h3>Identifying genes of interest</h3>
-<pre class="r"><code>#fitting the GLM model
-fit &lt;- glmFit(y, design)
+by_all &lt;- cnetplot(top1_gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By both gene category and name&quot;)
 
-#Define Irinotecan AUC values as factor of interest in design matrix for correlation analysis 
-lrt&lt;- glmLRT(fit, coef=3)
+by_category &lt;- cnetplot(top1_gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
+  ggtitle(&quot;By gene category&quot;)
 
-#Retrieve significantly correlated genes using topTags, sorting by p-value
-sig_genes &lt;- topTags(lrt, p.value=0.05, n=500)
-sig_genes[0:10,]</code></pre>
-<pre><code>Coefficient:  Irinotecan 
-           genes       logFC    logCPM       LR       PValue          FDR
-31310    SOSTDC1  0.41547996 1.0092419 76.89445 1.803434e-18 2.923547e-14
-4969  AL157931.2  0.42201303 5.6720907 65.69982 5.251064e-16 4.256250e-12
-13959       HEPH -0.22213412 5.3538192 55.57874 8.978924e-14 4.851911e-10
-8525     CCDC85A  0.27265319 1.3664175 53.76267 2.262305e-13 8.248680e-10
-31324       SOX5  0.24042064 1.2875790 53.53199 2.544161e-13 8.248680e-10
-14673      IGFL2 -0.20529946 1.3585500 52.98864 3.354833e-13 9.064200e-10
-32643     TMEM47  0.18472497 4.9876264 44.38034 2.703889e-11 6.261820e-08
-14763      IGSF9 -0.07269934 4.4570851 43.80028 3.636523e-11 7.368959e-08
-21264     RIMKLB  0.16627543 5.1691535 40.16505 2.333862e-10 4.111759e-07
-7705    C21orf90 -0.16869459 0.5447817 40.00248 2.536400e-10 4.111759e-07</code></pre>
+by_gene &lt;- cnetplot(top1_gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By gene name&quot;)
+
+ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/top1_cnetPlot-1.png" width="672" style="display: block; margin: auto;" />
+### Ridgeplot</p>
+<pre class="r"><code>ridgeplot(top1_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle(&quot;ridgeplot for TOP1 inhibitors&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/top1__ridgeplot-1.png" width="672" style="display: block; margin: auto;" />
+## Analysis of significantly correlated genes across platinum
+compounds</p>
+</div>
+<div id="significant-genes-1" class="section level3">
+<h3>Significant genes</h3>
+<pre class="r"><code>#loading in data
+plat_sig_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt&#39;, header=T)
+head(plat_sig_genes)</code></pre>
+<pre><code>    genes      logFC    logCPM        LR       PValue          FDR
+1  CCDC43 0.02505341  5.762231 191.66636 1.375972e-43 2.230589e-39
+2 GPATCH8 0.02323835  8.024142 171.65390 3.220680e-39 2.610522e-35
+3    ACLY 0.02568084 10.161320 131.18368 2.257231e-30 1.219732e-26
+4 RASL11A 0.03333610  3.321720 120.21007 5.690421e-28 2.306185e-24
+5 C5orf17 0.04955097  2.232800  97.14530 6.442195e-23 2.088688e-19
+6  EFTUD2 0.01855204  7.721094  85.32133 2.536121e-20 6.852175e-17</code></pre>
+</div>
+<div id="preparing-input-1" class="section level3">
+<h3>Preparing input</h3>
+<pre class="r"><code>gene_list &lt;- plat_sig_genes$logFC
+names(gene_list)&lt;- plat_sig_genes$genes
+gene_list=sort(gene_list, decreasing = TRUE)
+
+gse &lt;- gseGO(geneList=gene_list, 
+             ont =&quot;ALL&quot;, 
+             keyType = &quot;ALIAS&quot;, 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.05, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = &quot;none&quot;)</code></pre>
+</div>
+<div id="dotplot-1" class="section level3">
+<h3>DotPlot</h3>
+<pre class="r"><code>require(DOSE)
+dotplot(gse, showCategory=8, split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle(&quot;dotplot for platinum based compounds&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_dotplot-1.png" width="672" style="display: block; margin: auto;" />
+### Enrichment Map</p>
+<pre class="r"><code>x&lt;- pairwise_termsim(gse)
+emapplot(x, showCategory=40)+
+  ggtitle(&quot;enrichment map for platinum based compounds&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_enrichment_map-1.png" width="672" style="display: block; margin: auto;" />
+### Category Netplot</p>
+<pre class="r"><code>by_pval &lt;- cnetplot(gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
+  ggtitle(&quot;By p-value&quot;)
+
+by_all &lt;- cnetplot(gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By both gene category and name&quot;)
+
+by_category &lt;- cnetplot(gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
+  ggtitle(&quot;By gene category&quot;)
+
+by_gene &lt;- cnetplot(gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By gene name&quot;)
+
+ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_cnetPlot-1.png" width="672" style="display: block; margin: auto;" />
+### Ridgeplot</p>
+<pre class="r"><code>ridgeplot(gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle(&quot;ridgeplot for platinum based compounds&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_ridgeplot-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
 </div>
-<div id="plotting-gene-expression-vs-irinotecan-response"
-class="section level1">
-<h1>Plotting Gene expression VS Irinotecan response</h1>
-<p><img src="figure/Irinotecan_Analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/Irinotecan_Analysis.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/Irinotecan_Analysis.Rmd/unnamed-chunk-7-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/Irinotecan_Analysis.Rmd/unnamed-chunk-7-4.png" width="672" style="display: block; margin: auto;" /><img src="figure/Irinotecan_Analysis.Rmd/unnamed-chunk-7-5.png" width="672" style="display: block; margin: auto;" /></p>
+<div
+id="analysis-of-significantly-correlated-genes-across-cytotoxic-antibiotics"
+class="section level2">
+<h2>Analysis of significantly correlated genes across cytotoxic
+antibiotics</h2>
+<div id="significant-genes-2" class="section level3">
+<h3>Significant genes</h3>
+<pre class="r"><code>#loading in data
+cytotoxic_antibiotic_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt&#39;, header=T)
+head(cytotoxic_antibiotic_genes)</code></pre>
+<pre><code>    genes       logFC   logCPM       LR       PValue          FDR
+1   IGFL2 -0.11638406 1.359505 65.23729 6.640095e-16 1.076426e-11
+2   MYO3A  0.11501729 1.058253 57.43266 3.497516e-14 2.834911e-10
+3  LRRTM1  0.07617468 3.212449 39.62463 3.077765e-10 1.663122e-06
+4    LHFP  0.08038259 0.865455 38.56613 5.292950e-10 2.145100e-06
+5 SNORD3A -0.05365899 4.851899 31.96733 1.567876e-08 5.083367e-05
+6    ISL1  0.04426481 2.973359 30.65544 3.081615e-08 8.326010e-05</code></pre>
+</div>
+<div id="preparing-input-2" class="section level3">
+<h3>Preparing input</h3>
+<pre class="r"><code>ca_gene_list &lt;- cytotoxic_antibiotic_genes$logFC
+names(ca_gene_list)&lt;- cytotoxic_antibiotic_genes$genes
+ca_gene_list=sort(ca_gene_list, decreasing = TRUE)
+
+ca_gse &lt;- gseGO(geneList=ca_gene_list, 
+             ont =&quot;ALL&quot;, 
+             keyType = &quot;ALIAS&quot;, 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.05, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = &quot;none&quot;)</code></pre>
+</div>
+<div id="dotplot-2" class="section level3">
+<h3>DotPlot</h3>
+<pre class="r"><code>require(DOSE)
+dotplot(ca_gse, showCategory=8, split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle(&quot;dotplot for cytotoxic antibiotics&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_dotplot-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="enrichment-map" class="section level3">
+<h3>Enrichment Map</h3>
+<pre class="r"><code>x&lt;- pairwise_termsim(ca_gse)
+emapplot(x, showCategory=40)+
+  ggtitle(&quot;enrichment map for cytotoxic antibiotics&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_enrichment_map-1.png" width="672" style="display: block; margin: auto;" />
+### Category Netplot</p>
+<pre class="r"><code>by_pval &lt;- cnetplot(ca_gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
+  ggtitle(&quot;By p-value&quot;)
+
+by_all &lt;- cnetplot(ca_gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By both gene category and name&quot;)
+
+by_category &lt;- cnetplot(ca_gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
+  ggtitle(&quot;By gene category&quot;)
+
+by_gene &lt;- cnetplot(ca_gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By gene name&quot;)
+
+ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_cnetPlot-1.png" width="672" style="display: block; margin: auto;" />
+### Ridgeplot</p>
+<pre class="r"><code>ridgeplot(ca_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle(&quot;ridgeplot for cytotoxic antibiotics&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_ridgeplot-1.png" width="672" style="display: block; margin: auto;" />
+## Analysis of significantly correlated genes across taxanes</p>
+</div>
+<div id="significant-genes-3" class="section level3">
+<h3>Significant genes</h3>
+<pre class="r"><code>#loading in data
+taxane_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt&#39;, header=T)
+head(taxane_genes)</code></pre>
+<pre><code>       genes      logFC    logCPM       LR       PValue          FDR
+1      ZFPM2  0.2675151 1.8304000 88.93729 4.075282e-21 6.606440e-17
+2      ENPEP -0.1855867 0.4347222 78.90367 6.521340e-19 5.285872e-15
+3 AC022389.1  0.2022841 2.2686059 61.91165 3.592185e-15 1.941097e-11
+4 AC022596.1  0.1349096 1.3218233 53.27907 2.893726e-13 1.172755e-09
+5      CCDC8  0.1425379 2.2724972 48.38518 3.502048e-12 1.135434e-08
+6    COL12A1  0.1200130 3.7930005 44.98151 1.989039e-11 5.374051e-08</code></pre>
+</div>
+<div id="preparing-input-3" class="section level3">
+<h3>Preparing input</h3>
+<pre class="r"><code>tax_gene_list &lt;- taxane_genes$logFC
+names(tax_gene_list)&lt;- taxane_genes$genes
+tax_gene_list=sort(tax_gene_list, decreasing = TRUE)
+
+tax_gse &lt;- gseGO(geneList=tax_gene_list, 
+             ont =&quot;ALL&quot;, 
+             keyType = &quot;ALIAS&quot;, 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.05, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = &quot;none&quot;)</code></pre>
+</div>
+<div id="dotplot-3" class="section level3">
+<h3>DotPlot</h3>
+<pre class="r"><code>require(DOSE)
+dotplot(tax_gse, showCategory=8, split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle(&quot;dotplot for taxanes&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/taxanes_dotplot-1.png" width="672" style="display: block; margin: auto;" />
+### Enrichment Map</p>
+<pre class="r"><code>x&lt;- pairwise_termsim(tax_gse)
+emapplot(x, showCategory=40)+
+  ggtitle(&quot;enrichment map for taxanes&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/taxanes_enrichment_map-1.png" width="672" style="display: block; margin: auto;" />
+### Category Netplot</p>
+<pre class="r"><code>by_pval &lt;- cnetplot(tax_gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
+  ggtitle(&quot;By p-value&quot;)
+
+by_all &lt;- cnetplot(tax_gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By both gene category and name&quot;)
+
+by_category &lt;- cnetplot(tax_gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
+  ggtitle(&quot;By gene category&quot;)
+
+by_gene &lt;- cnetplot(tax_gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
+  ggtitle(&quot;By gene name&quot;)
+
+ggarrange(by_pval, by_all, by_category, by_gene,ncol=2, nrow=2)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/taxanes_cnetPlot-1.png" width="672" style="display: block; margin: auto;" />
+### Ridgeplot</p>
+<pre class="r"><code>ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle(&quot;ridgeplot for taxanes&quot;)</code></pre>
+<p><img src="figure/gene_set_analysis.Rmd/taxanes_ridgeplot-1.png" width="672" style="display: block; margin: auto;" /></p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -751,31 +895,61 @@ time zone: Australia/Melbourne
 tzcode source: internal
 
 attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
+[1] stats4    stats     graphics  grDevices utils     datasets  methods  
+[8] base     
 
 other attached packages:
-[1] ggpubr_0.6.0    ggplot2_3.5.1   edgeR_4.3.5     limma_3.61.4   
-[5] workflowr_1.7.1
+ [1] DOSE_3.31.2            ggpubr_0.6.0           ggplot2_3.5.1         
+ [4] org.Hs.eg.db_3.19.1    AnnotationDbi_1.67.0   IRanges_2.39.2        
+ [7] S4Vectors_0.43.2       Biobase_2.65.0         BiocGenerics_0.51.0   
+[10] enrichplot_1.25.0      clusterProfiler_4.13.0 edgeR_4.3.5           
+[13] limma_3.61.4           workflowr_1.7.1       
 
 loaded via a namespace (and not attached):
- [1] gtable_0.3.5      xfun_0.46         bslib_0.7.0       processx_3.8.4   
- [5] rstatix_0.7.2     lattice_0.22-6    callr_3.7.6       vctrs_0.6.5      
- [9] tools_4.4.0       ps_1.7.7          generics_0.1.3    tibble_3.2.1     
-[13] fansi_1.0.6       highr_0.11        pkgconfig_2.0.3   Matrix_1.7-0     
-[17] lifecycle_1.0.4   farver_2.1.2      compiler_4.4.0    stringr_1.5.1    
-[21] git2r_0.33.0      statmod_1.5.0     munsell_0.5.1     getPass_0.2-4    
-[25] carData_3.0-5     httpuv_1.6.15     htmltools_0.5.8.1 sass_0.4.9       
-[29] yaml_2.3.9        later_1.3.2       pillar_1.9.0      car_3.1-2        
-[33] jquerylib_0.1.4   whisker_0.4.1     tidyr_1.3.1       cachem_1.1.0     
-[37] abind_1.4-5       nlme_3.1-165      tidyselect_1.2.1  locfit_1.5-9.10  
-[41] digest_0.6.36     stringi_1.8.4     dplyr_1.1.4       purrr_1.0.2      
-[45] labeling_0.4.3    splines_4.4.0     cowplot_1.1.3     rprojroot_2.0.4  
-[49] fastmap_1.2.0     grid_4.4.0        colorspace_2.1-0  cli_3.6.3        
-[53] magrittr_2.0.3    utf8_1.2.4        broom_1.0.6       withr_3.0.0      
-[57] scales_1.3.0      promises_1.3.0    backports_1.5.0   rmarkdown_2.27   
-[61] httr_1.4.7        ggsignif_0.6.4    evaluate_0.24.0   knitr_1.48       
-[65] mgcv_1.9-1        rlang_1.1.4       Rcpp_1.0.13       glue_1.7.0       
-[69] rstudioapi_0.16.0 jsonlite_1.8.8    R6_2.5.1          fs_1.6.4         </code></pre>
+  [1] RColorBrewer_1.1-3      rstudioapi_0.16.0       jsonlite_1.8.8         
+  [4] magrittr_2.0.3          farver_2.1.2            rmarkdown_2.27         
+  [7] fs_1.6.4                zlibbioc_1.51.1         vctrs_0.6.5            
+ [10] memoise_2.0.1           ggtree_3.13.0           rstatix_0.7.2          
+ [13] htmltools_0.5.8.1       broom_1.0.6             gridGraphics_0.5-1     
+ [16] sass_0.4.9              bslib_0.7.0             plyr_1.8.9             
+ [19] cachem_1.1.0            whisker_0.4.1           igraph_2.0.3           
+ [22] lifecycle_1.0.4         pkgconfig_2.0.3         gson_0.1.0             
+ [25] Matrix_1.7-0            R6_2.5.1                fastmap_1.2.0          
+ [28] GenomeInfoDbData_1.2.12 digest_0.6.36           aplot_0.2.3            
+ [31] ggnewscale_0.5.0        colorspace_2.1-0        patchwork_1.2.0        
+ [34] ps_1.7.7                rprojroot_2.0.4         RSQLite_2.3.7          
+ [37] labeling_0.4.3          fansi_1.0.6             abind_1.4-5            
+ [40] httr_1.4.7              polyclip_1.10-6         compiler_4.4.0         
+ [43] bit64_4.0.5             withr_3.0.0             backports_1.5.0        
+ [46] BiocParallel_1.39.0     carData_3.0-5           viridis_0.6.5          
+ [49] DBI_1.2.3               highr_0.11              ggforce_0.4.2          
+ [52] ggsignif_0.6.4          MASS_7.3-61             HDO.db_0.99.1          
+ [55] tools_4.4.0             scatterpie_0.2.3        ape_5.8                
+ [58] httpuv_1.6.15           glue_1.7.0              callr_3.7.6            
+ [61] nlme_3.1-165            GOSemSim_2.31.0         promises_1.3.0         
+ [64] shadowtext_0.1.4        grid_4.4.0              getPass_0.2-4          
+ [67] reshape2_1.4.4          fgsea_1.31.0            generics_0.1.3         
+ [70] gtable_0.3.5            tidyr_1.3.1             data.table_1.15.4      
+ [73] car_3.1-2               tidygraph_1.3.1         utf8_1.2.4             
+ [76] XVector_0.45.0          ggrepel_0.9.5           pillar_1.9.0           
+ [79] stringr_1.5.1           yulab.utils_0.1.4       later_1.3.2            
+ [82] splines_4.4.0           dplyr_1.1.4             tweenr_2.0.3           
+ [85] treeio_1.29.0           lattice_0.22-6          bit_4.0.5              
+ [88] tidyselect_1.2.1        GO.db_3.19.1            locfit_1.5-9.10        
+ [91] Biostrings_2.73.1       knitr_1.48              git2r_0.33.0           
+ [94] gridExtra_2.3           xfun_0.46               graphlayouts_1.1.1     
+ [97] statmod_1.5.0           stringi_1.8.4           UCSC.utils_1.1.0       
+[100] lazyeval_0.2.2          ggfun_0.1.5             yaml_2.3.9             
+[103] evaluate_0.24.0         codetools_0.2-20        ggraph_2.2.1           
+[106] tibble_3.2.1            qvalue_2.37.0           ggplotify_0.1.2        
+[109] cli_3.6.3               munsell_0.5.1           processx_3.8.4         
+[112] jquerylib_0.1.4         Rcpp_1.0.13             GenomeInfoDb_1.41.1    
+[115] png_0.1-8               parallel_4.4.0          blob_1.2.4             
+[118] viridisLite_0.4.2       tidytree_0.4.6          ggridges_0.5.6         
+[121] scales_1.3.0            purrr_1.0.2             crayon_1.5.3           
+[124] rlang_1.1.4             cowplot_1.1.3           fastmatch_1.1-4        
+[127] KEGGREST_1.45.1        </code></pre>
+</div>
 </div>
 </div>
 
