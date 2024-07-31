@@ -114,7 +114,7 @@ top1_gse <- gseGO(geneList=gene_list,
              keyType = "ALIAS", 
              minGSSize = 3, 
              maxGSSize = 800, 
-             pvalueCutoff = 0.005, 
+             pvalueCutoff = 0.05, 
              verbose = TRUE, 
              OrgDb = org.Hs.eg.db, 
              pAdjustMethod = "none")
@@ -131,7 +131,7 @@ gse <- gseGO(geneList=gene_list,
              keyType = "ALIAS", 
              minGSSize = 3, 
              maxGSSize = 800, 
-             pvalueCutoff = 0.005, 
+             pvalueCutoff = 0.05, 
              verbose = TRUE, 
              OrgDb = org.Hs.eg.db, 
              pAdjustMethod = "none")
@@ -148,7 +148,7 @@ ca_gse <- gseGO(geneList=ca_gene_list,
              keyType = "ALIAS", 
              minGSSize = 3, 
              maxGSSize = 800, 
-             pvalueCutoff = 0.005, 
+             pvalueCutoff = 0.05, 
              verbose = TRUE, 
              OrgDb = org.Hs.eg.db, 
              pAdjustMethod = "none")
@@ -165,7 +165,7 @@ tax_gse <- gseGO(geneList=tax_gene_list,
              keyType = "ALIAS", 
              minGSSize = 3, 
              maxGSSize = 800, 
-             pvalueCutoff = 0.005, 
+             pvalueCutoff = 0.05, 
              verbose = TRUE, 
              OrgDb = org.Hs.eg.db, 
              pAdjustMethod = "none")
@@ -208,7 +208,7 @@ dotplot(tax_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')
   ggtitle("dotplot for taxanes")
 ```
 
-
+## {-}
 Comments: ----------------------------------
 
 ## Enrichment Map {.tabset}
@@ -241,6 +241,7 @@ emapplot(x, showCategory=40)+
   ggtitle("enrichment map for taxanes")
 ```
 
+## {-}
 Comments: ----------------------------------
 
 ## Category netplot {.tabset}
@@ -306,7 +307,7 @@ cnetplot(tax_gse, node_label="gene", color.params=list(category='deeppink1', gen
   ggtitle("By gene name")
 ```
 
-
+## {-}
 Comments: ----------------------------------
 
 ## Ridgeplot {.tabset}
@@ -335,6 +336,5 @@ ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 
   ggtitle("ridgeplot for taxanes")
 ```
 
-
-
+## {-}
 Comments: ----------------------------------
