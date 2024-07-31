@@ -17,10 +17,10 @@ library(enrichplot)
 library(org.Hs.eg.db)
 library(ggplot2)
 library(ggpubr)
-
 ```
 ## Overview/Notes
 Plots used for analysis: 
+
 • Dot plot:number of genes belonging to each GO-term and associated adjusted p-values  
 
 • Enrichment map: Shows overlap between genes in different GO terms
@@ -30,86 +30,81 @@ Plots used for analysis:
 • Ridge Plot: Density pltos of expression for different gene sets to determine up/downregulated pathways 
 
 ```{r, include=FALSE}
+
 #Loading data and creating design matrices for different gene sets
 countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
 sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
 counts <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
 batch <- factor(c(1,1,1,1,1,1,2,2,2,2,2,2))
 
-#TOP1 inhibitors
-#calculating avg AUC for TOP1 inhibitors
-y<- counts
-top1_auc <- cbind(sampleinfo$Irinotecan,sampleinfo$Topotecan)
-ave_auc <- rowMeans(top1_auc)
-design <- model.matrix(~batch+ave_auc)
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt', sep='\t')
+# #TOP1 inhibitors
+# #calculating avg AUC for TOP1 inhibitors
+# y<- counts
+# top1_auc <- cbind(sampleinfo$Irinotecan,sampleinfo$Topotecan)
+# ave_auc <- rowMeans(top1_auc)
+# design <- model.matrix(~batch+ave_auc)
+# #filtering to remove low counts and fitting GLMs 
+# keep <- filterByExpr(y, design = design)
+# y <- y[keep, , keep.lib.sizes=FALSE]
+# y <- calcNormFactors(y)
+# y <- estimateDisp(y, design, robust=TRUE)
+# fit <- glmFit(y, design)
+# lrt<- glmLRT(fit)
+# sig_genes <- topTags(lrt, p.value=0.05, n=500)
+# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt', sep='\t')
+# 
+# #Platinum based drugs
+# y<- counts
+# #calculating avg AUC for platinum based drugs
+# platinum_auc <- cbind(sampleinfo$Carboplatin,sampleinfo$Cisplatin)
+# platinum_auc <- cbind(platinum_auc,sampleinfo$Oxaliplatin)
+# ave_auc <- rowMeans(platinum_auc)
+# design <- model.matrix(~batch+ave_auc)
+# #filtering to remove low counts and fitting GLMs 
+# keep <- filterByExpr(y, design = design)
+# y <- y[keep, , keep.lib.sizes=FALSE]
+# y <- calcNormFactors(y)
+# y <- estimateDisp(y, design, robust=TRUE)
+# fit <- glmFit(y, design)
+# lrt<- glmLRT(fit)
+# sig_genes <- topTags(lrt, p.value=0.05, n=500)
+# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', sep='\t')
+# 
+# #Cytotoxic Antibiotics
+# y<- counts
+# #calculating avg AUC for cytotoxic antibiotics
+# cytotoxic_antibiotics <- cbind(sampleinfo$Mitomycin,sampleinfo$Doxorubicin)
+# ave_auc <- rowMeans(cytotoxic_antibiotics)
+# design <- model.matrix(~batch+ave_auc)
+# #filtering to remove low counts and fitting GLMs 
+# keep <- filterByExpr(y, design = design)
+# y <- y[keep, , keep.lib.sizes=FALSE]
+# y <- calcNormFactors(y)
+# y <- estimateDisp(y, design, robust=TRUE)
+# fit <- glmFit(y, design)
+# lrt<- glmLRT(fit, coef=3)
+# sig_genes <- topTags(lrt, p.value=0.05, n=500)
+# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', sep='\t')
+# 
+# #Taxanes
+# y<- counts
+# #calculating avg AUC for taxanes
+# taxanes <- cbind(sampleinfo$Paclitaxel,sampleinfo$Docetaxel)
+# ave_auc <- rowMeans(taxanes)
+# design <- model.matrix(~batch+ave_auc)
+# #filtering to remove low counts and fitting GLMs 
+# keep <- filterByExpr(y, design = design)
+# y <- y[keep, , keep.lib.sizes=FALSE]
+# y <- calcNormFactors(y)
+# y <- estimateDisp(y, design, robust=TRUE)
+# fit <- glmFit(y, design)
+# lrt<- glmLRT(fit, coef=3)
+# sig_genes <- topTags(lrt, p.value=0.05, n=500)
+# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', sep='\t')
 
-#Platinum based drugs
-y<- counts
-#calculating avg AUC for platinum based drugs
-platinum_auc <- cbind(sampleinfo$Carboplatin,sampleinfo$Cisplatin)
-platinum_auc <- cbind(platinum_auc,sampleinfo$Oxaliplatin)
-ave_auc <- rowMeans(platinum_auc)
-design <- model.matrix(~batch+ave_auc)
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', sep='\t')
-
-#Cytotoxic Antibiotics
-y<- counts
-#calculating avg AUC for cytotoxic antibiotics
-cytotoxic_antibiotics <- cbind(sampleinfo$Mitomycin,sampleinfo$Doxorubicin)
-ave_auc <- rowMeans(cytotoxic_antibiotics)
-design <- model.matrix(~batch+ave_auc)
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit, coef=3)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', sep='\t')
-
-#Taxanes
-y<- counts
-#calculating avg AUC for taxanes
-taxanes <- cbind(sampleinfo$Paclitaxel,sampleinfo$Docetaxel)
-ave_auc <- rowMeans(taxanes)
-design <- model.matrix(~batch+ave_auc)
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit, coef=3)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', sep='\t')
-```
-## Analysis of significantly correlated genes across TOP1 inhibitors 
-### Significant genes 
-```{r}
-#loading in data
+#Creating gsea objects
+#TOP1
 top1_sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt', header=T)
-head(top1_sig_genes)
-```
-### Preparing input 
-```{r message=FALSE, warning=FALSE}
 gene_list <- top1_sig_genes$logFC
 names(gene_list)<- top1_sig_genes$genes
 gene_list=sort(gene_list, decreasing = TRUE)
@@ -119,27 +114,139 @@ top1_gse <- gseGO(geneList=gene_list,
              keyType = "ALIAS", 
              minGSSize = 3, 
              maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
+             pvalueCutoff = 0.005, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = "none")
+
+#Platinum compounds
+plat_sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', header=T)
+head(plat_sig_genes)
+gene_list <- plat_sig_genes$logFC
+names(gene_list)<- plat_sig_genes$genes
+gene_list=sort(gene_list, decreasing = TRUE)
+
+gse <- gseGO(geneList=gene_list, 
+             ont ="ALL", 
+             keyType = "ALIAS", 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.005, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = "none")
+
+#Cytotoxic antibiotics
+cytotoxic_antibiotic_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', header=T)
+head(cytotoxic_antibiotic_genes)
+ca_gene_list <- cytotoxic_antibiotic_genes$logFC
+names(ca_gene_list)<- cytotoxic_antibiotic_genes$genes
+ca_gene_list=sort(ca_gene_list, decreasing = TRUE)
+
+ca_gse <- gseGO(geneList=ca_gene_list, 
+             ont ="ALL", 
+             keyType = "ALIAS", 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.005, 
+             verbose = TRUE, 
+             OrgDb = org.Hs.eg.db, 
+             pAdjustMethod = "none")
+
+#Taxanes
+taxane_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', header=T)
+head(taxane_genes)
+tax_gene_list <- taxane_genes$logFC
+names(tax_gene_list)<- taxane_genes$genes
+tax_gene_list=sort(tax_gene_list, decreasing = TRUE)
+
+tax_gse <- gseGO(geneList=tax_gene_list, 
+             ont ="ALL", 
+             keyType = "ALIAS", 
+             minGSSize = 3, 
+             maxGSSize = 800, 
+             pvalueCutoff = 0.005, 
              verbose = TRUE, 
              OrgDb = org.Hs.eg.db, 
              pAdjustMethod = "none")
 ```
-### DotPlot 
-```{r top1_dotplot, message=FALSE, warning=FALSE}
+## Dotplot {.tabset}
+
+### TOP1 inhibitors
+```{r, echo=FALSE}
 require(DOSE)
 dotplot(top1_gse, showCategory=8,split=".sign",label_format=50,color='p.adjust')+
   facet_grid(.~.sign) +
   theme_dose(font.size = 5)+
   ggtitle("dotplot for TOP1 inhibitors")
 ```
-### Enrichment Map
-```{r top1_enrichment_map}
+
+### Platinum compounds
+```{r, echo=FALSE}
+require(DOSE)
+dotplot(gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle("dotplot for platinum based compounds")
+```
+
+### Cytotoxic Antibiotics
+```{r, echo=FALSE}
+require(DOSE)
+dotplot(ca_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle("dotplot for cytotoxic antibiotics")
+```
+
+### Taxanes
+```{r, echo=FALSE}
+require(DOSE)
+dotplot(tax_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')+
+  facet_grid(.~.sign) +
+  theme_dose(font.size = 5)+
+  ggtitle("dotplot for taxanes")
+```
+
+
+Comments: ----------------------------------
+
+## Enrichment Map {.tabset}
+
+### TOP1 inhibitors
+```{r, echo=FALSE}
 x<- pairwise_termsim(top1_gse)
 emapplot(x,layout.params=list(layout='circle'))+
   ggtitle("enrichment map for TOP1 inhibitors")
 ```
-### Category Netplot
-```{r top1_cnetPlot}
+
+### Platinum compounds
+```{r, echo=FALSE}
+x<- pairwise_termsim(gse)
+emapplot(x, showCategory=40)+
+  ggtitle("enrichment map for platinum based compounds")
+```
+
+### Cytotoxic Antibiotics
+```{r, echo=FALSE}
+x<- pairwise_termsim(ca_gse)
+emapplot(x, showCategory=40)+
+  ggtitle("enrichment map for cytotoxic antibiotics")
+```
+
+### Taxanes
+```{r, echo=FALSE}
+x<- pairwise_termsim(tax_gse)
+emapplot(x, showCategory=40)+
+  ggtitle("enrichment map for taxanes")
+```
+
+Comments: ----------------------------------
+
+## Category netplot {.tabset}
+
+### TOP1 inhibitors
+```{r, echo=FALSE}
 cnetplot(top1_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
@@ -152,74 +259,9 @@ cnetplot(top1_gse, node_label="category", showCategory=10, color.params=list(cat
 cnetplot(top1_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
 ```
-### Ridgeplot 
-```{r top1__ridgeplot}
-ridgeplot(top1_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle("ridgeplot for TOP1 inhibitors")
-```
-## Analysis of significantly correlated genes across platinum compounds
-```{r, include=FALSE}
-#loading in count data
-countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
-sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
-y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
 
-batch <- factor(c(1,1,1,1,1,1,2,2,2,2,2,2))
-
-#calculating avg AUC for platinum based drugs
-platinum_auc <- cbind(sampleinfo$Carboplatin,sampleinfo$Cisplatin)
-platinum_auc <- cbind(platinum_auc,sampleinfo$Oxaliplatin)
-ave_auc <- rowMeans(platinum_auc)
-design <- model.matrix(~batch+ave_auc)
-
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', sep='\t')
-```
-### Significant genes 
-```{r}
-#loading in data
-plat_sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', header=T)
-head(plat_sig_genes)
-```
-### Preparing input 
-```{r message=FALSE, warning=FALSE}
-gene_list <- plat_sig_genes$logFC
-names(gene_list)<- plat_sig_genes$genes
-gene_list=sort(gene_list, decreasing = TRUE)
-
-gse <- gseGO(geneList=gene_list, 
-             ont ="ALL", 
-             keyType = "ALIAS", 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = "none")
-```
-### DotPlot 
-```{r platinum_compounds_dotplot, message=FALSE, warning=FALSE}
-require(DOSE)
-dotplot(gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle("dotplot for platinum based compounds")
-```
-### Enrichment Map
-```{r platinum_compounds_enrichment_map}
-x<- pairwise_termsim(gse)
-emapplot(x, showCategory=40)+
-  ggtitle("enrichment map for platinum based compounds")
-```
-### Category Netplot
-```{r platinum_compounds_cnetPlot}
+### Platinum compounds
+```{r, echo=FALSE}
 cnetplot(gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
@@ -231,77 +273,10 @@ cnetplot(gse, node_label="category", showCategory=10, color.params=list(category
 
 cnetplot(gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
-
-```
-### Ridgeplot 
-```{r platinum_compounds_ridgeplot}
-ridgeplot(gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle("ridgeplot for platinum based compounds")
 ```
 
-## Analysis of significantly correlated genes across cytotoxic antibiotics
-```{r, include=FALSE}
-#loading in count data
-countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
-sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
-y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
-
-batch <- factor(c(1,1,1,1,1,1,2,2,2,2,2,2))
-
-#calculating avg AUC for cytotoxic antibiotics
-cytotoxic_antibiotics <- cbind(sampleinfo$Mitomycin,sampleinfo$Doxorubicin)
-ave_auc <- rowMeans(cytotoxic_antibiotics)
-design <- model.matrix(~batch+ave_auc)
-
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit, coef=3)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', sep='\t')
-```
-### Significant genes 
-```{r}
-#loading in data
-cytotoxic_antibiotic_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', header=T)
-head(cytotoxic_antibiotic_genes)
-```
-### Preparing input 
-```{r message=FALSE, warning=FALSE}
-ca_gene_list <- cytotoxic_antibiotic_genes$logFC
-names(ca_gene_list)<- cytotoxic_antibiotic_genes$genes
-ca_gene_list=sort(ca_gene_list, decreasing = TRUE)
-
-ca_gse <- gseGO(geneList=ca_gene_list, 
-             ont ="ALL", 
-             keyType = "ALIAS", 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = "none")
-```
-### DotPlot 
-```{r cytotoxic_antibiotics_dotplot}
-require(DOSE)
-dotplot(ca_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle("dotplot for cytotoxic antibiotics")
-```
-
-### Enrichment Map
-```{r cytotoxic_antibiotics_enrichment_map}
-x<- pairwise_termsim(ca_gse)
-emapplot(x, showCategory=40)+
-  ggtitle("enrichment map for cytotoxic antibiotics")
-```
-### Category Netplot
-```{r cytotoxic_antibiotics_cnetPlot, message=FALSE, warning=FALSE}
+### Cytotoxic Antibiotics
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
 cnetplot(ca_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
@@ -315,74 +290,9 @@ cnetplot(ca_gse, node_label="gene", color.params=list(category='deeppink1', gene
   ggtitle("By gene name")
 
 ```
-### Ridgeplot 
-```{r cytotoxic_antibiotics_ridgeplot, message=FALSE, warning=FALSE}
-ridgeplot(ca_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle("ridgeplot for cytotoxic antibiotics")
-```
-## Analysis of significantly correlated genes across taxanes
-```{r, include=FALSE}
-#loading in count data
-countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
-sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
-y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
 
-batch <- factor(c(1,1,1,1,1,1,2,2,2,2,2,2))
-
-#calculating avg AUC for taxanes
-taxanes <- cbind(sampleinfo$Paclitaxel,sampleinfo$Docetaxel)
-ave_auc <- rowMeans(taxanes)
-design <- model.matrix(~batch+ave_auc)
-
-#filtering to remove low counts and fitting GLMs 
-keep <- filterByExpr(y, design = design)
-y <- y[keep, , keep.lib.sizes=FALSE]
-y <- calcNormFactors(y)
-y <- estimateDisp(y, design, robust=TRUE)
-fit <- glmFit(y, design)
-lrt<- glmLRT(fit, coef=3)
-sig_genes <- topTags(lrt, p.value=0.05, n=500)
-write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', sep='\t')
-```
-### Significant genes 
-```{r}
-#loading in data
-taxane_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', header=T)
-head(taxane_genes)
-```
-### Preparing input 
-```{r message=FALSE, warning=FALSE}
-tax_gene_list <- taxane_genes$logFC
-names(tax_gene_list)<- taxane_genes$genes
-tax_gene_list=sort(tax_gene_list, decreasing = TRUE)
-
-tax_gse <- gseGO(geneList=tax_gene_list, 
-             ont ="ALL", 
-             keyType = "ALIAS", 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = "none")
-```
-
-### DotPlot 
-```{r taxanes_dotplot}
-require(DOSE)
-dotplot(tax_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle("dotplot for taxanes")
-```
-### Enrichment Map
-```{r taxanes_enrichment_map}
-x<- pairwise_termsim(tax_gse)
-emapplot(x, showCategory=40)+
-  ggtitle("enrichment map for taxanes")
-```
-### Category Netplot
-```{r taxanes_cnetPlot, warning=FALSE}
+### Taxanes
+```{r, warning=FALSE, echo=FALSE}
 cnetplot(tax_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
   ggtitle("By p-value")
 
@@ -394,10 +304,37 @@ cnetplot(tax_gse, node_label="category", showCategory=10, color.params=list(cate
 
 cnetplot(tax_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
-
 ```
-### Ridgeplot 
-```{r taxanes_ridgeplot, warning=FALSE}
+
+
+Comments: ----------------------------------
+
+## Ridgeplot {.tabset}
+
+### TOP1 inhibitors
+```{r, echo=FALSE}
+ridgeplot(top1_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle("ridgeplot for TOP1 inhibitors")
+```
+
+### Platinum compounds
+```{r, echo=FALSE}
+ridgeplot(gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle("ridgeplot for platinum based compounds")
+```
+
+### Cytotoxic Antibiotics
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+ridgeplot(ca_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
+  ggtitle("ridgeplot for cytotoxic antibiotics")
+```
+
+### Taxanes
+```{r, warning=FALSE, echo=FALSE}
 ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
   ggtitle("ridgeplot for taxanes")
 ```
+
+
+
+Comments: ----------------------------------

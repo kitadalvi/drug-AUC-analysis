@@ -388,7 +388,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-24
+<strong>Last updated:</strong> 2024-07-26
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree73fb4f5a994194f99b95ff8232c8c74e304b09a3targetblank73fb4f5a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree204e35c8f708a33477d62b25c17e96d6bd423ac4targetblank204e35ca">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/73fb4f5a994194f99b95ff8232c8c74e304b09a3" target="_blank">73fb4f5</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/204e35c8f708a33477d62b25c17e96d6bd423ac4" target="_blank">204e35c</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree73fb4f5a994194f99b95ff8232c8c74e304b09a3targetblank73fb4f5a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree204e35c8f708a33477d62b25c17e96d6bd423ac4targetblank204e35ca"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/73fb4f5a994194f99b95ff8232c8c74e304b09a3" target="_blank">73fb4f5</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/204e35c8f708a33477d62b25c17e96d6bd423ac4" target="_blank">204e35c</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -611,6 +611,40 @@ Message
 Rmd
 </td>
 <td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/204e35c8f708a33477d62b25c17e96d6bd423ac4/analysis/gene_set_analysis.Rmd" target="_blank">204e35c</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-24
+</td>
+<td>
+Changed graph formats in GSEA
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/204e35c8f708a33477d62b25c17e96d6bd423ac4/docs/gene_set_analysis.html" target="_blank">204e35c</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-24
+</td>
+<td>
+Changed graph formats in GSEA
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
 <a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/analysis/gene_set_analysis.Rmd" target="_blank">73fb4f5</a>
 </td>
 <td>
@@ -649,8 +683,9 @@ added GSEA
 </div>
 <div id="overviewnotes" class="section level2">
 <h2>Overview/Notes</h2>
-<p>Plots used for analysis: • Dot plot:number of genes belonging to each
-GO-term and associated adjusted p-values</p>
+<p>Plots used for analysis:</p>
+<p>• Dot plot:number of genes belonging to each GO-term and associated
+adjusted p-values</p>
 <p>• Enrichment map: Shows overlap between genes in different GO
 terms</p>
 <p>• Category Net plot:Linkages of genes and biological concepts as a
@@ -658,874 +693,84 @@ network</p>
 <p>• Ridge Plot: Density pltos of expression for different gene sets to
 determine up/downregulated pathways</p>
 </div>
-<div
-id="analysis-of-significantly-correlated-genes-across-top1-inhibitors"
-class="section level2">
-<h2>Analysis of significantly correlated genes across TOP1
-inhibitors</h2>
-<div id="significant-genes" class="section level3">
-<h3>Significant genes</h3>
-<pre class="r"><code>#loading in data
-top1_sig_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt&#39;, header=T)
-head(top1_sig_genes)</code></pre>
-<pre><code>       genes      logFC    logCPM       LR       PValue          FDR
-1      ZFPM2  0.3087779 1.8306206 93.88924 3.336836e-22 5.409345e-18
-2      IGFL2 -0.1536392 1.3589416 84.83488 3.243520e-20 2.629035e-16
-3 AL157931.2  0.3432817 5.6722277 64.93880 7.726072e-16 4.174912e-12
-4 AC022596.1  0.1622893 1.3221242 54.86168 1.293179e-13 5.240931e-10
-5     NUS1P2  0.3051329 5.2650851 51.62835 6.706618e-13 2.133393e-09
-6      PALMD  0.2111364 0.3114543 51.30781 7.896094e-13 2.133393e-09</code></pre>
+<div id="dotplot" class="section level2 tabset">
+<h2 class="tabset">Dotplot</h2>
+<div id="top1-inhibitors" class="section level3">
+<h3>TOP1 inhibitors</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="preparing-input" class="section level3">
-<h3>Preparing input</h3>
-<pre class="r"><code>gene_list &lt;- top1_sig_genes$logFC
-names(gene_list)&lt;- top1_sig_genes$genes
-gene_list=sort(gene_list, decreasing = TRUE)
-
-top1_gse &lt;- gseGO(geneList=gene_list, 
-             ont =&quot;ALL&quot;, 
-             keyType = &quot;ALIAS&quot;, 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = &quot;none&quot;)</code></pre>
+<div id="platinum-compounds" class="section level3">
+<h3>Platinum compounds</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="dotplot" class="section level3">
-<h3>DotPlot</h3>
-<pre class="r"><code>require(DOSE)
-dotplot(top1_gse, showCategory=8,split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle(&quot;dotplot for TOP1 inhibitors&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1_dotplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-top1_dotplot-1">
-Past versions of top1_dotplot-1.png
-</button>
-</p>
-<div id="fig-top1_dotplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/top1_dotplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
+<div id="cytotoxic-antibiotics" class="section level3">
+<h3>Cytotoxic Antibiotics</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="taxanes" class="section level3">
+<h3>Taxanes</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comments: ———————————-</p>
 </div>
 </div>
+<div id="enrichment-map" class="section level2 tabset">
+<h2 class="tabset">Enrichment Map</h2>
+<div id="top1-inhibitors-1" class="section level3">
+<h3>TOP1 inhibitors</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="enrichment-map" class="section level3">
-<h3>Enrichment Map</h3>
-<pre class="r"><code>x&lt;- pairwise_termsim(top1_gse)
-emapplot(x,layout.params=list(layout=&#39;circle&#39;))+
-  ggtitle(&quot;enrichment map for TOP1 inhibitors&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1_enrichment_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-top1_enrichment_map-1">
-Past versions of top1_enrichment_map-1.png
-</button>
-</p>
-<div id="fig-top1_enrichment_map-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/top1_enrichment_map-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
+<div id="platinum-compounds-1" class="section level3">
+<h3>Platinum compounds</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="cytotoxic-antibiotics-1" class="section level3">
+<h3>Cytotoxic Antibiotics</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="taxanes-1" class="section level3">
+<h3>Taxanes</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comments: ———————————-</p>
 </div>
 </div>
+<div id="category-netplot" class="section level2 tabset">
+<h2 class="tabset">Category netplot</h2>
+<div id="top1-inhibitors-2" class="section level3">
+<h3>TOP1 inhibitors</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-<div id="category-netplot" class="section level3">
-<h3>Category Netplot</h3>
-<pre class="r"><code>cnetplot(top1_gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
-  ggtitle(&quot;By p-value&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1_cnetPlot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-top1_cnetPlot-1">
-Past versions of top1_cnetPlot-1.png
-</button>
-</p>
-<div id="fig-top1_cnetPlot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/top1_cnetPlot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
+<div id="platinum-compounds-2" class="section level3">
+<h3>Platinum compounds</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="cytotoxic-antibiotics-2" class="section level3">
+<h3>Cytotoxic Antibiotics</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /></p>
+</div>
+<div id="taxanes-2" class="section level3">
+<h3>Taxanes</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comments: ———————————-</p>
 </div>
 </div>
-<pre class="r"><code>cnetplot(top1_gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By both gene category and name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1_cnetPlot-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(top1_gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
-  ggtitle(&quot;By gene category&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1_cnetPlot-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(top1_gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By gene name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1_cnetPlot-4.png" width="672" style="display: block; margin: auto;" />
-### Ridgeplot</p>
-<pre class="r"><code>ridgeplot(top1_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle(&quot;ridgeplot for TOP1 inhibitors&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/top1__ridgeplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-top1__ridgeplot-1">
-Past versions of top1__ridgeplot-1.png
-</button>
-</p>
-<div id="fig-top1__ridgeplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/top1__ridgeplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
+<div id="ridgeplot" class="section level2 tabset">
+<h2 class="tabset">Ridgeplot</h2>
+<div id="top1-inhibitors-3" class="section level3">
+<h3>TOP1 inhibitors</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="platinum-compounds-3" class="section level3">
+<h3>Platinum compounds</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
+<div id="cytotoxic-antibiotics-3" class="section level3">
+<h3>Cytotoxic Antibiotics</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
 </div>
-</div>
-<div
-id="analysis-of-significantly-correlated-genes-across-platinum-compounds"
-class="section level2">
-<h2>Analysis of significantly correlated genes across platinum
-compounds</h2>
-<div id="significant-genes-1" class="section level3">
-<h3>Significant genes</h3>
-<pre class="r"><code>#loading in data
-plat_sig_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt&#39;, header=T)
-head(plat_sig_genes)</code></pre>
-<pre><code>    genes      logFC    logCPM        LR       PValue          FDR
-1  CCDC43 0.02505341  5.762231 191.66636 1.375972e-43 2.230589e-39
-2 GPATCH8 0.02323835  8.024142 171.65390 3.220680e-39 2.610522e-35
-3    ACLY 0.02568084 10.161320 131.18368 2.257231e-30 1.219732e-26
-4 RASL11A 0.03333610  3.321720 120.21007 5.690421e-28 2.306185e-24
-5 C5orf17 0.04955097  2.232800  97.14530 6.442195e-23 2.088688e-19
-6  EFTUD2 0.01855204  7.721094  85.32133 2.536121e-20 6.852175e-17</code></pre>
-</div>
-<div id="preparing-input-1" class="section level3">
-<h3>Preparing input</h3>
-<pre class="r"><code>gene_list &lt;- plat_sig_genes$logFC
-names(gene_list)&lt;- plat_sig_genes$genes
-gene_list=sort(gene_list, decreasing = TRUE)
-
-gse &lt;- gseGO(geneList=gene_list, 
-             ont =&quot;ALL&quot;, 
-             keyType = &quot;ALIAS&quot;, 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = &quot;none&quot;)</code></pre>
-</div>
-<div id="dotplot-1" class="section level3">
-<h3>DotPlot</h3>
-<pre class="r"><code>require(DOSE)
-dotplot(gse, showCategory=8, split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle(&quot;dotplot for platinum based compounds&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_dotplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-platinum_compounds_dotplot-1">
-Past versions of platinum_compounds_dotplot-1.png
-</button>
-</p>
-<div id="fig-platinum_compounds_dotplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/platinum_compounds_dotplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="enrichment-map-1" class="section level3">
-<h3>Enrichment Map</h3>
-<pre class="r"><code>x&lt;- pairwise_termsim(gse)
-emapplot(x, showCategory=40)+
-  ggtitle(&quot;enrichment map for platinum based compounds&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_enrichment_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-platinum_compounds_enrichment_map-1">
-Past versions of platinum_compounds_enrichment_map-1.png
-</button>
-</p>
-<div id="fig-platinum_compounds_enrichment_map-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/platinum_compounds_enrichment_map-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="category-netplot-1" class="section level3">
-<h3>Category Netplot</h3>
-<pre class="r"><code>cnetplot(gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
-  ggtitle(&quot;By p-value&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_cnetPlot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-platinum_compounds_cnetPlot-1">
-Past versions of platinum_compounds_cnetPlot-1.png
-</button>
-</p>
-<div id="fig-platinum_compounds_cnetPlot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/platinum_compounds_cnetPlot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cnetplot(gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By both gene category and name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_cnetPlot-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
-  ggtitle(&quot;By gene category&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_cnetPlot-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By gene name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_cnetPlot-4.png" width="672" style="display: block; margin: auto;" />
-### Ridgeplot</p>
-<pre class="r"><code>ridgeplot(gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle(&quot;ridgeplot for platinum based compounds&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/platinum_compounds_ridgeplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-platinum_compounds_ridgeplot-1">
-Past versions of platinum_compounds_ridgeplot-1.png
-</button>
-</p>
-<div id="fig-platinum_compounds_ridgeplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/platinum_compounds_ridgeplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div
-id="analysis-of-significantly-correlated-genes-across-cytotoxic-antibiotics"
-class="section level2">
-<h2>Analysis of significantly correlated genes across cytotoxic
-antibiotics</h2>
-<div id="significant-genes-2" class="section level3">
-<h3>Significant genes</h3>
-<pre class="r"><code>#loading in data
-cytotoxic_antibiotic_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt&#39;, header=T)
-head(cytotoxic_antibiotic_genes)</code></pre>
-<pre><code>    genes       logFC   logCPM       LR       PValue          FDR
-1   IGFL2 -0.11638406 1.359505 65.23729 6.640095e-16 1.076426e-11
-2   MYO3A  0.11501729 1.058253 57.43266 3.497516e-14 2.834911e-10
-3  LRRTM1  0.07617468 3.212449 39.62463 3.077765e-10 1.663122e-06
-4    LHFP  0.08038259 0.865455 38.56613 5.292950e-10 2.145100e-06
-5 SNORD3A -0.05365899 4.851899 31.96733 1.567876e-08 5.083367e-05
-6    ISL1  0.04426481 2.973359 30.65544 3.081615e-08 8.326010e-05</code></pre>
-</div>
-<div id="preparing-input-2" class="section level3">
-<h3>Preparing input</h3>
-<pre class="r"><code>ca_gene_list &lt;- cytotoxic_antibiotic_genes$logFC
-names(ca_gene_list)&lt;- cytotoxic_antibiotic_genes$genes
-ca_gene_list=sort(ca_gene_list, decreasing = TRUE)
-
-ca_gse &lt;- gseGO(geneList=ca_gene_list, 
-             ont =&quot;ALL&quot;, 
-             keyType = &quot;ALIAS&quot;, 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = &quot;none&quot;)</code></pre>
-</div>
-<div id="dotplot-2" class="section level3">
-<h3>DotPlot</h3>
-<pre class="r"><code>require(DOSE)
-dotplot(ca_gse, showCategory=8, split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle(&quot;dotplot for cytotoxic antibiotics&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_dotplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cytotoxic_antibiotics_dotplot-1">
-Past versions of cytotoxic_antibiotics_dotplot-1.png
-</button>
-</p>
-<div id="fig-cytotoxic_antibiotics_dotplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_dotplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="enrichment-map-2" class="section level3">
-<h3>Enrichment Map</h3>
-<pre class="r"><code>x&lt;- pairwise_termsim(ca_gse)
-emapplot(x, showCategory=40)+
-  ggtitle(&quot;enrichment map for cytotoxic antibiotics&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_enrichment_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cytotoxic_antibiotics_enrichment_map-1">
-Past versions of cytotoxic_antibiotics_enrichment_map-1.png
-</button>
-</p>
-<div id="fig-cytotoxic_antibiotics_enrichment_map-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_enrichment_map-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="category-netplot-2" class="section level3">
-<h3>Category Netplot</h3>
-<pre class="r"><code>cnetplot(ca_gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
-  ggtitle(&quot;By p-value&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_cnetPlot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cytotoxic_antibiotics_cnetPlot-1">
-Past versions of cytotoxic_antibiotics_cnetPlot-1.png
-</button>
-</p>
-<div id="fig-cytotoxic_antibiotics_cnetPlot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_cnetPlot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cnetplot(ca_gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By both gene category and name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_cnetPlot-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(ca_gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
-  ggtitle(&quot;By gene category&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_cnetPlot-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(ca_gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By gene name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_cnetPlot-4.png" width="672" style="display: block; margin: auto;" />
-### Ridgeplot</p>
-<pre class="r"><code>ridgeplot(ca_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle(&quot;ridgeplot for cytotoxic antibiotics&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_ridgeplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-cytotoxic_antibiotics_ridgeplot-1">
-Past versions of cytotoxic_antibiotics_ridgeplot-1.png
-</button>
-</p>
-<div id="fig-cytotoxic_antibiotics_ridgeplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/cytotoxic_antibiotics_ridgeplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div id="analysis-of-significantly-correlated-genes-across-taxanes"
-class="section level2">
-<h2>Analysis of significantly correlated genes across taxanes</h2>
-<div id="significant-genes-3" class="section level3">
-<h3>Significant genes</h3>
-<pre class="r"><code>#loading in data
-taxane_genes &lt;- read.delim(&#39;/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt&#39;, header=T)
-head(taxane_genes)</code></pre>
-<pre><code>       genes      logFC    logCPM       LR       PValue          FDR
-1      ZFPM2  0.2675151 1.8304000 88.93729 4.075282e-21 6.606440e-17
-2      ENPEP -0.1855867 0.4347222 78.90367 6.521340e-19 5.285872e-15
-3 AC022389.1  0.2022841 2.2686059 61.91165 3.592185e-15 1.941097e-11
-4 AC022596.1  0.1349096 1.3218233 53.27907 2.893726e-13 1.172755e-09
-5      CCDC8  0.1425379 2.2724972 48.38518 3.502048e-12 1.135434e-08
-6    COL12A1  0.1200130 3.7930005 44.98151 1.989039e-11 5.374051e-08</code></pre>
-</div>
-<div id="preparing-input-3" class="section level3">
-<h3>Preparing input</h3>
-<pre class="r"><code>tax_gene_list &lt;- taxane_genes$logFC
-names(tax_gene_list)&lt;- taxane_genes$genes
-tax_gene_list=sort(tax_gene_list, decreasing = TRUE)
-
-tax_gse &lt;- gseGO(geneList=tax_gene_list, 
-             ont =&quot;ALL&quot;, 
-             keyType = &quot;ALIAS&quot;, 
-             minGSSize = 3, 
-             maxGSSize = 800, 
-             pvalueCutoff = 0.05, 
-             verbose = TRUE, 
-             OrgDb = org.Hs.eg.db, 
-             pAdjustMethod = &quot;none&quot;)</code></pre>
-</div>
-<div id="dotplot-3" class="section level3">
-<h3>DotPlot</h3>
-<pre class="r"><code>require(DOSE)
-dotplot(tax_gse, showCategory=8, split=&quot;.sign&quot;,label_format=50,color=&#39;p.adjust&#39;)+
-  facet_grid(.~.sign) +
-  theme_dose(font.size = 5)+
-  ggtitle(&quot;dotplot for taxanes&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_dotplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-taxanes_dotplot-1">
-Past versions of taxanes_dotplot-1.png
-</button>
-</p>
-<div id="fig-taxanes_dotplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/taxanes_dotplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="enrichment-map-3" class="section level3">
-<h3>Enrichment Map</h3>
-<pre class="r"><code>x&lt;- pairwise_termsim(tax_gse)
-emapplot(x, showCategory=40)+
-  ggtitle(&quot;enrichment map for taxanes&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_enrichment_map-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-taxanes_enrichment_map-1">
-Past versions of taxanes_enrichment_map-1.png
-</button>
-</p>
-<div id="fig-taxanes_enrichment_map-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/taxanes_enrichment_map-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-<div id="category-netplot-3" class="section level3">
-<h3>Category Netplot</h3>
-<pre class="r"><code>cnetplot(tax_gse, categorySize=&quot;pvalue&quot;, color.params=list(foldChange=gene_list,category=&#39;deeppink1&#39;))+
-  ggtitle(&quot;By p-value&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_cnetPlot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-taxanes_cnetPlot-1">
-Past versions of taxanes_cnetPlot-1.png
-</button>
-</p>
-<div id="fig-taxanes_cnetPlot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/taxanes_cnetPlot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<pre class="r"><code>cnetplot(tax_gse, node_label=&quot;all&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By both gene category and name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_cnetPlot-2.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(tax_gse, node_label=&quot;category&quot;, showCategory=10, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;))+
-  ggtitle(&quot;By gene category&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_cnetPlot-3.png" width="672" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>cnetplot(tax_gse, node_label=&quot;gene&quot;, color.params=list(category=&#39;deeppink1&#39;, gene=&#39;darkmagenta&#39;), showCategory=10)+
-  ggtitle(&quot;By gene name&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_cnetPlot-4.png" width="672" style="display: block; margin: auto;" />
-### Ridgeplot</p>
-<pre class="r"><code>ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 5)+
-  ggtitle(&quot;ridgeplot for taxanes&quot;)</code></pre>
-<p><img src="figure/gene_set_analysis.Rmd/taxanes_ridgeplot-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-taxanes_ridgeplot-1">
-Past versions of taxanes_ridgeplot-1.png
-</button>
-</p>
-<div id="fig-taxanes_ridgeplot-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/73fb4f5a994194f99b95ff8232c8c74e304b09a3/docs/figure/gene_set_analysis.Rmd/taxanes_ridgeplot-1.png" target="_blank">73fb4f5</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-07-24
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+<div id="taxanes-3" class="section level3">
+<h3>Taxanes</h3>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>Comments: ———————————-</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
