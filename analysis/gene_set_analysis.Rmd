@@ -17,6 +17,7 @@ library(enrichplot)
 library(org.Hs.eg.db)
 library(ggplot2)
 library(ggpubr)
+library(fgsea)
 ```
 ## Overview/Notes
 Plots used for analysis: 
@@ -312,10 +313,12 @@ ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 
 ## {-}
 Comments: logFC shown in ridge plots are all significant (p<0.05) for all drugs except cytotoxic antibiotics (of which no pathway shows statistical significance). 
 
-For TOP1 inhibitors:
+## Ranked gene set analysis using FGSEA
 
+```{r}
+fgseaRes <- fgsea(pathways = examplePathways, 
+                  stats    = exampleRanks,
+                  minSize  = 15,
+                  maxSize  = 500)
+```
 
-For platinum based compounds:
-
-
-For taxanes:
