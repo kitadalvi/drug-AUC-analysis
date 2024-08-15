@@ -388,7 +388,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-07-26
+<strong>Last updated:</strong> 2024-08-12
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -522,15 +522,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree204e35c8f708a33477d62b25c17e96d6bd423ac4targetblank204e35ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreec7b5082631b6db17c7f71f0f87eca8b9d591364atargetblankc7b5082a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/204e35c8f708a33477d62b25c17e96d6bd423ac4" target="_blank">204e35c</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/c7b5082631b6db17c7f71f0f87eca8b9d591364a" target="_blank">c7b5082</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree204e35c8f708a33477d62b25c17e96d6bd423ac4targetblank204e35ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreec7b5082631b6db17c7f71f0f87eca8b9d591364atargetblankc7b5082a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -540,7 +540,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/204e35c8f708a33477d62b25c17e96d6bd423ac4" target="_blank">204e35c</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/c7b5082631b6db17c7f71f0f87eca8b9d591364a" target="_blank">c7b5082</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -559,8 +559,12 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
 
+Untracked files:
+    Untracked:  Olverall_Summary.Rmd
+
 Unstaged changes:
     Modified:   analysis/gene_set_analysis.Rmd
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -606,6 +610,57 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/c7b5082631b6db17c7f71f0f87eca8b9d591364a/analysis/gene_set_analysis.Rmd" target="_blank">c7b5082</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+<td>
+Update gene_set_analysis.Rmd
+</td>
+</tr>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/analysis/gene_set_analysis.Rmd" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+<td>
+GSEA plots complete
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/gene_set_analysis.html" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+<td>
+GSEA plots complete
+</td>
+</tr>
 <tr>
 <td>
 Rmd
@@ -684,13 +739,13 @@ added GSEA
 <div id="overviewnotes" class="section level2">
 <h2>Overview/Notes</h2>
 <p>Plots used for analysis:</p>
-<p>• Dot plot:number of genes belonging to each GO-term and associated
+<p>• Dot plot: number of genes belonging to each GO-term and associated
 adjusted p-values</p>
 <p>• Enrichment map: Shows overlap between genes in different GO
 terms</p>
 <p>• Category Net plot:Linkages of genes and biological concepts as a
 network</p>
-<p>• Ridge Plot: Density pltos of expression for different gene sets to
+<p>• Ridge Plot: Density plots of expression for different gene sets to
 determine up/downregulated pathways</p>
 </div>
 <div id="dotplot" class="section level2 tabset">
@@ -698,59 +753,664 @@ determine up/downregulated pathways</p>
 <div id="top1-inhibitors" class="section level3">
 <h3>TOP1 inhibitors</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-2-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-2-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="platinum-compounds" class="section level3">
 <h3>Platinum compounds</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-3-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-3-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cytotoxic-antibiotics" class="section level3">
 <h3>Cytotoxic Antibiotics</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-4-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-4-1">
+Past versions of unnamed-chunk-4-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-4-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-4-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="taxanes" class="section level3">
 <h3>Taxanes</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Comments: ———————————-</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-5-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
 </div>
+</div>
+</div>
+</div>
+<div id="section" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p>Comments: Gene sets for different drug groups are generally quite
+different with minimal overlap. Genes identified for TOP1 inhibitors
+seem to be involved in cell cycle processes and ion channel activity.
+Pathways altered in chemotherapy resistance for platinum based compounds
+relate to regulating DNA/RNA binding activity and ion
+transport.Catabolic and cellular processes and pathways relating to the
+golgi lumen and vesicle activity were identified for cytotoxic
+antibiotics. Taxane resistance was associated with altered expression of
+genes related to molecular function and filament processes.</p>
 </div>
 <div id="enrichment-map" class="section level2 tabset">
 <h2 class="tabset">Enrichment Map</h2>
 <div id="top1-inhibitors-1" class="section level3">
 <h3>TOP1 inhibitors</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-6-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="platinum-compounds-1" class="section level3">
 <h3>Platinum compounds</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-7-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cytotoxic-antibiotics-1" class="section level3">
 <h3>Cytotoxic Antibiotics</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-8-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-8-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="taxanes-1" class="section level3">
 <h3>Taxanes</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-9-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Comments: ———————————-</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-9-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="category-netplot" class="section level2 tabset">
 <h2 class="tabset">Category netplot</h2>
 <div id="top1-inhibitors-2" class="section level3">
 <h3>TOP1 inhibitors</h3>
-<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-10-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-10-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-2">
+Past versions of unnamed-chunk-10-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-10-2.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="platinum-compounds-2" class="section level3">
 <h3>Platinum compounds</h3>
-<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-11-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-11-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-2">
+Past versions of unnamed-chunk-11-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-11-2.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cytotoxic-antibiotics-2" class="section level3">
 <h3>Cytotoxic Antibiotics</h3>
-<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-4.png" width="672" style="display: block; margin: auto;" /></p>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-12-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-12-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-2">
+Past versions of unnamed-chunk-12-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-12-2.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="taxanes-2" class="section level3">
 <h3>Taxanes</h3>
-<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-3.png" width="672" style="display: block; margin: auto;" /><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-4.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Comments: ———————————-</p>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-13-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-13-2.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-2">
+Past versions of unnamed-chunk-13-2.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-2" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-13-2.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 <div id="ridgeplot" class="section level2 tabset">
@@ -758,19 +1418,176 @@ determine up/downregulated pathways</p>
 <div id="top1-inhibitors-3" class="section level3">
 <h3>TOP1 inhibitors</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-14-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-14-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="platinum-compounds-3" class="section level3">
 <h3>Platinum compounds</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-15-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-15-1">
+Past versions of unnamed-chunk-15-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-15-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-15-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cytotoxic-antibiotics-3" class="section level3">
 <h3>Cytotoxic Antibiotics</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-16-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-16-1">
+Past versions of unnamed-chunk-16-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-16-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-16-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="taxanes-3" class="section level3">
 <h3>Taxanes</h3>
 <p><img src="figure/gene_set_analysis.Rmd/unnamed-chunk-17-1.png" width="672" style="display: block; margin: auto;" /></p>
-<p>Comments: ———————————-</p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-17-1">
+Past versions of unnamed-chunk-17-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-17-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/8639f1aafb9fc52519d80f67e97882a8300f1e68/docs/figure/gene_set_analysis.Rmd/unnamed-chunk-17-1.png" target="_blank">8639f1a</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-07-31
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div id="section-1" class="section level2 unnumbered">
+<h2 class="unnumbered"></h2>
+<p>Comments: logFC shown in ridge plots are all significant (p&lt;0.05)
+for all drugs except cytotoxic antibiotics (of which no pathway shows
+statistical significance).</p>
+<p>For TOP1 inhibitors:</p>
+<p>For platinum based compounds:</p>
+<p>For taxanes:</p>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -802,8 +1619,8 @@ other attached packages:
  [1] DOSE_3.31.2            ggpubr_0.6.0           ggplot2_3.5.1         
  [4] org.Hs.eg.db_3.19.1    AnnotationDbi_1.67.0   IRanges_2.39.2        
  [7] S4Vectors_0.43.2       Biobase_2.65.0         BiocGenerics_0.51.0   
-[10] enrichplot_1.25.0      clusterProfiler_4.13.0 edgeR_4.3.5           
-[13] limma_3.61.4           workflowr_1.7.1       
+[10] enrichplot_1.25.0      clusterProfiler_4.13.0 edgeR_4.3.7           
+[13] limma_3.61.7           workflowr_1.7.1       
 
 loaded via a namespace (and not attached):
   [1] RColorBrewer_1.1-3      rstudioapi_0.16.0       jsonlite_1.8.8         
@@ -811,16 +1628,16 @@ loaded via a namespace (and not attached):
   [7] fs_1.6.4                zlibbioc_1.51.1         vctrs_0.6.5            
  [10] memoise_2.0.1           ggtree_3.13.0           rstatix_0.7.2          
  [13] htmltools_0.5.8.1       broom_1.0.6             gridGraphics_0.5-1     
- [16] sass_0.4.9              bslib_0.7.0             plyr_1.8.9             
+ [16] sass_0.4.9              bslib_0.8.0             plyr_1.8.9             
  [19] cachem_1.1.0            whisker_0.4.1           igraph_2.0.3           
  [22] lifecycle_1.0.4         pkgconfig_2.0.3         gson_0.1.0             
  [25] Matrix_1.7-0            R6_2.5.1                fastmap_1.2.0          
  [28] GenomeInfoDbData_1.2.12 digest_0.6.36           aplot_0.2.3            
- [31] ggnewscale_0.5.0        colorspace_2.1-0        patchwork_1.2.0        
+ [31] ggnewscale_0.5.0        colorspace_2.1-1        patchwork_1.2.0        
  [34] ps_1.7.7                rprojroot_2.0.4         RSQLite_2.3.7          
  [37] labeling_0.4.3          fansi_1.0.6             abind_1.4-5            
- [40] httr_1.4.7              polyclip_1.10-6         compiler_4.4.0         
- [43] bit64_4.0.5             withr_3.0.0             backports_1.5.0        
+ [40] httr_1.4.7              polyclip_1.10-7         compiler_4.4.0         
+ [43] bit64_4.0.5             withr_3.0.1             backports_1.5.0        
  [46] BiocParallel_1.39.0     carData_3.0-5           viridis_0.6.5          
  [49] DBI_1.2.3               highr_0.11              ggforce_0.4.2          
  [52] ggsignif_0.6.4          MASS_7.3-61             HDO.db_0.99.1          
@@ -832,14 +1649,14 @@ loaded via a namespace (and not attached):
  [70] gtable_0.3.5            tidyr_1.3.1             data.table_1.15.4      
  [73] car_3.1-2               tidygraph_1.3.1         utf8_1.2.4             
  [76] XVector_0.45.0          ggrepel_0.9.5           pillar_1.9.0           
- [79] stringr_1.5.1           yulab.utils_0.1.4       later_1.3.2            
+ [79] stringr_1.5.1           yulab.utils_0.1.5       later_1.3.2            
  [82] splines_4.4.0           dplyr_1.1.4             tweenr_2.0.3           
  [85] treeio_1.29.0           lattice_0.22-6          bit_4.0.5              
  [88] tidyselect_1.2.1        GO.db_3.19.1            locfit_1.5-9.10        
  [91] Biostrings_2.73.1       knitr_1.48              git2r_0.33.0           
  [94] gridExtra_2.3           xfun_0.46               graphlayouts_1.1.1     
  [97] statmod_1.5.0           stringi_1.8.4           UCSC.utils_1.1.0       
-[100] lazyeval_0.2.2          ggfun_0.1.5             yaml_2.3.9             
+[100] lazyeval_0.2.2          ggfun_0.1.5             yaml_2.3.10            
 [103] evaluate_0.24.0         codetools_0.2-20        ggraph_2.2.1           
 [106] tibble_3.2.1            qvalue_2.37.0           ggplotify_0.1.2        
 [109] cli_3.6.3               munsell_0.5.1           processx_3.8.4         
@@ -849,7 +1666,6 @@ loaded via a namespace (and not attached):
 [121] scales_1.3.0            purrr_1.0.2             crayon_1.5.3           
 [124] rlang_1.1.4             cowplot_1.1.3           fastmatch_1.1-4        
 [127] KEGGREST_1.45.1        </code></pre>
-</div>
 </div>
 </div>
 

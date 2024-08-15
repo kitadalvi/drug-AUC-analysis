@@ -21,13 +21,13 @@ library(ggpubr)
 ## Overview/Notes
 Plots used for analysis: 
 
-• Dot plot:number of genes belonging to each GO-term and associated adjusted p-values  
+• Dot plot: number of genes belonging to each GO-term and associated adjusted p-values  
 
 • Enrichment map: Shows overlap between genes in different GO terms
 
 • Category Net plot:Linkages of genes and biological concepts as a network
 
-• Ridge Plot: Density pltos of expression for different gene sets to determine up/downregulated pathways 
+• Ridge Plot: Density plots of expression for different gene sets to determine up/downregulated pathways 
 
 ```{r, include=FALSE}
 
@@ -209,7 +209,7 @@ dotplot(tax_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')
 ```
 
 ## {-}
-Comments: ----------------------------------
+Comments: Gene sets for different drug groups are generally quite different with minimal overlap. Genes identified for TOP1 inhibitors seem to be involved in cell cycle processes and ion channel activity. Pathways altered in chemotherapy resistance for platinum based compounds relate to regulating DNA/RNA binding activity and ion transport.Catabolic and cellular processes and pathways relating to the golgi lumen and vesicle activity were identified for cytotoxic antibiotics. Taxane resistance was associated with altered expression of genes related to molecular function and filament processes.  
 
 ## Enrichment Map {.tabset}
 
@@ -223,7 +223,7 @@ emapplot(x,layout.params=list(layout='circle'))+
 ### Platinum compounds
 ```{r, echo=FALSE}
 x<- pairwise_termsim(gse)
-emapplot(x, showCategory=40)+
+emapplot(x, showCategory=20,layout.params=list(layout='circle'))+
   ggtitle("enrichment map for platinum based compounds")
 ```
 
@@ -241,18 +241,10 @@ emapplot(x, showCategory=40)+
   ggtitle("enrichment map for taxanes")
 ```
 
-## {-}
-Comments: ----------------------------------
-
 ## Category netplot {.tabset}
 
 ### TOP1 inhibitors
 ```{r, echo=FALSE}
-cnetplot(top1_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
-  ggtitle("By p-value")
-
-cnetplot(top1_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
-  ggtitle("By both gene category and name")
 
 cnetplot(top1_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
@@ -263,12 +255,6 @@ cnetplot(top1_gse, node_label="gene", color.params=list(category='deeppink1', ge
 
 ### Platinum compounds
 ```{r, echo=FALSE}
-cnetplot(gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
-  ggtitle("By p-value")
-
-cnetplot(gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
-  ggtitle("By both gene category and name")
-
 cnetplot(gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
 
@@ -278,11 +264,6 @@ cnetplot(gse, node_label="gene", color.params=list(category='deeppink1', gene='d
 
 ### Cytotoxic Antibiotics
 ```{r, message=FALSE, warning=FALSE, echo=FALSE}
-cnetplot(ca_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
-  ggtitle("By p-value")
-
-cnetplot(ca_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
-  ggtitle("By both gene category and name")
 
 cnetplot(ca_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
@@ -294,11 +275,6 @@ cnetplot(ca_gse, node_label="gene", color.params=list(category='deeppink1', gene
 
 ### Taxanes
 ```{r, warning=FALSE, echo=FALSE}
-cnetplot(tax_gse, categorySize="pvalue", color.params=list(foldChange=gene_list,category='deeppink1'))+
-  ggtitle("By p-value")
-
-cnetplot(tax_gse, node_label="all", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
-  ggtitle("By both gene category and name")
 
 cnetplot(tax_gse, node_label="category", showCategory=10, color.params=list(category='deeppink1', gene='darkmagenta'))+
   ggtitle("By gene category")
@@ -306,9 +282,6 @@ cnetplot(tax_gse, node_label="category", showCategory=10, color.params=list(cate
 cnetplot(tax_gse, node_label="gene", color.params=list(category='deeppink1', gene='darkmagenta'), showCategory=10)+
   ggtitle("By gene name")
 ```
-
-## {-}
-Comments: ----------------------------------
 
 ## Ridgeplot {.tabset}
 
@@ -337,4 +310,12 @@ ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 
 ```
 
 ## {-}
-Comments: ----------------------------------
+Comments: logFC shown in ridge plots are all significant (p<0.05) for all drugs except cytotoxic antibiotics (of which no pathway shows statistical significance). 
+
+For TOP1 inhibitors:
+
+
+For platinum based compounds:
+
+
+For taxanes:
