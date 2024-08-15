@@ -1,5 +1,5 @@
 ---
-title: "Summary for Olivia"
+title: "Summary od Results"
 output: html_document
 date: "2024-08-09"
 ---
@@ -112,6 +112,7 @@ datatable(a)
 print("Summary of differentially expressed genes between organoid and tumour samples:")
 
 is.de <- decideTests(res)
+summary(is.de)
 
 logCPM <- cpm(y, prior.count=2, log=TRUE)
 rownames(logCPM) <- y$genes$genes
