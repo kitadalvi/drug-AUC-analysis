@@ -351,7 +351,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="updated_DrugAUC.html">Correlation Analysis</a>
+      <a href="Updated_DrugAUC.html">Correlation Analysis</a>
     </li>
     <li>
       <a href="gene_set_analysis.html">Gene Set Enrichment</a>
@@ -385,7 +385,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
+workflowr <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -396,8 +396,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> </a>
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
+</a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -410,9 +410,9 @@ aria-hidden="true"></span> </a>
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 1
+aria-hidden="true"></span> 0
 </p>
 <p>
 <strong>Knit directory:</strong> <code>drug-AUC-analysis/</code> <span
@@ -435,21 +435,18 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
-<span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
-changes </a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
+<span class="glyphicon glyphicon-ok text-success"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
+</a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguncommittedchanges"
+<div id="strongRMarkdownfilestronguptodate"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
-<code>wflow_publish</code> to commit the R Markdown file and build the
-HTML.</p>
+<p>Great! Since the R Markdown file has been committed to the Git
+repository, you know the exact version of the code that produced these
+results.</p>
 </div>
 </div>
 </div>
@@ -540,15 +537,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreea4fa2c9a5b9f2d727e62d6885f07f8c49d92efd6targetblanka4fa2c9a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree67e77120ce7816fc4bb9736c330177f9a43084d7targetblank67e7712a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/a4fa2c9a5b9f2d727e62d6885f07f8c49d92efd6" target="_blank">a4fa2c9</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/67e77120ce7816fc4bb9736c330177f9a43084d7" target="_blank">67e7712</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreea4fa2c9a5b9f2d727e62d6885f07f8c49d92efd6targetblanka4fa2c9a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree67e77120ce7816fc4bb9736c330177f9a43084d7targetblank67e7712a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -558,7 +555,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/a4fa2c9a5b9f2d727e62d6885f07f8c49d92efd6" target="_blank">a4fa2c9</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/67e77120ce7816fc4bb9736c330177f9a43084d7" target="_blank">67e7712</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -576,14 +573,9 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
-    Ignored:    analysis/figure/
-
-Untracked files:
-    Untracked:  analysis/Updated_DrugAUC.Rmd
 
 Unstaged changes:
     Modified:   analysis/_site.yml
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -598,10 +590,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/Updated_DrugAUC.Rmd</code>) and
+HTML (<code>docs/Updated_DrugAUC.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/analysis/Updated_DrugAUC.Rmd" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+<td>
+updated AUC analysis
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/Updated_DrugAUC.html" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+<td>
+updated AUC analysis
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -678,9 +734,85 @@ head(sampleinfo)</code></pre>
 <pre><code>keep
 FALSE  TRUE 
 21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-2-1.png" width="2880" style="display: block; margin: auto;" />
-### MDS plots
-<img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-3-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-2-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-2-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div id="mds-plots" class="section level3">
+<h3>MDS plots</h3>
+<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-3-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-3-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="correlation-analysis" class="section level3 tabset">
 <h3 class="tabset">Correlation Analysis</h3>
@@ -690,6 +822,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-5-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-5-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="irinotecan" class="section level4">
 <h4>Irinotecan</h4>
@@ -697,6 +866,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-6-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-6-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="topotecan" class="section level4">
 <h4>Topotecan</h4>
@@ -704,6 +910,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-7-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-7-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="doxorubicin" class="section level4">
 <h4>Doxorubicin</h4>
@@ -711,6 +954,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-8-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
+Past versions of unnamed-chunk-8-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-8-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-8-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="carboplatin" class="section level4">
 <h4>Carboplatin</h4>
@@ -718,6 +998,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-9-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-9-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="oxaliplatin" class="section level4">
 <h4>Oxaliplatin</h4>
@@ -725,6 +1042,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-10-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
+Past versions of unnamed-chunk-10-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-10-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-10-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="cisplatin" class="section level4">
 <h4>Cisplatin</h4>
@@ -732,6 +1086,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-11-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
+Past versions of unnamed-chunk-11-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-11-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-11-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="gemcitabine" class="section level4">
 <h4>Gemcitabine</h4>
@@ -739,6 +1130,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-12-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
+Past versions of unnamed-chunk-12-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-12-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-12-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="docetaxel" class="section level4">
 <h4>Docetaxel</h4>
@@ -746,6 +1174,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-13-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
+Past versions of unnamed-chunk-13-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-13-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-13-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="paclitaxel" class="section level4">
 <h4>Paclitaxel</h4>
@@ -753,6 +1218,43 @@ FALSE  TRUE
 FALSE  TRUE 
 21232 17551 </code></pre>
 <p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-14-1.png" width="1920" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
+Past versions of unnamed-chunk-14-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-14-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-14-1.png" target="_blank">67e7712</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
