@@ -14,26 +14,4 @@ Welcome to my research website.
 
 [Filtering and MDS plots](MDSplots.html)
 
-[Mitomycin correlation analysis](Mitomycin_Analysis.html)
-
-[Irinotecan correlation analysis](Irinotecan_Analysis.html)
-
-[Topotecan correlation analysis](Topotecan_Analysis.html)
-
-[Doxorubicin correlation analysis](Doxorubicin_Analysis.html)
-
-[Carboplatin correlation analysis](Carboplatin_Analysis.html)
-
-[Oxaliplatin correlation analysis](Oxaliplatin_Analysis.html)
-
-[Cisplatin correlation analysis](Cisplatin_Analysis.html)
-
-[Gemcitabine correlation analysis](Gemcitabine_Analysis.html)
-
-[Docetaxel correlation analysis](Docetaxel_Analysis.html)
-
-[Paclitaxel correlation analysis](Paclitaxel_Analysis.html)
-
-[Cetuximab correlation analysis](Cetxuimab_Analysis.html)
-
 [Gene Set Enrichment Analysis](gene_set_analysis.html)

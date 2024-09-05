@@ -9,6 +9,14 @@ navbar:
     href: about.html
   - text: License
     href: license.html
+  - text: QC
+    href: MDSplots.html
+  - text: Analysis
+    menu:
+      - text: Correlation Analysis
+        href: updated_DrugAUC.html
+      - text: Gene Set Enrichment
+        href: gene_set_analysis.html
   right:
   - icon: fab fa-github
     text: Source code
