@@ -41,9 +41,7 @@ batch <- sampleinfo$Batch
 #TOP1 inhibitors
 #calculating avg AUC for TOP1 inhibitors
 y<- counts
-top1_auc <- cbind(sampleinfo$Irinotecan,sampleinfo$Topotecan)
-ave_auc <- rowMeans(top1_auc)
-design <- model.matrix(~batch+ave_auc)
+design <- model.matrix(~batch+sampleinfo$Irinotecan+sampleinfo$Topotecan)
 #filtering to remove low counts and fitting GLMs
 keep <- filterByExpr(y, design = design)
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -57,10 +55,7 @@ write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvi
 #Platinum based drugs
 y<- counts
 #calculating avg AUC for platinum based drugs
-platinum_auc <- cbind(sampleinfo$Carboplatin,sampleinfo$Cisplatin)
-platinum_auc <- cbind(platinum_auc,sampleinfo$Oxaliplatin)
-ave_auc <- rowMeans(platinum_auc)
-design <- model.matrix(~batch+ave_auc)
+design <- model.matrix(~batch+sampleinfo$Cisplatin+sampleinfo$Carboplatin+sampleinfo$Oxaliplatin)
 #filtering to remove low counts and fitting GLMs
 keep <- filterByExpr(y, design = design)
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -74,9 +69,7 @@ write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvi
 #Cytotoxic Antibiotics
 y<- counts
 #calculating avg AUC for cytotoxic antibiotics
-cytotoxic_antibiotics <- cbind(sampleinfo$Mitomycin,sampleinfo$Doxorubicin)
-ave_auc <- rowMeans(cytotoxic_antibiotics)
-design <- model.matrix(~batch+ave_auc)
+design <- model.matrix(~batch+sampleinfo$Mitomycin+sampleinfo$Doxorubicin)
 #filtering to remove low counts and fitting GLMs
 keep <- filterByExpr(y, design = design)
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -90,9 +83,7 @@ write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvi
 #Taxanes
 y<- counts
 #calculating avg AUC for taxanes
-taxanes <- cbind(sampleinfo$Paclitaxel,sampleinfo$Docetaxel)
-ave_auc <- rowMeans(taxanes)
-design <- model.matrix(~batch+ave_auc)
+design <- model.matrix(~batch+sampleinfo$Paclitaxel+sampleinfo$Docetaxel)
 #filtering to remove low counts and fitting GLMs
 keep <- filterByExpr(y, design = design)
 y <- y[keep, , keep.lib.sizes=FALSE]
@@ -213,7 +204,6 @@ dotplot(tax_gse, showCategory=8, split=".sign",label_format=50,color='p.adjust')
 Comments: Gene sets for different drug groups are generally quite different with minimal overlap. Genes identified for TOP1 inhibitors seem to be involved in cell cycle processes and ion channel activity. Pathways altered in chemotherapy resistance for platinum based compounds relate to regulating DNA/RNA binding activity and ion transport.Catabolic and cellular processes and pathways relating to the golgi lumen and vesicle activity were identified for cytotoxic antibiotics. Taxane resistance was associated with altered expression of genes related to molecular function and filament processes.  
 
 ## Enrichment Map {.tabset}
-
 ### TOP1 inhibitors
 ```{r, echo=FALSE}
 x<- pairwise_termsim(top1_gse)
@@ -313,3 +303,24 @@ ridgeplot(tax_gse, showCategory = 15, label_format =50 )+theme_dose(font.size = 
 ## {-}
 Comments: logFC shown in ridge plots are all significant (p<0.05) for all drugs except cytotoxic antibiotics (of which no pathway shows statistical significance). 
 
+## GSEA Plots {.tabset}
+
+### TOP1 inhibitors
+```{r, echo=FALSE}
+gseaplot2(top1_gse, title=top1_gse@result$Description[1], geneSetID = 1)
+```
+
+### Platinum compounds
+```{r, echo=FALSE}
+gseaplot2(gse, title=gse@result$Description[1], geneSetID = 1)
+```
+
+### Cytotoxic Antibiotics
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+gseaplot2(ca_gse, title=ca_gse@result$Description[1], geneSetID = 1)
+```
+
+### Taxanes
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+gseaplot2(tax_gse, title=tax_gse@result$Description[1], geneSetID = 1)
+```
