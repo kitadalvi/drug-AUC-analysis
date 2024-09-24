@@ -33,75 +33,75 @@ Plots used for analysis:
 ```{r, include=FALSE}
 
 #Loading data and creating design matrices for different gene sets
-countdata <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/countsmatrix.tsv", check.names = FALSE, stringsAsFactors = FALSE)
-sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
-counts <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
-batch <- factor(c(1,1,1,1,1,1,2,2,2,2,2,2))
+countdata <- read.delim("/Users/dalvinikita/Documents/RNA-seq Analysis/Sequencing Data/collated.count.tsv", check.names = FALSE, stringsAsFactors = FALSE)
+sampleinfo <- read.delim("/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt", check.names=FALSE, stringsAsFactors = TRUE)
+counts <- DGEList(counts=countdata[,c(7,10,14,17,20,24,25,28)], genes = countdata[,2])
+batch <- sampleinfo$Batch
 
-# #TOP1 inhibitors
-# #calculating avg AUC for TOP1 inhibitors
-# y<- counts
-# top1_auc <- cbind(sampleinfo$Irinotecan,sampleinfo$Topotecan)
-# ave_auc <- rowMeans(top1_auc)
-# design <- model.matrix(~batch+ave_auc)
-# #filtering to remove low counts and fitting GLMs 
-# keep <- filterByExpr(y, design = design)
-# y <- y[keep, , keep.lib.sizes=FALSE]
-# y <- calcNormFactors(y)
-# y <- estimateDisp(y, design, robust=TRUE)
-# fit <- glmFit(y, design)
-# lrt<- glmLRT(fit)
-# sig_genes <- topTags(lrt, p.value=0.05, n=500)
-# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt', sep='\t')
-# 
-# #Platinum based drugs
-# y<- counts
-# #calculating avg AUC for platinum based drugs
-# platinum_auc <- cbind(sampleinfo$Carboplatin,sampleinfo$Cisplatin)
-# platinum_auc <- cbind(platinum_auc,sampleinfo$Oxaliplatin)
-# ave_auc <- rowMeans(platinum_auc)
-# design <- model.matrix(~batch+ave_auc)
-# #filtering to remove low counts and fitting GLMs 
-# keep <- filterByExpr(y, design = design)
-# y <- y[keep, , keep.lib.sizes=FALSE]
-# y <- calcNormFactors(y)
-# y <- estimateDisp(y, design, robust=TRUE)
-# fit <- glmFit(y, design)
-# lrt<- glmLRT(fit)
-# sig_genes <- topTags(lrt, p.value=0.05, n=500)
-# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', sep='\t')
-# 
-# #Cytotoxic Antibiotics
-# y<- counts
-# #calculating avg AUC for cytotoxic antibiotics
-# cytotoxic_antibiotics <- cbind(sampleinfo$Mitomycin,sampleinfo$Doxorubicin)
-# ave_auc <- rowMeans(cytotoxic_antibiotics)
-# design <- model.matrix(~batch+ave_auc)
-# #filtering to remove low counts and fitting GLMs 
-# keep <- filterByExpr(y, design = design)
-# y <- y[keep, , keep.lib.sizes=FALSE]
-# y <- calcNormFactors(y)
-# y <- estimateDisp(y, design, robust=TRUE)
-# fit <- glmFit(y, design)
-# lrt<- glmLRT(fit, coef=3)
-# sig_genes <- topTags(lrt, p.value=0.05, n=500)
-# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', sep='\t')
-# 
-# #Taxanes
-# y<- counts
-# #calculating avg AUC for taxanes
-# taxanes <- cbind(sampleinfo$Paclitaxel,sampleinfo$Docetaxel)
-# ave_auc <- rowMeans(taxanes)
-# design <- model.matrix(~batch+ave_auc)
-# #filtering to remove low counts and fitting GLMs 
-# keep <- filterByExpr(y, design = design)
-# y <- y[keep, , keep.lib.sizes=FALSE]
-# y <- calcNormFactors(y)
-# y <- estimateDisp(y, design, robust=TRUE)
-# fit <- glmFit(y, design)
-# lrt<- glmLRT(fit, coef=3)
-# sig_genes <- topTags(lrt, p.value=0.05, n=500)
-# write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', sep='\t')
+#TOP1 inhibitors
+#calculating avg AUC for TOP1 inhibitors
+y<- counts
+top1_auc <- cbind(sampleinfo$Irinotecan,sampleinfo$Topotecan)
+ave_auc <- rowMeans(top1_auc)
+design <- model.matrix(~batch+ave_auc)
+#filtering to remove low counts and fitting GLMs
+keep <- filterByExpr(y, design = design)
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmFit(y, design)
+lrt<- glmLRT(fit)
+sig_genes <- topTags(lrt, p.value=0.05, n=500)
+write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/top1_drugs_genes.txt', sep='\t')
+
+#Platinum based drugs
+y<- counts
+#calculating avg AUC for platinum based drugs
+platinum_auc <- cbind(sampleinfo$Carboplatin,sampleinfo$Cisplatin)
+platinum_auc <- cbind(platinum_auc,sampleinfo$Oxaliplatin)
+ave_auc <- rowMeans(platinum_auc)
+design <- model.matrix(~batch+ave_auc)
+#filtering to remove low counts and fitting GLMs
+keep <- filterByExpr(y, design = design)
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmFit(y, design)
+lrt<- glmLRT(fit)
+sig_genes <- topTags(lrt, p.value=0.05, n=500)
+write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/plat_drugs_genes.txt', sep='\t')
+
+#Cytotoxic Antibiotics
+y<- counts
+#calculating avg AUC for cytotoxic antibiotics
+cytotoxic_antibiotics <- cbind(sampleinfo$Mitomycin,sampleinfo$Doxorubicin)
+ave_auc <- rowMeans(cytotoxic_antibiotics)
+design <- model.matrix(~batch+ave_auc)
+#filtering to remove low counts and fitting GLMs
+keep <- filterByExpr(y, design = design)
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmFit(y, design)
+lrt<- glmLRT(fit, coef=3)
+sig_genes <- topTags(lrt, p.value=0.05, n=500)
+write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/cytotoxic_antibiotic_genes.txt', sep='\t')
+
+#Taxanes
+y<- counts
+#calculating avg AUC for taxanes
+taxanes <- cbind(sampleinfo$Paclitaxel,sampleinfo$Docetaxel)
+ave_auc <- rowMeans(taxanes)
+design <- model.matrix(~batch+ave_auc)
+#filtering to remove low counts and fitting GLMs
+keep <- filterByExpr(y, design = design)
+y <- y[keep, , keep.lib.sizes=FALSE]
+y <- calcNormFactors(y)
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmFit(y, design)
+lrt<- glmLRT(fit, coef=3)
+sig_genes <- topTags(lrt, p.value=0.05, n=500)
+write.table(sig_genes, quote=F, row.names = F, col.names = T, file='/Users/dalvinikita/Documents/Drug Response Analysis/taxane_genes.txt', sep='\t')
 
 #Creating gsea objects
 #TOP1
