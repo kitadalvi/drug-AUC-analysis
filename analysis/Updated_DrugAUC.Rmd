@@ -94,9 +94,10 @@ legend("topleft",
 
 ```
 
-### Correlation Analysis {.tabset}
+### Fitting a Linear Model {.tabset}
 ```{r}
 #reset DGE object
+sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 y<- DGEList(counts=rawdata[,c(7,10,14,17,20,24,25,28)], genes=rawdata[,2])
 batch <- as.factor(sampleinfo$Batch)
 ```
@@ -105,8 +106,9 @@ batch <- as.factor(sampleinfo$Batch)
 #### Mitomycin 
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 mito_counts <- y
-Mitomycin <-sampleinfo$Mitomycin
-design <- model.matrix(~batch+Mitomycin)
+design <- model.matrix(~batch+sampleinfo$Mitomycin)
+mitomycin <- as.numeric(sampleinfo$Mitomycin)
+design <- cbind(design[,1:3],mitomycin)
 #filtering to remove low counts
 keep <- filterByExpr(mito_counts, design = design)
 table(keep)
@@ -114,146 +116,21 @@ mito_counts <- mito_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
 mito_counts <- calcNormFactors(mito_counts)
 #fit GLMs
-mito_counts <- estimateDisp(mito_counts, design, robust=TRUE)
-my_cpm <- cpm(mito_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- mito_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/mitomycin_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Mitomycin, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
+fit <- glmQLFit(mito_counts, design)
+mito_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(mito_auc_fit)
 
-sig_genes_cpm$Mitomycin <- as.numeric(sig_genes_cpm$Mitomycin)
+datatable(as.data.frame(genes))
 
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y = 'IGFL2', 
-                title="IGFL2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
-
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y = 'MYO3A', 
-                title="MYO3A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Mitomycin', 
-                y = 'LHFP', 
-                title="LHFP", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="LRRTM1", 
-                title="LRRTM1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Mitomycin', 
-                y ="SNORD3A", 
-                title="SNORD3A",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="DSG3", 
-                title="DSG3", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="HEPH", 
-                title="HEPH",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="ISL1",
-                title="ISL1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Mitomycin', 
-                y ="STXBP5L", 
-                title="STXBP5L",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Mitomycin', 
-                 y ="TMPRSS13", 
-                 title="TMPRSS13",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
 ```
 
 #### Irinotecan
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 irino_counts <- y
-Irinotecan <- sampleinfo$Irinotecan
-design <- model.matrix(~batch+Irinotecan)
+design <- model.matrix(~batch+sampleinfo$Irinotecan)
+irinotecan <- as.numeric(sampleinfo$Irinotecan)
+design<- cbind(design[,1:3],irinotecan)
+
 #filtering to remove low counts
 keep <- filterByExpr(irino_counts, design = design)
 table(keep)
@@ -261,1297 +138,179 @@ irino_counts <- irino_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
 irino_counts <- calcNormFactors(irino_counts)
 #fit GLMs
-irino_counts <- estimateDisp(irino_counts, design, robust=TRUE)
-my_cpm <- cpm(irino_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- irino_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/irinotecan_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Irinotecan, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
+fit <- glmQLFit(irino_counts, design)
+irinotecan_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(irinotecan_auc_fit)
 
-sig_genes_cpm$Irinotecan <- as.numeric(sig_genes_cpm$Irinotecan)
-
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y = 'SOSTDC1', 
-                title="SOSTDC1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
-
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y = 'AL157931.2', 
-                title="AL157931.2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Irinotecan', 
-                y = 'HEPH', 
-                title="HEPH", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y = 'CCDC85A', 
-                title="CCDC85A",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Irinotecan', 
-                y ="SOX5", 
-                title="SOX5",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y ="IGFL2", 
-                title="IGFL2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y ="TMEM47", 
-                title="TMEM47",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y ="IGSF9",
-                title="IGSF9",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Irinotecan', 
-                y ="RIMKLB", 
-                title="RIMKLB",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Irinotecan', 
-                 y ="C21orf90", 
-                 title="C21orf90",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Topotecan
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-topo_counts <- y
-Topotecan <- sampleinfo$Topotecan
-design <- model.matrix(~batch+Topotecan)
+topotecan_counts <- y
+design <- model.matrix(~batch+sampleinfo$Topotecan)
+topotecan <- as.numeric(sampleinfo$Topotecan)
+design<- cbind(design[,1:3],topotecan)
+
 #filtering to remove low counts
-keep <- filterByExpr(topo_counts, design = design)
+keep <- filterByExpr(topotecan_counts, design = design)
 table(keep)
-topo_counts <- topo_counts[keep, , keep.lib.sizes=FALSE]
+topotecan_counts <- topotecan_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-topo_counts <- calcNormFactors(topo_counts)
+topotecan_counts <- calcNormFactors(topotecan_counts)
 #fit GLMs
-topo_counts <- estimateDisp(topo_counts, design, robust=TRUE)
-my_cpm <- cpm(topo_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- topo_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/topotecan_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Topotecan, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
+fit <- glmQLFit(topotecan_counts, design)
+topotecan_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(topotecan_auc_fit)
 
-sig_genes_cpm$Topotecan <- as.numeric(sig_genes_cpm$Topotecan)
+datatable(as.data.frame(genes))
 
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y = 'MYO3A', 
-                title="MYO3A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
-
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y = 'ZFPM2', 
-                title="ZFPM2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Topotecan', 
-                y = 'AC022596.1', 
-                title="AC022596.1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y ="FOXE1", 
-                title="FOXE1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Topotecan', 
-                y ="IGFL2", 
-                title="IGFL2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y ="SYNE1", 
-                title="SYNE1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y ="AL157931.2", 
-                title="AL157931.2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y ="C6orf103",
-                title="C6orf103",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Topotecan', 
-                y ="TBX18", 
-                title="TBX18",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Topotecan', 
-                 y ="C2orf62", 
-                 title="C2orf62",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
 ```
 
 #### Doxorubicin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-dox_counts <- y
-Doxorubicin <- sampleinfo$Doxorubicin
-design <- model.matrix(~batch+Doxorubicin)
+doxorubicin_counts <- y
+design <- model.matrix(~batch+sampleinfo$Doxorubicin)
+doxorubicin <- as.numeric(sampleinfo$Doxorubicin)
+design<- cbind(design[,1:3],doxorubicin)
+
 #filtering to remove low counts
-keep <- filterByExpr(dox_counts, design = design)
+keep <- filterByExpr(doxorubicin_counts, design = design)
 table(keep)
-dox_counts <- dox_counts[keep, , keep.lib.sizes=FALSE]
+doxorubicin_counts <- doxorubicin_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-dox_counts <- calcNormFactors(dox_counts)
+doxorubicin_counts <- calcNormFactors(doxorubicin_counts)
 #fit GLMs
-dox_counts <- estimateDisp(dox_counts, design, robust=TRUE)
-my_cpm <- cpm(dox_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- dox_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/doxorubicin_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Doxorubicin, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Doxorubicin <- as.numeric(sig_genes_cpm$Doxorubicin)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y = 'TUBB6', 
-                title="TUBB6", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
+fit <- glmQLFit(doxorubicin_counts, design)
+doxorubicin_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(topotecan_auc_fit)
 
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y = 'MYO3A', 
-                title="MYO3A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Doxorubicin', 
-                y = 'C16orf5', 
-                title="C16orf5", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y ="LHFP", 
-                title="LHFP", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Doxorubicin', 
-                y ="ISL1", 
-                title="ISL1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y ="ALDH1A2", 
-                title="ALDH1A2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y ="MOCS1", 
-                title="MOCS1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y ="IRF8",
-                title="IRF8",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Doxorubicin', 
-                y ="HEPH", 
-                title="HEPH",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Doxorubicin', 
-                 y ="NR2F1", 
-                 title="NR2F1",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Carboplatin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-carbo_counts <- y
-Carboplatin <- sampleinfo$Carboplatin
-design <- model.matrix(~batch+Carboplatin)
+carboplatin_counts <- y
+design <- model.matrix(~batch+sampleinfo$Carboplatin)
+carboplatin <- as.numeric(sampleinfo$Carboplatin)
+design<- cbind(design[,1:3],carboplatin)
+
 #filtering to remove low counts
-keep <- filterByExpr(carbo_counts, design = design)
+keep <- filterByExpr(carboplatin_counts, design = design)
 table(keep)
-carbo_counts <- carbo_counts[keep, , keep.lib.sizes=FALSE]
+carboplatin_counts <- carboplatin_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-carbo_counts <- calcNormFactors(carbo_counts)
+carboplatin_counts <- calcNormFactors(carboplatin_counts)
 #fit GLMs
-carbo_counts <- estimateDisp(carbo_counts, design, robust=TRUE)
-my_cpm <- cpm(carbo_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- carbo_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/carboplatin_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Carboplatin, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Carboplatin <- as.numeric(sig_genes_cpm$Carboplatin)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y = 'CCDC43', 
-                title="CCDC43", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
+fit <- glmQLFit(carboplatin_counts, design)
+carboplatin_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(carboplatin_auc_fit)
 
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y = 'C5orf17', 
-                title="C5orf17", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Carboplatin', 
-                y = 'GPATCH8', 
-                title="GPATCH8", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y ="ACLY", 
-                title="ACLY", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Carboplatin', 
-                y ="DCAKD", 
-                title="DCAKD",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y ="RASL11A", 
-                title="RASL11A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y ="NMT1", 
-                title="NMT1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y ="EFTUD2",
-                title="EFTUD2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Carboplatin', 
-                y ="CES2", 
-                title="CES2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Carboplatin', 
-                 y ="SATB2", 
-                 title="SATB2",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Oxaliplatin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-oxali_counts <- y
-Oxaliplatin <- sampleinfo$Oxaliplatin
-design <- model.matrix(~batch+Oxaliplatin)
+oxaliplatin_counts <- y
+design <- model.matrix(~batch+sampleinfo$Oxaliplatin)
+oxaliplatin <- as.numeric(sampleinfo$Oxaliplatin)
+design<- cbind(design[,1:3],oxaliplatin)
+
 #filtering to remove low counts
-keep <- filterByExpr(oxali_counts, design = design)
+keep <- filterByExpr(oxaliplatin_counts, design = design)
 table(keep)
-oxali_counts <- oxali_counts[keep, , keep.lib.sizes=FALSE]
+oxaliplatin_counts <- oxaliplatin_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-oxali_counts <- calcNormFactors(oxali_counts)
+oxaliplatin_counts <- calcNormFactors(oxaliplatin_counts)
 #fit GLMs
-oxali_counts <- estimateDisp(oxali_counts, design, robust=TRUE)
-my_cpm <- cpm(oxali_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- oxali_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/oxaliplatin_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Oxaliplatin, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Oxaliplatin <- as.numeric(sig_genes_cpm$Oxaliplatin)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y = 'CCDC43', 
-                title="CCDC43", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
+fit <- glmQLFit(oxaliplatin_counts, design)
+oxaliplatin_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(oxaliplatin_auc_fit)
 
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y = 'GPATCH8', 
-                title="GPATCH8", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Oxaliplatin', 
-                y = 'ACLY', 
-                title="ACLY", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y ="RASL11A", 
-                title="RASL11A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Oxaliplatin', 
-                y ="EFTUD2", 
-                title="EFTUD2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y ="NMT1", 
-                title="NMT1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y ="DCAKD", 
-                title="DCAKD",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y ="MAP3K14",
-                title="MAP3K14",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Oxaliplatin', 
-                y ="CES2", 
-                title="CES2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Oxaliplatin', 
-                 y ="DBF4B", 
-                 title="DBF4B",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Cisplatin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-cisplat_counts <- y
-Cisplatin <- sampleinfo$Cisplatin
-design <- model.matrix(~batch+Cisplatin)
+cisplatin_counts <- y
+design <- model.matrix(~batch+sampleinfo$Cisplatin)
+cisplatin <- as.numeric(sampleinfo$Cisplatin)
+design<- cbind(design[,1:3],cisplatin)
+
 #filtering to remove low counts
-keep <- filterByExpr(cisplat_counts, design = design)
+keep <- filterByExpr(cisplatin_counts, design = design)
 table(keep)
-cisplat_counts <- cisplat_counts[keep, , keep.lib.sizes=FALSE]
+cisplatin_counts <- cisplatin_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-cisplat_counts <- calcNormFactors(cisplat_counts)
+cisplatin_counts <- calcNormFactors(cisplatin_counts)
 #fit GLMs
-cisplat_counts <- estimateDisp(cisplat_counts, design, robust=TRUE)
-my_cpm <- cpm(cisplat_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- cisplat_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/cisplatin_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Cisplatin, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Cisplatin <- as.numeric(sig_genes_cpm$Cisplatin)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y = 'CCDC43', 
-                title="CCDC43", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
+fit <- glmQLFit(cisplatin_counts, design)
+cisplatin_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(cisplatin_auc_fit)
 
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y = 'GPATCH8', 
-                title="GPATCH8", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Cisplatin', 
-                y = 'RASL11A', 
-                title="RASL11A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y ="ACLY", 
-                title="ACLY", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Cisplatin', 
-                y ="C5orf17", 
-                title="C5orf17",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y ="EFTUD2", 
-                title="EFTUD2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y ="MAP3K14", 
-                title="MAP3K14",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y ="NMT1",
-                title="NMT1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Cisplatin', 
-                y ="KLHL11", 
-                title="KLHL11",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Cisplatin', 
-                 y ="DCAKD", 
-                 title="DCAKD",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Gemcitabine
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-gem_counts <- y
-Gemcitabine <- sampleinfo$Gemcitabine
-design <- model.matrix(~batch+Gemcitabine)
+gemcitabine_counts <- y
+design <- model.matrix(~batch+sampleinfo$Gemcitabine)
+gemcitabine <- as.numeric(sampleinfo$Gemcitabine)
+design<- cbind(design[,1:3],gemcitabine)
+
 #filtering to remove low counts
-keep <- filterByExpr(gem_counts, design = design)
+keep <- filterByExpr(gemcitabine_counts, design = design)
 table(keep)
-gem_counts <- gem_counts[keep, , keep.lib.sizes=FALSE]
+gemcitabine_counts <- gemcitabine_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-gem_counts <- calcNormFactors(gem_counts)
+gemcitabine_counts <- calcNormFactors(gemcitabine_counts)
 #fit GLMs
-gem_counts <- estimateDisp(gem_counts, design, robust=TRUE)
-my_cpm <- cpm(gem_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- gem_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/gemcitabine_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Gemcitabine, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Gemcitabine <- as.numeric(sig_genes_cpm$Gemcitabine)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y = 'IGFL2', 
-                title="IGFL2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
+fit <- glmQLFit(gemcitabine_counts, design)
+gemcitabine_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(gemcitabine_auc_fit)
 
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y = 'MYO3A', 
-                title="MYO3A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Gemcitabine', 
-                y = 'LHFP', 
-                title="LHFP", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y ="SNORD3A", 
-                title="SNORD3A", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x ='Gemcitabine', 
-                y ="MAP7D3", 
-                title="MAP7D3",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y ="DSG3", 
-                title="DSG3", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y ="TMPRSS13", 
-                title="TMPRSS13",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y ="APCDD1",
-                title="APCDD1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Gemcitabine', 
-                y ="PCDHGA7", 
-                title="PCDHGA7",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Gemcitabine', 
-                 y ="LRRTM1", 
-                 title="LRRTM1",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Docetaxel
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-doc_counts <- y
-Docetaxel <- sampleinfo$Docetaxel
-design <- model.matrix(~batch+Docetaxel)
+docetaxel_counts <- y
+design <- model.matrix(~batch+sampleinfo$Docetaxel)
+docetaxel <- as.numeric(sampleinfo$Docetaxel)
+design<- cbind(design[,1:3],docetaxel)
+
 #filtering to remove low counts
-keep <- filterByExpr(doc_counts, design = design)
+keep <- filterByExpr(docetaxel_counts, design = design)
 table(keep)
-doc_counts <- doc_counts[keep, , keep.lib.sizes=FALSE]
+docetaxel_counts <- docetaxel_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-doc_counts <- calcNormFactors(doc_counts)
+docetaxel_counts <- calcNormFactors(docetaxel_counts)
 #fit GLMs
-doc_counts <- estimateDisp(doc_counts, design, robust=TRUE)
-my_cpm <- cpm(doc_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- doc_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/docetaxel_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Docetaxel, check.names = FALSE)
+fit <- glmQLFit(docetaxel_counts, design)
+docetaxel_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(docetaxel_auc_fit)
 
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Docetaxel <- as.numeric(sig_genes_cpm$Docetaxel)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y = 'ZFPM2', 
-                title="ZFPM2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
-
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y = 'ENPEP', 
-                title="ENPEP", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                x ='Docetaxel', 
-                y = 'AC022596.1', 
-                title="AC022596.1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y ="AC022389.1", 
-                title="AC022389.1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y ="FOXE1", 
-                title="FOXE1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x ='Docetaxel', 
-                y ="CCDC144A", 
-                title="CCDC144A",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y ="IGFL2", 
-                title="IGFL2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y ="CCDC8",
-                title="CCDC8",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Docetaxel', 
-                y ="SEMA3D", 
-                title="SEMA3D",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                 x = 'Docetaxel', 
-                 y ="HEPH", 
-                 title="HEPH",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 
 #### Paclitaxel
 ```{r echo=FALSE, fig.height=30, fig.width=20}
-pac_counts <- y
-Paclitaxel <- sampleinfo$Paclitaxel
-design <- model.matrix(~batch+Paclitaxel)
+paclitaxel_counts <- y
+design <- model.matrix(~batch+sampleinfo$Paclitaxel)
+paclitaxel <- as.numeric(sampleinfo$Paclitaxel)
+design<- cbind(design[,1:3],paclitaxel)
+
 #filtering to remove low counts
-keep <- filterByExpr(pac_counts, design = design)
+keep <- filterByExpr(paclitaxel_counts, design = design)
 table(keep)
-pac_counts <- pac_counts[keep, , keep.lib.sizes=FALSE]
+paclitaxel_counts <- paclitaxel_counts[keep, , keep.lib.sizes=FALSE]
 #normalizing library sizes
-pac_counts <- calcNormFactors(pac_counts)
+paclitaxel_counts <- calcNormFactors(paclitaxel_counts)
 #fit GLMs
-pac_counts <- estimateDisp(pac_counts, design, robust=TRUE)
-my_cpm <- cpm(pac_counts, normalized.lib.sizes=TRUE,log = TRUE)
-rownames(my_cpm)<- pac_counts$genes$genes
-sig_genes <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/paclitaxel_topGenes.txt', header=TRUE, stringsAsFactors = FALSE)
-genes_to_add <- c(sig_genes$genes)
-sig_genes_cpm <- data.frame(Paclitaxel, check.names = FALSE)
-# Loop through each row name in row_names_to_select
-for (gene in genes_to_add) {
-  # Extract the row based on row name from dataframe A
-  cpm_data <- c(my_cpm[c(gene),])
-  col_data <- t(cpm_data)
-  col_data <- t(col_data)
-  rownames(col_data)<- NULL
-  sig_genes_cpm[gene]<- col_data[,1]
-}
-sig_genes_cpm["Batch"]<- batch
-old_options <- options(ggpubr.parse_aes = FALSE)
-sig_genes_cpm$Paclitaxel <- as.numeric(sig_genes_cpm$Paclitaxel)
-p1 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y = 'ENPEP', 
-                title="ENPEP", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "lm", color = "black", se=F) +
-  theme_linedraw()
-  
+fit <- glmQLFit(paclitaxel_counts, design)
+paclitaxel_auc_fit <- glmLRT(fit, coef=4)
+genes <- topTags(paclitaxel_auc_fit)
 
-p2 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y = 'ZFPM2', 
-                title="ZFPM2", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p3 <- ggscatter(sig_genes_cpm, 
-                 x = 'Paclitaxel', 
-                 y ="AC022389.1", 
-                 title="AC022389.1",
-                 xlab="response (AUC)",
-                 ylab= "log(cpm)",
-                 color='Batch',
-                 cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p4 <- ggscatter(sig_genes_cpm, 
-                x ='Paclitaxel', 
-                y = 'CCDC8', 
-                title="CCDC8", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p5 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y ="EFEMP1", 
-                title="EFEMP1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p6 <- ggscatter(sig_genes_cpm, 
-                x ='Paclitaxel', 
-                y ="AC022596.1", 
-                title="AC022596.1",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p7 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y ="COL12A1", 
-                title="COL12A1", 
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p8 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y ="IGFL2", 
-                title="IGFL2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p9 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y ="CAPSL",
-                title="CAPSL",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-p10 <- ggscatter(sig_genes_cpm, 
-                x = 'Paclitaxel', 
-                y ="TFPI2", 
-                title="TFPI2",
-                xlab="response (AUC)", 
-                ylab= "log(cpm)",
-                color='Batch',
-                cor.coef = TRUE, cor.method = "pearson") +
-  geom_smooth(method = "glm", color = "black", se=F)+
-  theme_linedraw()
-
-options(old_options)
-ggarrange(p1,p2,p3,p4,p5,p6,p7,p8,p9,p10, ncol=2, nrow=5)
+datatable(as.data.frame(genes))
 ```
 

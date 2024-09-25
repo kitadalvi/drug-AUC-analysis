@@ -17,7 +17,7 @@
 <script src="site_libs/header-attrs-2.27/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/sandstone.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -36,6 +36,15 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-9.12.0/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link href="site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet" />
+<script src="site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.33/datatables.js"></script>
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.13.6/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.13.6/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.2.1/css/crosstalk.min.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.2.1/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
 <link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
@@ -351,6 +360,9 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="RNAseq_Analysis.html">RNA-seq Analysis</a>
+    </li>
+    <li>
       <a href="Updated_DrugAUC.html">Correlation Analysis</a>
     </li>
     <li>
@@ -385,7 +397,7 @@ div.tocify {
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-report" data-toggle="collapse" data-target="#workflowr-report">
 <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
-workflowr <span class="glyphicon glyphicon-ok text-success"
+workflowr <span class="glyphicon glyphicon-exclamation-sign text-danger"
 aria-hidden="true"></span>
 </button>
 </p>
@@ -396,8 +408,8 @@ aria-hidden="true"></span>
 </li>
 <li>
 <a data-toggle="tab" href="#checks"> Checks <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
-</a>
+class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> </a>
 </li>
 <li>
 <a data-toggle="tab" href="#versions">Past versions</a>
@@ -406,13 +418,13 @@ class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-09-05
+<strong>Last updated:</strong> 2024-09-25
 </p>
 <p>
 <strong>Checks:</strong> <span
-class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 7
+class="glyphicon glyphicon-ok text-success" aria-hidden="true"></span> 6
 <span class="glyphicon glyphicon-exclamation-sign text-danger"
-aria-hidden="true"></span> 0
+aria-hidden="true"></span> 1
 </p>
 <p>
 <strong>Knit directory:</strong> <code>drug-AUC-analysis/</code> <span
@@ -435,18 +447,21 @@ versions</em> tab lists the development history.
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguptodate">
-<span class="glyphicon glyphicon-ok text-success"
-aria-hidden="true"></span> <strong>R Markdown file:</strong> up-to-date
-</a>
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRMarkdownfilestronguncommittedchanges">
+<span class="glyphicon glyphicon-exclamation-sign text-danger"
+aria-hidden="true"></span> <strong>R Markdown file:</strong> uncommitted
+changes </a>
 </p>
 </div>
-<div id="strongRMarkdownfilestronguptodate"
+<div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>Great! Since the R Markdown file has been committed to the Git
-repository, you know the exact version of the code that produced these
-results.</p>
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
+<code>wflow_publish</code> to commit the R Markdown file and build the
+HTML.</p>
 </div>
 </div>
 </div>
@@ -537,15 +552,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree96e488c8e060c011d4a4cc360b59b9513534c144targetblank96e488ca">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree31c0ce404dea5ea716a0ecbceeb3f742c8678b61targetblank31c0ce4a">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/96e488c8e060c011d4a4cc360b59b9513534c144" target="_blank">96e488c</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/31c0ce404dea5ea716a0ecbceeb3f742c8678b61" target="_blank">31c0ce4</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree96e488c8e060c011d4a4cc360b59b9513534c144targetblank96e488ca"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree31c0ce404dea5ea716a0ecbceeb3f742c8678b61targetblank31c0ce4a"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -555,7 +570,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/96e488c8e060c011d4a4cc360b59b9513534c144" target="_blank">96e488c</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/31c0ce404dea5ea716a0ecbceeb3f742c8678b61" target="_blank">31c0ce4</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -573,6 +588,27 @@ Ignored files:
     Ignored:    .DS_Store
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
+    Ignored:    analysis/.DS_Store
+
+Untracked files:
+    Untracked:  analysis/RNAseq_Analysis.Rmd
+
+Unstaged changes:
+    Deleted:    analysis/Carboplatin_Analysis.Rmd
+    Deleted:    analysis/Cetxuimab_Analysis.Rmd
+    Deleted:    analysis/Cisplatin_Analysis.Rmd
+    Deleted:    analysis/Docetaxel_Analysis.Rmd
+    Deleted:    analysis/Doxorubicin_Analysis.Rmd
+    Deleted:    analysis/Gemcitabine_Analysis.Rmd
+    Deleted:    analysis/Irinotecan_Analysis.Rmd
+    Deleted:    analysis/Mitomycin_Analysis.Rmd
+    Deleted:    analysis/Overall_Summary.Rmd
+    Deleted:    analysis/Oxaliplatin_Analysis.Rmd
+    Deleted:    analysis/Paclitaxel_Analysis.Rmd
+    Deleted:    analysis/Topotecan_Analysis.Rmd
+    Modified:   analysis/Updated_DrugAUC.Rmd
+    Modified:   analysis/_site.yml
+    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -618,6 +654,23 @@ Message
 </tr>
 </thead>
 <tbody>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/a500793f4eb87bbf1438860ceba5c4b26a239fea/docs/Updated_DrugAUC.html" target="_blank">a500793</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-05
+</td>
+<td>
+Update Updated_DrugAUC.html
+</td>
+</tr>
 <tr>
 <td>
 html
@@ -828,447 +881,87 @@ kitadalvi
 </div>
 </div>
 </div>
-<div id="correlation-analysis" class="section level3 tabset">
-<h3 class="tabset">Correlation Analysis</h3>
+<div id="fitting-a-linear-model" class="section level3 tabset">
+<h3 class="tabset">Fitting a Linear Model</h3>
 <div id="mitomycin" class="section level4">
 <h4>Mitomycin</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-5-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
-Past versions of unnamed-chunk-5-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-5-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-5-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-212d6734bb3be6d86890" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-212d6734bb3be6d86890">{"x":{"filter":"none","vertical":false,"data":[["19422","35595","13959","19801","11980","9520","4969","5454","16294","11954"],["PDE3A","ZFP57","HEPH","PLA2G2A","FABP1","CP","AL157931.2","ALDH1A2","LRRTM1","EYA4"],[0.1063781675175504,-0.192944443104179,-0.0777322079523559,-0.2655081038936584,-0.1543217568846695,0.07516033056918259,0.177610091049548,0.06322793797714274,0.0600632130129197,0.08436980484914068],[5.170557871237515,2.62193654755737,5.932114755318086,2.895253759520122,4.09821646085354,6.933154625774663,6.234676718086417,3.347807687852173,2.893452902632583,2.927906564958798],[135.0286367896643,134.8931717231174,118.7208461812078,118.444212527868,108.7397250368992,108.5393852243609,107.7006758464957,97.38094874951182,95.35322686170892,93.71064352346326],[3.254410697121096e-31,3.484199918172067e-31,1.205558455349841e-27,1.385979711204277e-27,1.850583527948863e-25,2.047412320956303e-25,3.125959845419125e-25,5.71936815102225e-23,1.592726873821883e-22,3.65191846987034e-22],[2.758266865220916e-27,2.758266865220916e-27,5.486054191874328e-24,5.486054191874328e-24,5.402779879616858e-22,5.402779879616858e-22,7.070474604645859e-22,1.131934449189191e-19,2.801960510357986e-19,5.782082513345709e-19]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="irinotecan" class="section level4">
 <h4>Irinotecan</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-6-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
-Past versions of unnamed-chunk-6-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-6-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-6-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-6f947d133c2edd746287" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-6f947d133c2edd746287">{"x":{"filter":"none","vertical":false,"data":[["4969","18706","19422","9520","17755","7673","32251","11954","8476","32769"],["AL157931.2","NUS1P2","PDE3A","CP","MUC2","C20orf85","TFPI2","EYA4","CCDC37","TNFRSF19"],[0.4023608672452906,0.3993013689723372,0.2115610278287151,0.2029341332577781,0.1663674350498321,0.1786235042549505,0.3716341597094748,0.1793214387537902,0.2164582822793416,0.1370360995469916],[6.234676718086417,5.823123107809365,5.170557871237515,6.933154625774663,6.361799573448365,3.450442185996617,4.514543609088443,2.927906564958798,2.19856484218001,3.93403572579044],[173.7115260115902,167.0607549726154,145.759822612268,139.888955213371,116.9779313421079,115.3927165424287,106.6208788297116,103.0162173283288,97.91504383869588,96.665754380108],[1.144411088873716e-39,3.244583895175318e-38,1.465034177657511e-33,2.815118871108691e-32,2.902796688965481e-27,6.455880339773557e-27,5.390230904356408e-25,3.324159320565867e-24,4.367231702801291e-23,8.20766838430188e-23],[1.811946077013754e-35,2.568574840615541e-34,7.731962044950456e-30,1.114294427156598e-28,9.191995995278092e-24,1.703599223660579e-23,1.219193227266786e-21,6.578926815314921e-21,7.682931061161427e-20,1.299520135286516e-19]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="topotecan" class="section level4">
 <h4>Topotecan</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-7-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
-Past versions of unnamed-chunk-7-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-7-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-7-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-3a639866ad5cd7a83a56" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3a639866ad5cd7a83a56">{"x":{"filter":"none","vertical":false,"data":[["4969","18706","19422","9520","32251","7673","19801","8476","13959","35604"],["AL157931.2","NUS1P2","PDE3A","CP","TFPI2","C20orf85","PLA2G2A","CCDC37","HEPH","ZFPM2"],[0.2846405313045106,0.2678904768126502,0.1842441159139235,0.149203410257822,0.2580772073003343,0.1595634199544627,-1.172749994953758,0.1833669928025131,-0.1586486816884373,0.176222115036554],[6.234676718086417,5.823123107809365,5.170557871237515,6.933154625774663,4.514543609088443,3.450442185996617,2.895253759520122,2.19856484218001,5.932114755318086,1.657004902026875],[217.1160658361178,197.8604971977041,153.7901544187715,139.8626203679141,139.607074850187,130.5099533765134,118.6353578854227,118.1498156931697,117.4357719465988,116.7089391391634],[3.850008221537185e-49,6.11972020706332e-45,2.5738820030487e-35,2.852696671506691e-32,3.244428632656441e-32,3.169390385506537e-30,1.258652111974634e-27,1.607740525481411e-27,2.304429641357059e-27,3.324445589380214e-27],[6.095718017159824e-45,4.844676501921677e-41,1.358409125142336e-31,1.027380770816989e-28,1.027380770816989e-28,8.363492995620834e-27,2.846891269842053e-24,3.181919467493397e-24,4.054003834622923e-24,5.263594701665692e-24]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="doxorubicin" class="section level4">
 <h4>Doxorubicin</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-8-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-8-1">
-Past versions of unnamed-chunk-8-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-8-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-8-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-005f23e0505edfa78356" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-005f23e0505edfa78356">{"x":{"filter":"none","vertical":false,"data":[["4969","18706","19422","9520","32251","7673","19801","8476","13959","35604"],["AL157931.2","NUS1P2","PDE3A","CP","TFPI2","C20orf85","PLA2G2A","CCDC37","HEPH","ZFPM2"],[0.2846405313045106,0.2678904768126502,0.1842441159139235,0.149203410257822,0.2580772073003343,0.1595634199544627,-1.172749994953758,0.1833669928025131,-0.1586486816884373,0.176222115036554],[6.234676718086417,5.823123107809365,5.170557871237515,6.933154625774663,4.514543609088443,3.450442185996617,2.895253759520122,2.19856484218001,5.932114755318086,1.657004902026875],[217.1160658361178,197.8604971977041,153.7901544187715,139.8626203679141,139.607074850187,130.5099533765134,118.6353578854227,118.1498156931697,117.4357719465988,116.7089391391634],[3.850008221537185e-49,6.11972020706332e-45,2.5738820030487e-35,2.852696671506691e-32,3.244428632656441e-32,3.169390385506537e-30,1.258652111974634e-27,1.607740525481411e-27,2.304429641357059e-27,3.324445589380214e-27],[6.095718017159824e-45,4.844676501921677e-41,1.358409125142336e-31,1.027380770816989e-28,1.027380770816989e-28,8.363492995620834e-27,2.846891269842053e-24,3.181919467493397e-24,4.054003834622923e-24,5.263594701665692e-24]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="carboplatin" class="section level4">
 <h4>Carboplatin</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-9-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
-Past versions of unnamed-chunk-9-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-9-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-9-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-bc6984d5c6eb5b2784f6" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-bc6984d5c6eb5b2784f6">{"x":{"filter":"none","vertical":false,"data":[["31447","8582","11952","8717","18784","32251","11980","11768","13959","13031"],["SPON1","CCND2","EYA2","CD81","OLFM4","TFPI2","FABP1","EPB41L3","HEPH","GATA5"],[0.1485769663930573,0.1372016669157574,0.4661869402606638,0.1403906993822621,0.1222019365795343,0.4848696069955096,0.1454378437242933,0.1492775882408713,0.1178430582977772,0.1286460347990323],[7.986995833033817,5.740253819220499,4.285079446053089,6.726464184253411,7.378107685469938,4.514543609088443,4.09821646085354,3.515839887161562,5.932114755318086,2.816027071508169],[205.7608654753452,194.4699888465464,189.9883372798265,179.0323418905368,161.3949682371326,149.629038270593,144.4808111629909,134.055941901664,132.4324865625684,131.3863387227159],[1.155496976062336e-46,3.362691500664668e-44,3.197987507893776e-43,7.88319773868814e-41,5.608834054869639e-37,2.08950678443881e-34,2.789137230594693e-33,5.311751666627822e-31,1.203300444089887e-30,2.038164260438757e-30],[1.829498362199497e-42,2.662074726501185e-40,1.687791207082738e-39,3.120366744916233e-37,1.77609339181502e-33,5.513860153003281e-31,6.308629967429395e-30,1.051262051721479e-27,2.116872881252797e-27,3.227025473552683e-27]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="oxaliplatin" class="section level4">
 <h4>Oxaliplatin</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-10-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-10-1">
-Past versions of unnamed-chunk-10-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-10-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-10-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-56a7d65cc4ec04a0ed6b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-56a7d65cc4ec04a0ed6b">{"x":{"filter":"none","vertical":false,"data":[["11980","18784","8717","35595","8582","13959","19634","32091","11768","17761"],["FABP1","OLFM4","CD81","ZFP57","CCND2","HEPH","PHGR1","TBX3","EPB41L3","MUC5B"],[0.06645555981023339,0.03214651367868539,0.03748410674263421,0.1616828216737765,0.03303305050276319,0.03267197162436955,0.03338289916695354,0.0366854271849633,0.0675225262138401,-0.04738783844126004],[4.09821646085354,7.378107685469938,6.726464184253411,2.62193654755737,5.740253819220499,5.932114755318086,4.885853275156474,5.47219592359445,3.515839887161562,12.85356550006201],[175.0964269706371,170.6687549215906,167.4130905072715,157.1492739943939,156.6858169666936,149.1129718599055,148.7304776742988,146.6994677052455,146.0519346141438,144.2571361094264],[5.703606310302645e-40,5.285734935509228e-39,2.717678923900916e-38,4.74822915920579e-36,5.995197662931661e-36,2.709235062446073e-34,3.284389996600798e-34,9.129132838390193e-34,1.264699842351563e-33,3.121563896796528e-33],[9.030519871102178e-36,4.18445206169588e-35,1.43430034673744e-34,1.879467806942632e-32,1.89843929194394e-32,7.149219790618112e-31,7.428820973740061e-31,1.806769502877899e-30,2.224888067105811e-30,4.942372117797943e-30]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="cisplatin" class="section level4">
 <h4>Cisplatin</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-11-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-11-1">
-Past versions of unnamed-chunk-11-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-11-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-11-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-fe3aef495c8825682f3e" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-fe3aef495c8825682f3e">{"x":{"filter":"none","vertical":false,"data":[["18784","8717","11980","11768","32091","8582","19634","35595","13959","19801"],["OLFM4","CD81","FABP1","EPB41L3","TBX3","CCND2","PHGR1","ZFP57","HEPH","PLA2G2A"],[0.04783829189966041,0.05557079282321978,0.09888565019920194,0.1726683443770662,0.05663385316883449,0.0475373316033097,0.04879636038800887,0.1768784812593303,0.04595193137172624,0.3259297506583482],[7.378107685469938,6.726464184253411,4.09821646085354,3.515839887161562,5.47219592359445,5.740253819220499,4.885853275156474,2.62193654755737,5.932114755318086,2.895253759520122],[179.2840439641158,173.0331891867618,172.1944474018601,171.4086538908882,157.3343663791324,151.6843284432554,151.3790725607581,150.9139899655126,138.9914717445366,134.1587298509706],[6.946151484277642e-41,1.609611658399562e-39,2.454114505390277e-39,3.643423667750026e-39,4.326003975131688e-36,7.427093031877278e-35,8.660364703032693e-35,1.094427987669222e-34,4.423449465932806e-32,5.043750589580961e-31],[1.099784164505679e-36,1.274249069372013e-35,1.295199832128142e-35,1.442158173287154e-35,1.3698724187652e-32,1.958850776330237e-31,1.958850776330237e-31,2.16600979109585e-31,7.781830599346013e-29,7.985770308483535e-28]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="gemcitabine" class="section level4">
 <h4>Gemcitabine</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-12-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-12-1">
-Past versions of unnamed-chunk-12-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-12-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-12-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-db3be56eac6ca817053b" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-db3be56eac6ca817053b">{"x":{"filter":"none","vertical":false,"data":[["19422","35595","19801","13959","9520","4969","16294","17755","5454","11954"],["PDE3A","ZFP57","PLA2G2A","HEPH","CP","AL157931.2","LRRTM1","MUC2","ALDH1A2","EYA4"],[0.1225004655892015,-0.3059875199726899,-0.3664975915876811,-0.08429927736736076,0.0746665353811809,0.1865492955717666,0.06672598964018649,0.06270394210069952,0.0675018947432397,0.09069173002424],[5.170557871237515,2.62193654755737,2.895253759520122,5.932114755318086,6.933154625774663,6.234676718086417,2.893452902632583,6.361799573448365,3.347807687852173,2.927906564958798],[140.6063963970026,126.0221561971889,117.5938402040699,113.0254153867088,104.6701160674203,103.9262122728853,98.19666444725004,96.63247008655551,95.56514429814376,93.53040956872165],[1.961601762383165e-32,3.040694200825339e-29,2.127904120492145e-27,2.13026653852081e-26,1.442604707425425e-24,2.099928153754253e-24,3.788275503871736e-23,8.346813360250317e-23,1.431039320078641e-22,4.000073149814925e-22],[3.105804070381265e-28,2.40716556408338e-25,1.123036864658404e-23,8.432127526099995e-23,4.56815206653335e-21,5.541360409731848e-21,8.568538007543028e-20,1.651938699160541e-19,2.517516172756124e-19,6.333315818101971e-19]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="docetaxel" class="section level4">
 <h4>Docetaxel</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-13-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-13-1">
-Past versions of unnamed-chunk-13-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-13-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-13-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-0c70ecafef5f4e0f6fd4" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-0c70ecafef5f4e0f6fd4">{"x":{"filter":"none","vertical":false,"data":[["4969","18706","19422","15739","15535","13959","15652","7673","9520","32251"],["AL157931.2","NUS1P2","PDE3A","KRT20","KIF1A","HEPH","KLK7","C20orf85","CP","TFPI2"],[0.2295821381564274,0.2009928677009662,0.1634699015303812,-0.172017639628003,0.1545935237154887,-0.1551204291738529,-0.1340134624930241,0.1395988535384677,0.1076857111124786,0.230469297671227],[6.234676718086417,5.823123107809365,5.170557871237515,6.726989870768355,4.593245160778442,5.932114755318086,6.435273494070187,3.450442185996617,6.933154625774663,4.514543609088443],[203.2298802115347,178.8881537200454,176.4770818932391,167.2328291690272,147.5490642440482,142.1111221241194,136.624140018938,135.9601512949892,131.7063676968938,130.0205648828938],[4.121233516699258e-46,8.475894383462708e-41,2.848770696285176e-40,2.975586781460744e-38,5.952570063908626e-34,9.195681317599648e-33,1.457131354875715e-31,2.03575232999879e-31,1.734703419983977e-30,4.055541225201943e-30],[6.525149026989935e-42,6.709941788668253e-37,1.503486214476107e-36,1.177811637771699e-34,1.884940836437305e-30,2.426587038359254e-29,3.295822963106742e-28,4.029008330108855e-28,3.051728805400701e-27,6.421138421862236e-27]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <div id="paclitaxel" class="section level4">
 <h4>Paclitaxel</h4>
 <pre><code>keep
 FALSE  TRUE 
-21232 17551 </code></pre>
-<p><img src="figure/Updated_DrugAUC.Rmd/unnamed-chunk-14-1.png" width="1920" style="display: block; margin: auto;" /></p>
-<p>
-<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-14-1">
-Past versions of unnamed-chunk-14-1.png
-</button>
-</p>
-<div id="fig-unnamed-chunk-14-1" class="collapse">
-<div class="table-responsive">
-<table class="table table-condensed table-hover">
-<thead>
-<tr>
-<th>
-Version
-</th>
-<th>
-Author
-</th>
-<th>
-Date
-</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/67e77120ce7816fc4bb9736c330177f9a43084d7/docs/figure/Updated_DrugAUC.Rmd/unnamed-chunk-14-1.png" target="_blank">67e7712</a>
-</td>
-<td>
-kitadalvi
-</td>
-<td>
-2024-09-05
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+22950 15833 </code></pre>
+<div class="datatables html-widget html-fill-item" id="htmlwidget-ba594513a0e0a595a0ee" style="width:100%;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ba594513a0e0a595a0ee">{"x":{"filter":"none","vertical":false,"data":[["4969","18706","19422","15739","15535","15652","7673","32251","9520","13959"],["AL157931.2","NUS1P2","PDE3A","KRT20","KIF1A","KLK7","C20orf85","TFPI2","CP","HEPH"],[0.2214386352707422,0.1967787712653007,0.1601193561267079,-0.1695225918010232,0.1528173579473741,-0.1337581329744221,0.1439298822463358,0.2293620452243587,0.1053590054879142,-0.1578746026800373],[6.234676718086417,5.823123107809365,5.170557871237515,6.726989870768355,4.593245160778442,6.435273494070187,3.450442185996617,4.514543609088443,6.933154625774663,5.932114755318086],[206.4085535156684,183.8023294461802,174.0668417761884,152.0740912116082,146.2559752347477,142.4878796003145,141.1277780793567,137.518652595632,131.1693999486675,131.0438552148971],[8.345438365103983e-47,7.165793839681792e-42,9.571664658061148e-40,6.104256910164906e-35,1.141251779803933e-33,7.606851684072313e-33,1.50869538549724e-32,9.286683455450344e-32,2.273528527123391e-30,2.42196006734721e-30],[1.321333256346914e-42,5.672800693184091e-38,5.051605551036072e-36,2.416217491466024e-31,3.613887885927135e-30,2.007321378565282e-29,3.412453434082542e-29,1.837950739376816e-28,3.834689374630836e-27,3.834689374630836e-27]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>genes<\/th>\n      <th>logFC<\/th>\n      <th>logCPM<\/th>\n      <th>LR<\/th>\n      <th>PValue<\/th>\n      <th>FDR<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":[2,3,4,5,6]},{"orderable":false,"targets":0},{"name":" ","targets":0},{"name":"genes","targets":1},{"name":"logFC","targets":2},{"name":"logCPM","targets":3},{"name":"LR","targets":4},{"name":"PValue","targets":5},{"name":"FDR","targets":6}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <br>
 <p>
 <button type="button" class="btn btn-default btn-workflowr btn-workflowr-sessioninfo" data-toggle="collapse" data-target="#workflowr-sessioninfo" style="display: block;">
@@ -1288,7 +981,7 @@ LAPACK: /Library/Frameworks/R.framework/Versions/4.4-arm64/Resources/lib/libRlap
 locale:
 [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 
-time zone: Australia/Brisbane
+time zone: Australia/Melbourne
 tzcode source: internal
 
 attached base packages:
@@ -1315,38 +1008,37 @@ loaded via a namespace (and not attached):
  [25] Matrix_1.7-0            R6_2.5.1                fastmap_1.2.0          
  [28] GenomeInfoDbData_1.2.12 digest_0.6.36           aplot_0.2.3            
  [31] colorspace_2.1-1        patchwork_1.2.0         ps_1.7.7               
- [34] rprojroot_2.0.4         RSQLite_2.3.7           labeling_0.4.3         
- [37] fansi_1.0.6             mgcv_1.9-1              httr_1.4.7             
- [40] polyclip_1.10-7         abind_1.4-5             compiler_4.4.0         
- [43] bit64_4.0.5             withr_3.0.1             backports_1.5.0        
- [46] BiocParallel_1.39.0     carData_3.0-5           viridis_0.6.5          
- [49] DBI_1.2.3               highr_0.11              ggforce_0.4.2          
- [52] ggsignif_0.6.4          MASS_7.3-61             HDO.db_0.99.1          
- [55] tools_4.4.0             scatterpie_0.2.3        ape_5.8                
- [58] httpuv_1.6.15           glue_1.7.0              callr_3.7.6            
- [61] nlme_3.1-165            GOSemSim_2.31.0         promises_1.3.0         
- [64] shadowtext_0.1.4        grid_4.4.0              getPass_0.2-4          
- [67] reshape2_1.4.4          fgsea_1.31.0            generics_0.1.3         
- [70] gtable_0.3.5            tidyr_1.3.1             data.table_1.15.4      
- [73] tidygraph_1.3.1         car_3.1-2               utf8_1.2.4             
- [76] XVector_0.45.0          ggrepel_0.9.5           pillar_1.9.0           
- [79] stringr_1.5.1           yulab.utils_0.1.5       later_1.3.2            
- [82] splines_4.4.0           dplyr_1.1.4             tweenr_2.0.3           
- [85] treeio_1.29.0           lattice_0.22-6          bit_4.0.5              
- [88] tidyselect_1.2.1        GO.db_3.19.1            locfit_1.5-9.10        
- [91] Biostrings_2.73.1       knitr_1.48              git2r_0.33.0           
- [94] gridExtra_2.3           xfun_0.46               graphlayouts_1.1.1     
- [97] statmod_1.5.0           stringi_1.8.4           UCSC.utils_1.1.0       
-[100] lazyeval_0.2.2          ggfun_0.1.5             yaml_2.3.10            
-[103] evaluate_0.24.0         codetools_0.2-20        ggraph_2.2.1           
-[106] tibble_3.2.1            qvalue_2.37.0           ggplotify_0.1.2        
-[109] cli_3.6.3               munsell_0.5.1           processx_3.8.4         
-[112] jquerylib_0.1.4         Rcpp_1.0.13             GenomeInfoDb_1.41.1    
-[115] png_0.1-8               parallel_4.4.0          blob_1.2.4             
-[118] DOSE_3.31.2             tidytree_0.4.6          viridisLite_0.4.2      
-[121] scales_1.3.0            purrr_1.0.2             crayon_1.5.3           
-[124] rlang_1.1.4             cowplot_1.1.3           fastmatch_1.1-4        
-[127] KEGGREST_1.45.1        </code></pre>
+ [34] rprojroot_2.0.4         crosstalk_1.2.1         RSQLite_2.3.7          
+ [37] fansi_1.0.6             httr_1.4.7              polyclip_1.10-7        
+ [40] abind_1.4-5             compiler_4.4.0          bit64_4.0.5            
+ [43] withr_3.0.1             backports_1.5.0         BiocParallel_1.39.0    
+ [46] carData_3.0-5           viridis_0.6.5           DBI_1.2.3              
+ [49] highr_0.11              ggforce_0.4.2           ggsignif_0.6.4         
+ [52] MASS_7.3-61             HDO.db_0.99.1           tools_4.4.0            
+ [55] scatterpie_0.2.3        ape_5.8                 httpuv_1.6.15          
+ [58] glue_1.7.0              callr_3.7.6             nlme_3.1-165           
+ [61] GOSemSim_2.31.0         promises_1.3.0          shadowtext_0.1.4       
+ [64] grid_4.4.0              getPass_0.2-4           reshape2_1.4.4         
+ [67] fgsea_1.31.0            generics_0.1.3          gtable_0.3.5           
+ [70] tidyr_1.3.1             data.table_1.15.4       tidygraph_1.3.1        
+ [73] car_3.1-2               utf8_1.2.4              XVector_0.45.0         
+ [76] ggrepel_0.9.5           pillar_1.9.0            stringr_1.5.1          
+ [79] yulab.utils_0.1.5       later_1.3.2             splines_4.4.0          
+ [82] dplyr_1.1.4             tweenr_2.0.3            treeio_1.29.0          
+ [85] lattice_0.22-6          bit_4.0.5               tidyselect_1.2.1       
+ [88] GO.db_3.19.1            locfit_1.5-9.10         Biostrings_2.73.1      
+ [91] knitr_1.48              git2r_0.33.0            gridExtra_2.3          
+ [94] xfun_0.46               graphlayouts_1.1.1      statmod_1.5.0          
+ [97] stringi_1.8.4           UCSC.utils_1.1.0        lazyeval_0.2.2         
+[100] ggfun_0.1.5             yaml_2.3.10             evaluate_0.24.0        
+[103] codetools_0.2-20        ggraph_2.2.1            tibble_3.2.1           
+[106] qvalue_2.37.0           ggplotify_0.1.2         cli_3.6.3              
+[109] munsell_0.5.1           processx_3.8.4          jquerylib_0.1.4        
+[112] Rcpp_1.0.13             GenomeInfoDb_1.41.1     png_0.1-8              
+[115] parallel_4.4.0          blob_1.2.4              DOSE_3.31.2            
+[118] tidytree_0.4.6          viridisLite_0.4.2       scales_1.3.0           
+[121] purrr_1.0.2             crayon_1.5.3            rlang_1.1.4            
+[124] cowplot_1.1.3           fastmatch_1.1-4         KEGGREST_1.45.1        </code></pre>
 </div>
 </div>
 </div>

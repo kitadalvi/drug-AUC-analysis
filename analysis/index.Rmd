@@ -10,7 +10,7 @@ editor_options:
 
 Welcome to my research website.
 
-[Summary of results](Overall_Summary.html)
+[RNA-seq Analysis](RNAseq_Analysis.html)
 
 [Filtering and MDS plots](MDSplots.html)
 

@@ -13,6 +13,8 @@ navbar:
     href: MDSplots.html
   - text: Analysis
     menu:
+      - text: RNA-seq Analysis
+        href: RNAseq_Analysis.html
       - text: Correlation Analysis
         href: Updated_DrugAUC.html
       - text: Gene Set Enrichment

@@ -1,0 +1,196 @@
+---
+title: "RNA seq of organoid data"
+output: html_document
+date: "2024-08-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+library(pheatmap)
+library(ggplot2)
+library(edgeR)
+library(limma)
+library(ggpubr)
+library(RColorBrewer)
+library(clusterProfiler)
+library(enrichplot)
+library(org.Hs.eg.db)
+library(DT)
+```
+
+## Differential Expression of Organoid VS Tumour samples 
+A quick look at the data: 
+```{r}
+
+# loading in data
+rawdata <- read.delim2('/Users/dalvinikita/Documents/RNA-seq Analysis/Sequencing Data/collated.count.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+head(rawdata) 
+
+sampleinfo <- read.delim2('/Users/dalvinikita/Documents/RNA-seq Analysis/Sequencing Data/Sample_info_orgs_cells.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+
+head(sampleinfo)
+
+```
+
+### QC and Normalisation
+```{r, fig.height=10, fig.width=30}
+
+#creating a DGElist object 
+y<- DGEList(counts=rawdata[,3:44], genes=rawdata[,2])
+
+#create factors to include in design matrix
+#batch <- as.factor(c())
+type <- as.factor(c(sampleinfo$Type))
+pattern <- as.factor(c(sampleinfo$Pattern))
+
+#create design matrix to include patient, type, growth pattern
+design <- model.matrix(~type+pattern)
+rownames(design) <- sampleinfo$`Sample ID`
+
+#filtering to remove low counts
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+#Visualiszing library sizes pre and post normalisation
+col <- brewer.pal(32, 'Paired')
+
+par(mfrow=c(1,2))
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="A. Example: Unnormalised data",ylab="Log-cpm")
+
+y <- calcNormFactors(y) 
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, col=col, main="")
+title(main="B. Example: Normalised data",ylab="Log-cpm")
+```
+
+### MDS plots 
+```{r, fig.height=7, fig.width=14}
+par(mfrow=c(1,2))
+
+col.pattern <- c('darkorchid3', 'deeppink','darkolivegreen1')[sampleinfo$Pattern]
+col.type <- c('darkorchid3', 'deeppink','darkolivegreen1','deepskyblue4', 'orange', 'chartreuse4')[sampleinfo$Type]
+
+
+plotMDS(y, col=col.type, pch=19)
+title(main="A. Sample Types")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','darkolivegreen1','deepskyblue4', 'orange', 'chartreuse4'), 
+       legend=levels(sampleinfo$Type))
+
+plotMDS(y, col=col.pattern, pch=19)
+title(main="B. Growth Pattern")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
+       legend=levels(sampleinfo$Pattern))
+```
+
+Comments: Clustering based on sample type (org,tum,lines), but no clustering based on growth pattern. 
+
+### Differential gene expression analysis 
+
+#### Of organoids vs tumour samples {.tabset}
+```{r, fig.height=50, fig.width=50}
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+#making contrasts
+orgVStum <- makeContrasts(typeORG-typeTUM, levels=design)
+res <- glmQLFTest(fit, contrast=orgVStum)
+a<- as.data.frame(topTags(res, n=500))
+
+print("Table of top 500 differentially expressed genes between organoid and tumour samples:")
+
+datatable(a)
+
+print("Summary of differentially expressed genes between organoid and tumour samples:")
+
+is.de <- decideTests(res)
+summary(is.de)
+
+logCPM <- cpm(y, prior.count=2, log=TRUE)
+rownames(logCPM) <- y$genes$genes
+o <- order(res$table$PValue)
+top_500 <- logCPM[o[1:500],]
+top_100 <- logCPM[o[1:100],]
+top_50 <- logCPM[o[1:50],]
+
+```
+
+##### top 50
+```{r}
+pheatmap(top_50, cutree_cols = 5)
+```
+
+##### top 100
+```{r}
+pheatmap(top_100, cutree_cols = 5)
+```
+
+##### top 500
+```{r}
+pheatmap(top_500, cutree_cols = 5)
+```
+###
+Comments: Overall, tumour and organoid samples looks quite similar in terms of expression. Approximately 80% of genes are not differentially expressed between tumour and organoid samples. Further filtering could be done to identify differentially expressed genes over/under a certain logFC threshold.
+
+## Comparing therapeutic response to different drugs
+
+After identifying differentially expressed genes between ORG and TUM samples to validate organoids as an accurate model of the MOC phenotype, the next step would be to identify genes differentially expressed in response to treatment. As we dont have sequencing data for ORG models after exposure to treatment we cannot perform a differential expression analysis. Instead, we can perform a correlation analysis using drug AUC values for organoids. 
+
+The aim of this analysis is to identify genes whose expression is correlated with their respective drug AUC's. 
+
+### Data
+
+Taking a look at the data: 
+```{r}
+#Load data
+countdata <- rawdata[,c(1,2,5,6,7,8,9,10,17,20,24,25,27,28)]
+sampleinfo <- read.delim('/Users/dalvinikita/Documents/Drug Response Analysis/SampleInfo.txt', header=TRUE, stringsAsFactors = TRUE, check.names = FALSE)
+sampleinfo$Batch <- as.factor(sampleinfo$Batch)
+
+head(countdata)
+head(sampleinfo)
+
+```
+
+### Filtering and QC
+
+#### MDS plots
+```{r, fig.height=10, fig.width=10}
+y <- DGEList(counts=countdata[,3:14], genes = countdata[,2])
+#assigning colours for MDS plots based on patient, growth patters, batch, and media
+
+col.patient <-c("red", "orange", "yellow","lightgreen", "lightblue", "purple", "magenta")[sampleinfo$PATIENT]
+col.pattern <-c("red", "orange", "green")[sampleinfo$PATTERN]
+col.batch <-c("red", "orange", "green")[sampleinfo$Batch]
+col.media <- c("red", "orange")[sampleinfo$Media]
+
+par(mfrow=c(2,2))
+
+MDS_patient<- plotMDS(y, col=col.patient,pch=19)
+legend("topleft", fill= c("red", "orange", "yellow","lightgreen", "lightblue", "purple", "magenta"), legend=levels(sampleinfo$PATIENT))
+title("A. Patient")
+
+MDS_pattern <- plotMDS(y, col=col.pattern,pch=19)
+legend("topleft", fill= c("red", "orange", "green"), legend=levels(sampleinfo$PATTERN))
+title("B. Growth Pattern")
+
+MDS_media<- plotMDS(y, col=col.media,pch=19)
+legend("topleft", fill= c("red", "orange"), legend=levels(sampleinfo$Media))
+title("C. Media")
+
+MDS_batch<- plotMDS(y, col=col.batch,pch=19)
+legend("topleft", fill= c("red", "orange", "green"), legend=levels(sampleinfo$Batch))
+title("D. Batch")
+
+```
+
+Comments: No clustering based on growth pattern or media. Clustering is mainly due to patient and batch. 
+
