@@ -8,7 +8,9 @@ date: "2024-08-27"
 knitr::opts_chunk$set(
 	echo = TRUE,
 	message = FALSE,
-	warning = FALSE
+	warning = FALSE,
+	fig.width = 5,
+	fig.height=5
 )
 library(pheatmap)
 library(ggplot2)
@@ -142,7 +144,7 @@ for (gene in top_genes) {
   gene <- as.character(gene)
   mito_counts$cpm <- cpm(mito_counts, log = T) 
   expression_values <- mito_counts$cpm[mito_counts$genes$genes==gene,]
-  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+  plot<- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
     geom_point() +
     theme_linedraw() +
     xlab('AUC values') + 
@@ -152,6 +154,7 @@ for (gene in top_genes) {
 }
 
 ```
+
 
 ### Irinotecan
 ```{r echo=FALSE, fig.height=30, fig.width=20}
