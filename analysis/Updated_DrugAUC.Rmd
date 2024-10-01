@@ -1,12 +1,12 @@
 ---
-title: "Updated Drug AUC correlations"
+title: "Drug AUC Model"
 output: html_document
 date: "2024-08-27"
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-	echo = FALSE,
+	echo = TRUE,
 	message = FALSE,
 	warning = FALSE
 )
@@ -23,9 +23,9 @@ library(DT)
 
 ```
 
-## Differential Expression of Organoid VS Tumour samples 
+## RNA-seq data 
 A quick look at the data: 
-```{r, echo=TRUE}
+```{r}
 
 # loading in data
 rawdata <- read.delim2('/Users/dalvinikita/Documents/RNA-seq Analysis/Sequencing Data/collated.count.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
@@ -39,7 +39,7 @@ head(sampleinfo)
 ```
 
 ### QC and Normalisation
-```{r, fig.height=10, fig.width=30}
+```{r, fig.height=10, fig.width=30, echo=FALSE}
 
 #creating a DGElist object 
 y<- DGEList(counts=rawdata[,c(7,10,14,17,20,24,25,28)], genes=rawdata[,2])
@@ -73,7 +73,7 @@ boxplot(lcpm, col=col, main="")
 title(main="B. Example: Normalised data",ylab="Log-cpm")
 ```
 ### MDS plots 
-```{r, fig.height=7, fig.width=14}
+```{r, fig.height=7, fig.width=14, echo=FALSE}
 par(mfrow=c(1,2))
 
 col.pattern <- c('darkorchid3', 'deeppink','darkolivegreen1')[sampleinfo$PATTERN]
@@ -94,42 +94,77 @@ legend("topleft",
 
 ```
 
-### Fitting a Linear Model {.tabset}
+## Fitting a GLM {.tabset}
 ```{r}
-#reset DGE object
 sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
 y<- DGEList(counts=rawdata[,c(7,10,14,17,20,24,25,28)], genes=rawdata[,2])
+
 batch <- as.factor(sampleinfo$Batch)
 ```
 
-
-#### Mitomycin 
-```{r echo=FALSE, fig.height=30, fig.width=20}
+### Mitomycin 
+```{r, fig.height=30, fig.width=20}
 mito_counts <- y
 design <- model.matrix(~batch+sampleinfo$Mitomycin)
 mitomycin <- as.numeric(sampleinfo$Mitomycin)
 design <- cbind(design[,1:3],mitomycin)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+
+```{r}
+print(design)
+
 #filtering to remove low counts
 keep <- filterByExpr(mito_counts, design = design)
 table(keep)
 mito_counts <- mito_counts[keep, , keep.lib.sizes=FALSE]
+
 #normalizing library sizes
 mito_counts <- calcNormFactors(mito_counts)
+
 #fit GLMs
 fit <- glmQLFit(mito_counts, design)
-mito_auc_fit <- glmLRT(fit, coef=4)
+mito_auc_fit <- glmQLFTest(fit, coef=c('mitomycin'))
 genes <- topTags(mito_auc_fit)
 
 datatable(as.data.frame(genes))
+```
+
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- mitomycin
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  mito_counts$cpm <- cpm(mito_counts, log = T) 
+  expression_values <- mito_counts$cpm[mito_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
 
 ```
 
-#### Irinotecan
+### Irinotecan
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 irino_counts <- y
 design <- model.matrix(~batch+sampleinfo$Irinotecan)
 irinotecan <- as.numeric(sampleinfo$Irinotecan)
 design<- cbind(design[,1:3],irinotecan)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(irino_counts, design = design)
@@ -139,18 +174,43 @@ irino_counts <- irino_counts[keep, , keep.lib.sizes=FALSE]
 irino_counts <- calcNormFactors(irino_counts)
 #fit GLMs
 fit <- glmQLFit(irino_counts, design)
-irinotecan_auc_fit <- glmLRT(fit, coef=4)
+irinotecan_auc_fit <- glmQLFTest(fit, coef=c('irinotecan'))
 genes <- topTags(irinotecan_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Topotecan
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- irinotecan
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  irino_counts$cpm <- cpm(irino_counts, log = T) 
+  expression_values <- irino_counts$cpm[irino_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Topotecan
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 topotecan_counts <- y
 design <- model.matrix(~batch+sampleinfo$Topotecan)
 topotecan <- as.numeric(sampleinfo$Topotecan)
 design<- cbind(design[,1:3],topotecan)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(topotecan_counts, design = design)
@@ -160,19 +220,43 @@ topotecan_counts <- topotecan_counts[keep, , keep.lib.sizes=FALSE]
 topotecan_counts <- calcNormFactors(topotecan_counts)
 #fit GLMs
 fit <- glmQLFit(topotecan_counts, design)
-topotecan_auc_fit <- glmLRT(fit, coef=4)
+topotecan_auc_fit <- glmQLFTest(fit, coef=c('topotecan'))
 genes <- topTags(topotecan_auc_fit)
 
 datatable(as.data.frame(genes))
-
 ```
 
-#### Doxorubicin
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- topotecan
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  topotecan_counts$cpm <- cpm(topotecan_counts, log = T) 
+  expression_values <- topotecan_counts$cpm[topotecan_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Doxorubicin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 doxorubicin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Doxorubicin)
 doxorubicin <- as.numeric(sampleinfo$Doxorubicin)
 design<- cbind(design[,1:3],doxorubicin)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(doxorubicin_counts, design = design)
@@ -182,18 +266,43 @@ doxorubicin_counts <- doxorubicin_counts[keep, , keep.lib.sizes=FALSE]
 doxorubicin_counts <- calcNormFactors(doxorubicin_counts)
 #fit GLMs
 fit <- glmQLFit(doxorubicin_counts, design)
-doxorubicin_auc_fit <- glmLRT(fit, coef=4)
-genes <- topTags(topotecan_auc_fit)
+doxorubicin_auc_fit <- glmQLFTest(fit, coef=c('doxorubicin'))
+genes <- topTags(doxorubicin_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Carboplatin
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- doxorubicin
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  doxorubicin_counts$cpm <- cpm(doxorubicin_counts, log = T) 
+  expression_values <- doxorubicin_counts$cpm[doxorubicin_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Carboplatin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 carboplatin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Carboplatin)
 carboplatin <- as.numeric(sampleinfo$Carboplatin)
 design<- cbind(design[,1:3],carboplatin)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(carboplatin_counts, design = design)
@@ -203,18 +312,43 @@ carboplatin_counts <- carboplatin_counts[keep, , keep.lib.sizes=FALSE]
 carboplatin_counts <- calcNormFactors(carboplatin_counts)
 #fit GLMs
 fit <- glmQLFit(carboplatin_counts, design)
-carboplatin_auc_fit <- glmLRT(fit, coef=4)
+carboplatin_auc_fit <- glmQLFTest(fit, coef=c('carboplatin'))
 genes <- topTags(carboplatin_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Oxaliplatin
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- carboplatin
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  carboplatin_counts$cpm <- cpm(carboplatin_counts, log = T) 
+  expression_values <- carboplatin_counts$cpm[carboplatin_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Oxaliplatin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 oxaliplatin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Oxaliplatin)
 oxaliplatin <- as.numeric(sampleinfo$Oxaliplatin)
 design<- cbind(design[,1:3],oxaliplatin)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(oxaliplatin_counts, design = design)
@@ -224,18 +358,43 @@ oxaliplatin_counts <- oxaliplatin_counts[keep, , keep.lib.sizes=FALSE]
 oxaliplatin_counts <- calcNormFactors(oxaliplatin_counts)
 #fit GLMs
 fit <- glmQLFit(oxaliplatin_counts, design)
-oxaliplatin_auc_fit <- glmLRT(fit, coef=4)
+oxaliplatin_auc_fit <- glmQLFTest(fit, coef=c('oxaliplatin'))
 genes <- topTags(oxaliplatin_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Cisplatin
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- oxaliplatin
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  oxaliplatin_counts$cpm <- cpm(oxaliplatin_counts, log = T) 
+  expression_values <- oxaliplatin_counts$cpm[oxaliplatin_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Cisplatin
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 cisplatin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Cisplatin)
 cisplatin <- as.numeric(sampleinfo$Cisplatin)
 design<- cbind(design[,1:3],cisplatin)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(cisplatin_counts, design = design)
@@ -245,18 +404,42 @@ cisplatin_counts <- cisplatin_counts[keep, , keep.lib.sizes=FALSE]
 cisplatin_counts <- calcNormFactors(cisplatin_counts)
 #fit GLMs
 fit <- glmQLFit(cisplatin_counts, design)
-cisplatin_auc_fit <- glmLRT(fit, coef=4)
+cisplatin_auc_fit <- glmQLFTest(fit, coef=c('cisplatin'))
 genes <- topTags(cisplatin_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Gemcitabine
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- cisplatin
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  cisplatin_counts$cpm <- cpm(cisplatin_counts, log = T) 
+  expression_values <- cisplatin_counts$cpm[cisplatin_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+### Gemcitabine
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 gemcitabine_counts <- y
 design <- model.matrix(~batch+sampleinfo$Gemcitabine)
 gemcitabine <- as.numeric(sampleinfo$Gemcitabine)
 design<- cbind(design[,1:3],gemcitabine)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(gemcitabine_counts, design = design)
@@ -266,18 +449,43 @@ gemcitabine_counts <- gemcitabine_counts[keep, , keep.lib.sizes=FALSE]
 gemcitabine_counts <- calcNormFactors(gemcitabine_counts)
 #fit GLMs
 fit <- glmQLFit(gemcitabine_counts, design)
-gemcitabine_auc_fit <- glmLRT(fit, coef=4)
+gemcitabine_auc_fit <- glmQLFTest(fit, coef=c('gemcitabine'))
 genes <- topTags(gemcitabine_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Docetaxel
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- gemcitabine
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  gemcitabine_counts$cpm <- cpm(gemcitabine_counts, log = T) 
+  expression_values <- gemcitabine_counts$cpm[gemcitabine_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Docetaxel
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 docetaxel_counts <- y
 design <- model.matrix(~batch+sampleinfo$Docetaxel)
 docetaxel <- as.numeric(sampleinfo$Docetaxel)
 design<- cbind(design[,1:3],docetaxel)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(docetaxel_counts, design = design)
@@ -287,18 +495,43 @@ docetaxel_counts <- docetaxel_counts[keep, , keep.lib.sizes=FALSE]
 docetaxel_counts <- calcNormFactors(docetaxel_counts)
 #fit GLMs
 fit <- glmQLFit(docetaxel_counts, design)
-docetaxel_auc_fit <- glmLRT(fit, coef=4)
+docetaxel_auc_fit <- glmQLFTest(fit, coef=c('docetaxel'))
 genes <- topTags(docetaxel_auc_fit)
 
 datatable(as.data.frame(genes))
 ```
 
-#### Paclitaxel
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- docetaxel
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  docetaxel_counts$cpm <- cpm(docetaxel_counts, log = T) 
+  expression_values <- docetaxel_counts$cpm[docetaxel_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Paclitaxel
 ```{r echo=FALSE, fig.height=30, fig.width=20}
 paclitaxel_counts <- y
 design <- model.matrix(~batch+sampleinfo$Paclitaxel)
 paclitaxel <- as.numeric(sampleinfo$Paclitaxel)
 design<- cbind(design[,1:3],paclitaxel)
+rownames(design)<- sampleinfo$`Sample ID`
+```
+
+Design matrix:
+```{r}
+print(design)
 
 #filtering to remove low counts
 keep <- filterByExpr(paclitaxel_counts, design = design)
@@ -308,9 +541,28 @@ paclitaxel_counts <- paclitaxel_counts[keep, , keep.lib.sizes=FALSE]
 paclitaxel_counts <- calcNormFactors(paclitaxel_counts)
 #fit GLMs
 fit <- glmQLFit(paclitaxel_counts, design)
-paclitaxel_auc_fit <- glmLRT(fit, coef=4)
+paclitaxel_auc_fit <- glmQLFTest(fit, coef=c('paclitaxel'))
 genes <- topTags(paclitaxel_auc_fit)
 
 datatable(as.data.frame(genes))
+```
+
+Plotting top genes: 
+```{r}
+top_genes <- c(genes$table$genes)
+auc_values <- paclitaxel
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  paclitaxel_counts$cpm <- cpm(paclitaxel_counts, log = T) 
+  expression_values <- paclitaxel_counts$cpm[paclitaxel_counts$genes$genes==gene,]
+  plot <- ggplot(data = NULL, mapping = aes(x=auc_values, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
 ```
 

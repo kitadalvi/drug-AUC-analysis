@@ -15,7 +15,7 @@ navbar:
     menu:
       - text: RNA-seq Analysis
         href: RNAseq_Analysis.html
-      - text: Correlation Analysis
+      - text: GLM Analysis
         href: Updated_DrugAUC.html
       - text: Gene Set Enrichment
         href: gene_set_analysis.html
