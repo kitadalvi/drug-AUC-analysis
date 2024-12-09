@@ -1,0 +1,278 @@
+---
+title: "RNAseq Dec 2024"
+output: html_document
+date: "2024-12-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message=FALSE,
+                      warning=FALSE)
+
+library(pheatmap)
+library(ggplot2)
+library(edgeR)
+library(limma)
+library(ggpubr)
+library(RColorBrewer)
+library(clusterProfiler)
+library(enrichplot)
+library(org.Hs.eg.db)
+library(DT)
+```
+
+## Data
+Paths to data: 
+
+Individual count data: '/home/ndalvi/RNAseq_STAR/Results/HTseq/'
+
+Collated counts matrix: '/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv'
+
+Sample info/metadata: '/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo.txt'
+
+Overall: 59 different samples sequenced over 4 batches. 
+
+```{r}
+### Loading in the data 
+###Loading in counts matrix
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+### Loading in sample metadata
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_original.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+```
+
+### Design Matrix
+```{r}
+### Initialising DGE object: labelling genes and counts
+### Not including LGSOC lines
+y<- DGEList(counts=rawdata[,2:58], genes=rawdata[,1])
+
+### Changing batch from numeric to factor variable
+sampleinfo$Batch<- as.factor(sampleinfo$Batch)
+
+### Creating design matrix
+### Include batch, type, and growth pattern as factors
+batch <- as.factor(c(sampleinfo$Batch))
+type <- as.factor(c(sampleinfo$Type))
+pattern <- as.factor(c(sampleinfo$Pattern))
+design <- model.matrix(~pattern+type+batch)
+rownames(design)<- sampleinfo$`Sample-ID`
+
+datatable(design)
+```
+
+### QC and normalisation
+```{r, fig.height=10, fig.width=10}
+### Filtering to remove low counts
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+### Normalise by CPM 
+### Log transform CPM values
+lcpm <- cpm(y, log=TRUE)
+
+### Set colours for plots
+col <- brewer.pal(60, 'Paired')
+
+### Create boxplots of sample library sizes before and after normalisation
+boxplot(lcpm, las=1, col=col, main="A. Example: Unnormalised data", outline=FALSE)
+
+y <- calcNormFactors(y) 
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, col=col, main="B. Example: Normalised data", outline=FALSE, las=1)
+```
+
+Taking a closer look at library sizes:
+```{r}
+### Create data frame of library size
+df <- data.frame(sample=rownames(y$samples),size=y$samples$lib.size)
+print(df[order(df$size, decreasing=FALSE),])
+```
+Comments: Sequencing depth of ORG57, ORG65T, RMUG-parental, and ORG64_old are significantly less than other samples. Will need to remove prior to further analysis. 
+
+```{r}
+### Removing inadequate samples from DGE list object, and sample info
+y <- y[,-c(50,39,56,36)]
+sampleinfo <- sampleinfo[-c(50,39,56,36),]
+rownames(sampleinfo)<- sampleinfo$`Sample-ID`
+design <- design[-c(50,39,56,36),]
+```
+
+### MDS plots{.tabset}
+```{r}
+### Setting colours for mds PLOTS
+col.type <- brewer.pal(5, 'Dark2')[sampleinfo$Type]
+col.pattern <- brewer.pal(3, 'Dark2')[sampleinfo$Pattern]
+col.batch <- brewer.pal(4, 'Dark2')[sampleinfo$Batch]
+```
+
+#### data points
+```{r}
+### MDS plot colours by sample type
+plotMDS(y, col=col.type, pch=19)
+legend("topleft",legend=levels(sampleinfo$Type), fill = c('#D95F02','#1B9E77','#7570B3','#E7298A',"#66A61E"))
+title('A. Sample Type')
+
+### MDS plot colours by sample growth pattern
+plotMDS(y, col=col.pattern, pch=19)
+legend("topleft",legend=levels(sampleinfo$Pattern), fill = c('#7570B3','#D95F02','#1B9E77'))
+title('B. Growth pattern')
+
+### MDS plot colours by sample batch
+plotMDS(y, col=col.batch, pch=19)
+legend("topleft",legend=levels(sampleinfo$Batch), fill = c('#7570B3','#D95F02','#1B9E77','#E7298A'))
+title('C. Sample Batch')
+```
+
+#### sample ID
+```{r}
+### MDS plot colours by sample type
+plotMDS(y, col=col.type)
+legend("topleft",legend=levels(sampleinfo$Type), fill = c('#D95F02','#1B9E77','#7570B3','#E7298A',"#66A61E"))
+title('A. Sample Type')
+
+### MDS plot colours by sample growth pattern
+plotMDS(y, col=col.pattern)
+legend("topleft",legend=levels(sampleinfo$Pattern), fill = c('#7570B3','#D95F02','#1B9E77'))
+title('B. Growth pattern')
+
+### MDS plot colours by sample batch
+plotMDS(y, col=col.batch)
+legend("topleft",legend=levels(sampleinfo$Batch), fill = c('#7570B3','#D95F02','#1B9E77','#E7298A'))
+title('C. Sample Batch')
+```
+
+### Organoids VS Tumours Analysis
+
+#### Differential Expression
+```{r}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+orgVStum <- makeContrasts(typeORG-typeTUM, levels=design)
+res <- glmQLFTest(fit, contrast=orgVStum)
+res <- res[res$table$logFC<= -2 | res$table$logFC>=2,]
+DEgenes <- topTags(res, p.value=0.05, n=100000)
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -2 | DEgenes$table$logFC>=2,]
+```
+
+Table of differentially expressed genes between ORG and TUM samples:
+
+```{r}
+datatable(DEgenes)
+```
+
+
+Next, we want to separate our list of DEgenes into upregulated (logFC>0) and downregulated (logFC<0) genes.
+```{r}
+upregulated <- DEgenes[DEgenes$logFC>0,]
+downregulated <- DEgenes[DEgenes$logFC<0,]
+```
+
+Between ORG and TUM samples:
+
+• 656 DE genes were upregulated
+
+• 3928 DE genes were downregulated
+
+
+#### Visualisation
+
+##### Basic Heatmap
+After ordering our table of DE genes (both upregulated and downregulated) by p-value, we cans elect the top 100 most significantly differentially expressed genes between ORG and TUM samples:
+
+```{r, fig.height=18, fig.width=18}
+order<- DEgenes$genes[1:100]
+lcpm <- cpm(y, prior.count=2, log=TRUE)
+rownames(lcpm)<- y$genes$genes
+top_100 <- lcpm[order[1:100],]
+type_annotation <- data.frame(Type=sampleinfo[,c(2)],Batch=sampleinfo[,c(5)])
+rownames(type_annotation) <- sampleinfo$`Sample-ID`
+pheatmap(top_100,
+         border_color = 'NA',
+         cellwidth = 15,
+         cellheight = 10, 
+         cutree_cols = 5,
+         annotation_col = type_annotation,
+         main="Top 100 DE genes between ORG and TUM samples",
+         fontsize = 15)
+```
+
+#### Pathway Analysis 
+```{r}
+### Creating GSE object for differentially expressed genes
+# gene_list <- DEgenes[,c("logFC")]
+# names(gene_list) <- DEgenes$genes
+# gene_list = sort(gene_list, decreasing = TRUE)
+# 
+# gse <- gseGO(geneList=gene_list,
+#              ont ="ALL",
+#              keyType = "SYMBOL",
+#              minGSSize = 3,
+#              maxGSSize = 600,
+#              pvalueCutoff = 0.05,
+#              verbose = TRUE,
+#              OrgDb = "org.Hs.eg.db")
+# 
+# saveRDS(gse, file='/Users/dalvinikita/Documents/GitHub/drug-AUC-analysis/data/gse.rds')
+
+### Load GSE object
+gse<- readRDS('/Users/dalvinikita/Documents/GitHub/drug-AUC-analysis/data/gse.rds')
+
+### Set colours and plot
+options(enrichplot.colours = c("red","blue"))
+dotplot(gse, showCategory = 5, title = "Enriched Pathways" , split=".sign") + facet_grid(.~.sign)
+```
+
+### Infiltrative VS Expansile Organoids Analysis
+
+#### Differential Expression
+
+```{r}
+### Making contrasts
+res <- glmQLFTest(fit, coef=2)
+res <- res[res$table$logFC<= -2 | res$table$logFC>=2,]
+DEgenes <- topTags(res, p.value=0.05, n=100000)
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -2 | DEgenes$table$logFC>=2,]
+```
+
+Table of differentially expressed genes between INF and EXP samples:
+
+```{r}
+datatable(DEgenes)
+```
+
+```{r}
+upregulated <- DEgenes[DEgenes$logFC>0,]
+downregulated <- DEgenes[DEgenes$logFC<0,]
+```
+
+Between INF and EXP samples:
+
+•  582 DE genes were upregulated
+
+•  329 DE genes were downregulated
+
+#### Visualisation
+
+##### Basic Heatmap
+After ordering our table of DE genes (both upregulated and downregulated) by p-value, we can select the top 100 most significantly differentially expressed genes between ORG and TUM samples:
+
+```{r, fig.height=18, fig.width=18}
+order<- DEgenes$genes[1:100]
+top_100 <- lcpm[order[1:100],]
+pattern_annotation <- data.frame(Pattern=sampleinfo[,c(4)],Batch=sampleinfo[,c(5)])
+rownames(pattern_annotation) <- sampleinfo$`Sample-ID`
+pheatmap(top_100,
+         border_color = 'NA',
+         cellwidth = 15,
+         cellheight = 10, 
+         cutree_cols = 4,
+         annotation_col = pattern_annotation,
+         main="Top 100 DE genes between INF and EXP samples",
+         fontsize = 15)
+```

@@ -360,10 +360,10 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="RNAseq_Analysis.html">RNA-seq Analysis</a>
+      <a href="RNAseq_DEC2024.html">RNA-seq Analysis</a>
     </li>
     <li>
-      <a href="Updated_DrugAUC.html">Correlation Analysis</a>
+      <a href="Updated_DrugAUC.html">GLM Analysis</a>
     </li>
     <li>
       <a href="gene_set_analysis.html">Gene Set Enrichment</a>
@@ -418,7 +418,7 @@ aria-hidden="true"></span> </a>
 <div class="tab-content">
 <div id="summary" class="tab-pane fade in active">
 <p>
-<strong>Last updated:</strong> 2024-09-25
+<strong>Last updated:</strong> 2024-12-10
 </p>
 <p>
 <strong>Checks:</strong> <span
@@ -456,10 +456,10 @@ changes </a>
 <div id="strongRMarkdownfilestronguncommittedchanges"
 class="panel-collapse collapse">
 <div class="panel-body">
-<p>The R Markdown is untracked by Git. To know which version of the R
-Markdown file created these results, you’ll want to first commit it to
-the Git repo. If you’re still working on the analysis, you can ignore
-this warning. When you’re finished, you can run
+<p>The R Markdown file has unstaged changes. To know which version of
+the R Markdown file created these results, you’ll want to first commit
+it to the Git repo. If you’re still working on the analysis, you can
+ignore this warning. When you’re finished, you can run
 <code>wflow_publish</code> to commit the R Markdown file and build the
 HTML.</p>
 </div>
@@ -552,15 +552,15 @@ project makes it easier to run your code on other machines.</p>
 <div class="panel panel-default">
 <div class="panel-heading">
 <p class="panel-title">
-<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree31c0ce404dea5ea716a0ecbceeb3f742c8678b61targetblank31c0ce4a">
+<a data-toggle="collapse" data-parent="#workflowr-checks" href="#strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreed10b9ef9eb7f5c67b64d12667922f36cf41cbeabtargetblankd10b9efa">
 <span class="glyphicon glyphicon-ok text-success"
 aria-hidden="true"></span> <strong>Repository version:</strong>
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/31c0ce404dea5ea716a0ecbceeb3f742c8678b61" target="_blank">31c0ce4</a>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/d10b9ef9eb7f5c67b64d12667922f36cf41cbeab" target="_blank">d10b9ef</a>
 </a>
 </p>
 </div>
 <div
-id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistree31c0ce404dea5ea716a0ecbceeb3f742c8678b61targetblank31c0ce4a"
+id="strongRepositoryversionstrongahrefhttpsgithubcomkitadalvidrugAUCanalysistreed10b9ef9eb7f5c67b64d12667922f36cf41cbeabtargetblankd10b9efa"
 class="panel-collapse collapse">
 <div class="panel-body">
 <p>
@@ -570,7 +570,7 @@ reproducibility.
 </p>
 <p>
 The results in this page were generated with repository version
-<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/31c0ce404dea5ea716a0ecbceeb3f742c8678b61" target="_blank">31c0ce4</a>.
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/tree/d10b9ef9eb7f5c67b64d12667922f36cf41cbeab" target="_blank">d10b9ef</a>.
 See the <em>Past versions</em> tab to see a history of the changes made
 to the R Markdown and HTML files.
 </p>
@@ -589,26 +589,16 @@ Ignored files:
     Ignored:    .Rhistory
     Ignored:    .Rproj.user/
     Ignored:    analysis/.DS_Store
+    Ignored:    data/gse.rds
 
 Untracked files:
-    Untracked:  analysis/RNAseq_Analysis.Rmd
+    Untracked:  analysis/RNAseq_DEC2024.Rmd
 
 Unstaged changes:
-    Deleted:    analysis/Carboplatin_Analysis.Rmd
-    Deleted:    analysis/Cetxuimab_Analysis.Rmd
-    Deleted:    analysis/Cisplatin_Analysis.Rmd
-    Deleted:    analysis/Docetaxel_Analysis.Rmd
-    Deleted:    analysis/Doxorubicin_Analysis.Rmd
-    Deleted:    analysis/Gemcitabine_Analysis.Rmd
-    Deleted:    analysis/Irinotecan_Analysis.Rmd
-    Deleted:    analysis/Mitomycin_Analysis.Rmd
-    Deleted:    analysis/Overall_Summary.Rmd
-    Deleted:    analysis/Oxaliplatin_Analysis.Rmd
-    Deleted:    analysis/Paclitaxel_Analysis.Rmd
-    Deleted:    analysis/Topotecan_Analysis.Rmd
+    Modified:   analysis/MDSplots.Rmd
+    Modified:   analysis/RNAseq_Analysis.Rmd
     Modified:   analysis/Updated_DrugAUC.Rmd
     Modified:   analysis/_site.yml
-    Modified:   analysis/index.Rmd
 
 </code></pre>
 <p>
@@ -623,10 +613,74 @@ have uncommitted changes.
 <hr>
 </div>
 <div id="versions" class="tab-pane fade">
+
 <p>
-There are no past versions. Publish this analysis with
-<code>wflow_publish()</code> to start tracking its development.
+These are the previous versions of the repository in which changes were
+made to the R Markdown (<code>analysis/RNAseq_Analysis.Rmd</code>) and
+HTML (<code>docs/RNAseq_Analysis.html</code>) files. If you’ve
+configured a remote Git repository (see <code>?wflow_git_remote</code>),
+click on the hyperlinks in the table below to view the files as they
+were in that past version.
 </p>
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+File
+</th>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+<th>
+Message
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+Rmd
+</td>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/analysis/RNAseq_Analysis.Rmd" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+<td>
+RNA-seq + refitted linear model
+</td>
+</tr>
+<tr>
+<td>
+html
+</td>
+<td>
+<a href="https://rawcdn.githack.com/kitadalvi/drug-AUC-analysis/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/RNAseq_Analysis.html" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+<td>
+RNA-seq + refitted linear model
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <hr>
 </div>
 </div>
@@ -683,10 +737,84 @@ class="section level2">
 FALSE  TRUE 
 18644 20139 </code></pre>
 <p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-2-1.png" width="2880" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-2-1">
+Past versions of unnamed-chunk-2-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-2-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/figure/RNAseq_Analysis.Rmd/unnamed-chunk-2-1.png" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="mds-plots" class="section level3">
 <h3>MDS plots</h3>
 <p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-3-1.png" width="1344" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-3-1">
+Past versions of unnamed-chunk-3-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-3-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/figure/RNAseq_Analysis.Rmd/unnamed-chunk-3-1.png" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Comments: Clustering based on sample type (org,tum,lines), but no
 clustering based on growth pattern.</p>
 </div>
@@ -705,14 +833,126 @@ Up                     1592</code></pre>
 <div id="top-50" class="section level5">
 <h5>top 50</h5>
 <p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-5-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-5-1">
+Past versions of unnamed-chunk-5-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-5-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/figure/RNAseq_Analysis.Rmd/unnamed-chunk-5-1.png" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="top-100" class="section level5">
 <h5>top 100</h5>
 <p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-6-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-6-1">
+Past versions of unnamed-chunk-6-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-6-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/figure/RNAseq_Analysis.Rmd/unnamed-chunk-6-1.png" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 <div id="top-500" class="section level5">
 <h5>top 500</h5>
-<p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" />
+<p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-7-1.png" width="672" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-7-1">
+Past versions of unnamed-chunk-7-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-7-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/figure/RNAseq_Analysis.Rmd/unnamed-chunk-7-1.png" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-7-2.png" width="672" style="display: block; margin: auto;" />
 ### Comments: Overall, tumour and organoid samples looks quite similar
 in terms of expression. Approximately 80% of genes are not
 differentially expressed between tumour and organoid samples. Further
@@ -778,6 +1018,43 @@ correlated with their respective drug AUC’s.</p>
 <div id="mds-plots-1" class="section level4">
 <h4>MDS plots</h4>
 <p><img src="figure/RNAseq_Analysis.Rmd/unnamed-chunk-9-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>
+<button type="button" class="btn btn-default btn-xs btn-workflowr btn-workflowr-fig" data-toggle="collapse" data-target="#fig-unnamed-chunk-9-1">
+Past versions of unnamed-chunk-9-1.png
+</button>
+</p>
+<div id="fig-unnamed-chunk-9-1" class="collapse">
+<div class="table-responsive">
+<table class="table table-condensed table-hover">
+<thead>
+<tr>
+<th>
+Version
+</th>
+<th>
+Author
+</th>
+<th>
+Date
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<a href="https://github.com/kitadalvi/drug-AUC-analysis/blob/335a7e92ffad0eefac6d44f35d440068f5c3e1be/docs/figure/RNAseq_Analysis.Rmd/unnamed-chunk-9-1.png" target="_blank">335a7e9</a>
+</td>
+<td>
+kitadalvi
+</td>
+<td>
+2024-09-25
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <p>Comments: No clustering based on growth pattern or media. Clustering
 is mainly due to patient and batch.</p>
 <br>
@@ -812,7 +1089,6 @@ other attached packages:
  [7] BiocGenerics_0.51.0    enrichplot_1.25.0      clusterProfiler_4.13.0
 [10] RColorBrewer_1.1-3     ggpubr_0.6.0           edgeR_4.3.7           
 [13] limma_3.61.7           ggplot2_3.5.1          pheatmap_1.0.12       
-[16] workflowr_1.7.1       
 
 loaded via a namespace (and not attached):
   [1] rstudioapi_0.16.0       jsonlite_1.8.8          magrittr_2.0.3         
@@ -825,38 +1101,37 @@ loaded via a namespace (and not attached):
  [22] lifecycle_1.0.4         pkgconfig_2.0.3         gson_0.1.0             
  [25] Matrix_1.7-0            R6_2.5.1                fastmap_1.2.0          
  [28] GenomeInfoDbData_1.2.12 digest_0.6.36           aplot_0.2.3            
- [31] colorspace_2.1-1        patchwork_1.2.0         ps_1.7.7               
- [34] rprojroot_2.0.4         crosstalk_1.2.1         RSQLite_2.3.7          
- [37] fansi_1.0.6             httr_1.4.7              polyclip_1.10-7        
- [40] abind_1.4-5             compiler_4.4.0          bit64_4.0.5            
- [43] withr_3.0.1             backports_1.5.0         BiocParallel_1.39.0    
- [46] carData_3.0-5           viridis_0.6.5           DBI_1.2.3              
- [49] highr_0.11              ggforce_0.4.2           ggsignif_0.6.4         
- [52] MASS_7.3-61             HDO.db_0.99.1           tools_4.4.0            
- [55] scatterpie_0.2.3        ape_5.8                 httpuv_1.6.15          
- [58] glue_1.7.0              callr_3.7.6             nlme_3.1-165           
- [61] GOSemSim_2.31.0         promises_1.3.0          shadowtext_0.1.4       
- [64] grid_4.4.0              getPass_0.2-4           reshape2_1.4.4         
- [67] fgsea_1.31.0            generics_0.1.3          gtable_0.3.5           
- [70] tidyr_1.3.1             data.table_1.15.4       tidygraph_1.3.1        
- [73] car_3.1-2               utf8_1.2.4              XVector_0.45.0         
- [76] ggrepel_0.9.5           pillar_1.9.0            stringr_1.5.1          
- [79] yulab.utils_0.1.5       later_1.3.2             splines_4.4.0          
- [82] dplyr_1.1.4             tweenr_2.0.3            treeio_1.29.0          
- [85] lattice_0.22-6          bit_4.0.5               tidyselect_1.2.1       
- [88] GO.db_3.19.1            locfit_1.5-9.10         Biostrings_2.73.1      
- [91] knitr_1.48              git2r_0.33.0            gridExtra_2.3          
- [94] xfun_0.46               graphlayouts_1.1.1      statmod_1.5.0          
- [97] stringi_1.8.4           UCSC.utils_1.1.0        lazyeval_0.2.2         
-[100] ggfun_0.1.5             yaml_2.3.10             evaluate_0.24.0        
-[103] codetools_0.2-20        ggraph_2.2.1            tibble_3.2.1           
-[106] qvalue_2.37.0           ggplotify_0.1.2         cli_3.6.3              
-[109] munsell_0.5.1           processx_3.8.4          jquerylib_0.1.4        
-[112] Rcpp_1.0.13             GenomeInfoDb_1.41.1     png_0.1-8              
-[115] parallel_4.4.0          blob_1.2.4              DOSE_3.31.2            
-[118] tidytree_0.4.6          viridisLite_0.4.2       scales_1.3.0           
-[121] purrr_1.0.2             crayon_1.5.3            rlang_1.1.4            
-[124] cowplot_1.1.3           fastmatch_1.1-4         KEGGREST_1.45.1        </code></pre>
+ [31] colorspace_2.1-1        patchwork_1.2.0         rprojroot_2.0.4        
+ [34] crosstalk_1.2.1         RSQLite_2.3.7           fansi_1.0.6            
+ [37] httr_1.4.7              polyclip_1.10-7         abind_1.4-5            
+ [40] compiler_4.4.0          bit64_4.0.5             withr_3.0.1            
+ [43] backports_1.5.0         BiocParallel_1.39.0     carData_3.0-5          
+ [46] viridis_0.6.5           DBI_1.2.3               highr_0.11             
+ [49] ggforce_0.4.2           ggsignif_0.6.4          MASS_7.3-61            
+ [52] HDO.db_0.99.1           tools_4.4.0             scatterpie_0.2.3       
+ [55] ape_5.8                 httpuv_1.6.15           glue_1.7.0             
+ [58] nlme_3.1-165            GOSemSim_2.31.0         promises_1.3.0         
+ [61] shadowtext_0.1.4        grid_4.4.0              reshape2_1.4.4         
+ [64] fgsea_1.31.0            generics_0.1.3          gtable_0.3.5           
+ [67] tidyr_1.3.1             data.table_1.15.4       tidygraph_1.3.1        
+ [70] car_3.1-2               utf8_1.2.4              XVector_0.45.0         
+ [73] ggrepel_0.9.5           pillar_1.9.0            stringr_1.5.1          
+ [76] yulab.utils_0.1.5       later_1.3.2             splines_4.4.0          
+ [79] dplyr_1.1.4             tweenr_2.0.3            treeio_1.29.0          
+ [82] lattice_0.22-6          bit_4.0.5               tidyselect_1.2.1       
+ [85] GO.db_3.19.1            locfit_1.5-9.10         Biostrings_2.73.1      
+ [88] knitr_1.48              git2r_0.33.0            gridExtra_2.3          
+ [91] xfun_0.46               graphlayouts_1.1.1      statmod_1.5.0          
+ [94] stringi_1.8.4           UCSC.utils_1.1.0        lazyeval_0.2.2         
+ [97] workflowr_1.7.1         ggfun_0.1.5             yaml_2.3.10            
+[100] evaluate_0.24.0         codetools_0.2-20        ggraph_2.2.1           
+[103] tibble_3.2.1            qvalue_2.37.0           ggplotify_0.1.2        
+[106] cli_3.6.3               munsell_0.5.1           jquerylib_0.1.4        
+[109] Rcpp_1.0.13             GenomeInfoDb_1.41.1     png_0.1-8              
+[112] parallel_4.4.0          blob_1.2.4              DOSE_3.31.2            
+[115] viridisLite_0.4.2       tidytree_0.4.6          scales_1.3.0           
+[118] purrr_1.0.2             crayon_1.5.3            rlang_1.1.4            
+[121] cowplot_1.1.3           fastmatch_1.1-4         KEGGREST_1.45.1        </code></pre>
 </div>
 </div>
 </div>

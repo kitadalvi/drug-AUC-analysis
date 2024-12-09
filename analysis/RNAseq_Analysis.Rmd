@@ -20,6 +20,7 @@ library(clusterProfiler)
 library(enrichplot)
 library(org.Hs.eg.db)
 library(DT)
+
 ```
 
 ## Differential Expression of Organoid VS Tumour samples 
@@ -136,6 +137,9 @@ pheatmap(top_100, cutree_cols = 5)
 ##### top 500
 ```{r}
 pheatmap(top_500, cutree_cols = 5)
+
+test <- scale(top_500)
+pheatmap(top_500, cutree_cols = 5, scale = "row")
 ```
 ###
 Comments: Overall, tumour and organoid samples looks quite similar in terms of expression. Approximately 80% of genes are not differentially expressed between tumour and organoid samples. Further filtering could be done to identify differentially expressed genes over/under a certain logFC threshold.

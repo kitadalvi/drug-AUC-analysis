@@ -22,7 +22,7 @@ library(clusterProfiler)
 library(enrichplot)
 library(org.Hs.eg.db)
 library(DT)
-
+library(EnhancedVolcano)
 ```
 
 ## RNA-seq data 
@@ -96,7 +96,7 @@ legend("topleft",
 
 ```
 
-## Fitting a GLM {.tabset}
+## Method 1: Fitting a GLM {.tabset}
 ```{r}
 sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
@@ -130,9 +130,14 @@ mito_counts <- calcNormFactors(mito_counts)
 #fit GLMs
 fit <- glmQLFit(mito_counts, design)
 mito_auc_fit <- glmQLFTest(fit, coef=c('mitomycin'))
-genes <- topTags(mito_auc_fit)
+genes <- topTags(mito_auc_fit, n=Inf)
 
 datatable(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 ```
 
 Plotting top genes: 
@@ -178,7 +183,12 @@ irino_counts <- calcNormFactors(irino_counts)
 #fit GLMs
 fit <- glmQLFit(irino_counts, design)
 irinotecan_auc_fit <- glmQLFTest(fit, coef=c('irinotecan'))
-genes <- topTags(irinotecan_auc_fit)
+genes <- topTags(irinotecan_auc_fit, n=Inf)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -569,3 +579,102 @@ for (gene in top_genes) {
 }
 ```
 
+## Method 2: Differential Expression Analysis {.tabset}
+### TOP1 inhibitors
+```{r}
+y1 <- y
+design <- model.matrix(~batch+sampleinfo$top_resistance)
+rownames(design)<- sampleinfo$`Sample ID`
+
+#filtering to remove low counts
+keep <- filterByExpr(y1, design = design)
+table(keep)
+y1 <- y1[keep, , keep.lib.sizes=FALSE]
+#normalizing library sizes
+y1 <- calcNormFactors(y1)
+y1 <- estimateDisp(y1, design, robust=TRUE)
+fit <- glmQLFit(y1, design)
+lrt <- glmQLFTest(fit, coef=3)
+genes <- topTags(lrt, n=Inf)
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'FDR', 
+                pCutoff = 0.05,
+                labSize = 0.01) + ggtitle("TOP1 inhibitors")
+```
+
+### Cytotoxic Antibiotics
+```{r}
+y2 <- y
+design <- model.matrix(~batch+sampleinfo$ca_resistance)
+rownames(design)<- sampleinfo$`Sample ID`
+
+#filtering to remove low counts
+keep <- filterByExpr(y2, design = design)
+table(keep)
+y2 <- y2[keep, , keep.lib.sizes=FALSE]
+#normalizing library sizes
+y2 <- calcNormFactors(y2)
+y2 <- estimateDisp(y2, design, robust=TRUE)
+fit <- glmQLFit(y2, design)
+lrt <- glmQLFTest(fit, coef=3)
+genes <- topTags(lrt, n=Inf)
+
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'FDR', 
+                pCutoff = 0.05,
+                labSize = 0.01) + ggtitle("Cytotoxic Antibiotics")
+```
+### Taxanes 
+```{r}
+y3 <- y
+design <- model.matrix(~batch+sampleinfo$taxane_resistance)
+rownames(design)<- sampleinfo$`Sample ID`
+
+#filtering to remove low counts
+keep <- filterByExpr(y3, design = design)
+table(keep)
+y3 <- y3[keep, , keep.lib.sizes=FALSE]
+#normalizing library sizes
+y3 <- calcNormFactors(y3)
+y3 <- estimateDisp(y3, design, robust=TRUE)
+fit <- glmQLFit(y3, design)
+lrt <- glmQLFTest(fit, coef=3)
+genes <- topTags(lrt, n=Inf)
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'FDR', 
+                pCutoff = 0.05,
+                labSize = 0.01)+ ggtitle("Taxanes")
+```
+### Platinum based
+```{r}
+y4 <- y
+design <- model.matrix(~batch+sampleinfo$plat_resistance)
+rownames(design)<- sampleinfo$`Sample ID`
+
+#filtering to remove low counts
+keep <- filterByExpr(y4, design = design)
+table(keep)
+y4 <- y4[keep, , keep.lib.sizes=FALSE]
+#normalizing library sizes
+y4 <- calcNormFactors(y4)
+y4 <- estimateDisp(y4, design, robust=TRUE)
+fit <- glmQLFit(y4, design)
+lrt <- glmQLFTest(fit, coef=3)
+genes <- topTags(lrt, n=Inf)
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'FDR', 
+                pCutoff = 0.05,
+                labSize = 0.01)+ ggtitle("Platinum-based")
+```
