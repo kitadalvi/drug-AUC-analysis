@@ -30,8 +30,8 @@ A quick look at the data:
 ```{r}
 
 # loading in data
-rawdata <- read.delim2('/Users/dalvinikita/Documents/RNA-seq Analysis/Sequencing Data/collated.count.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
-
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+ 
 head(rawdata) 
 
 sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
@@ -44,7 +44,7 @@ head(sampleinfo)
 ```{r, fig.height=10, fig.width=30, echo=FALSE}
 
 #creating a DGElist object 
-y<- DGEList(counts=rawdata[,c(7,10,14,17,20,24,25,28)], genes=rawdata[,2])
+y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55","ORG60","ORG61","ORG64_new","ORG65","ORG66","ORG70","ORG71","ORG73")], genes=rawdata[,1])
 
 #create factors to include in design matrix
 sampleinfo$Batch<- as.factor(sampleinfo$Batch)
@@ -53,7 +53,7 @@ patient <- as.factor(c(sampleinfo$PATIENT))
 pattern <- as.factor(c(sampleinfo$PATTERN))
 
 #create design matrix to include patient, batch, growth pattern
-design <- model.matrix(~patient+pattern+batch)
+design <- model.matrix(~0+patient+pattern+batch)
 rownames(design) <- sampleinfo$`Sample ID`
 
 #filtering to remove low counts
@@ -100,7 +100,7 @@ legend("topleft",
 ```{r}
 sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
-y<- DGEList(counts=rawdata[,c(7,10,14,17,20,24,25,28)], genes=rawdata[,2])
+y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55","ORG60","ORG61","ORG64_new","ORG65","ORG66","ORG70","ORG71","ORG73")], genes=rawdata[,1])
 
 batch <- as.factor(sampleinfo$Batch)
 ```
@@ -111,7 +111,7 @@ mito_counts <- y
 design <- model.matrix(~batch+sampleinfo$Mitomycin)
 mitomycin <- as.numeric(sampleinfo$Mitomycin)
 design <- cbind(design[,1:3],mitomycin)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -143,6 +143,7 @@ EnhancedVolcano(genes$table,
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- mitomycin
 
 for (gene in top_genes) {
@@ -196,6 +197,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- irinotecan
 
 for (gene in top_genes) {
@@ -242,6 +244,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- topotecan
 
 for (gene in top_genes) {
@@ -288,6 +291,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- doxorubicin
 
 for (gene in top_genes) {
@@ -334,6 +338,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- carboplatin
 
 for (gene in top_genes) {
@@ -380,6 +385,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- oxaliplatin
 
 for (gene in top_genes) {
@@ -426,6 +432,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- cisplatin
 
 for (gene in top_genes) {
@@ -471,6 +478,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- gemcitabine
 
 for (gene in top_genes) {
@@ -517,6 +525,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- docetaxel
 
 for (gene in top_genes) {
@@ -563,6 +572,7 @@ datatable(as.data.frame(genes))
 Plotting top genes: 
 ```{r}
 top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:10]
 auc_values <- paclitaxel
 
 for (gene in top_genes) {
@@ -602,7 +612,8 @@ EnhancedVolcano(genes$table,
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                labSize = 0.01) + ggtitle("TOP1 inhibitors")
+                boxedLabels = TRUE,
+                labSize = 4) + ggtitle("TOP1 inhibitors")
 ```
 
 ### Cytotoxic Antibiotics
@@ -628,8 +639,10 @@ EnhancedVolcano(genes$table,
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                labSize = 0.01) + ggtitle("Cytotoxic Antibiotics")
+                boxedLabels = TRUE,
+                labSize = 4) + ggtitle("Cytotoxic Antibiotics")
 ```
+
 ### Taxanes 
 ```{r}
 y3 <- y
@@ -652,10 +665,12 @@ EnhancedVolcano(genes$table,
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                labSize = 0.01)+ ggtitle("Taxanes")
+                boxedLabels = TRUE,
+                labSize = 4)+ ggtitle("Taxanes")
 ```
+
 ### Platinum based
-```{r}
+```{r, fig.height=7, fig.width=7}
 y4 <- y
 design <- model.matrix(~batch+sampleinfo$plat_resistance)
 rownames(design)<- sampleinfo$`Sample ID`
@@ -676,5 +691,6 @@ EnhancedVolcano(genes$table,
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                labSize = 0.01)+ ggtitle("Platinum-based")
+                boxedLabels = TRUE,
+                labSize = 4)+ ggtitle("Platinum-based")
 ```
