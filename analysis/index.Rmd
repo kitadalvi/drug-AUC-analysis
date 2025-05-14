@@ -10,8 +10,12 @@ editor_options:
 
 Welcome to my research website.
 
-[RNA-seq Analysis](RNAseq_Analysis.html)
+[RNA-seq Analysis APR2025](RNAseq_APR2025.html)
+
+[AUC APR2025](Updated_DrugAUC.html)
 
 [Filtering and MDS plots](MDSplots.html)
 
 [Gene Set Enrichment Analysis](gene_set_analysis.html)
+
+
