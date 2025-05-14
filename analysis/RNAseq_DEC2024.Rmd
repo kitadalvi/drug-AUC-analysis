@@ -38,14 +38,22 @@ Overall: 59 different samples sequenced over 4 batches.
 rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
 ### Loading in sample metadata
-sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
 ```
 
 ### Design Matrix
 ```{r}
 ### Initialising DGE object: labelling genes and counts
 ### Not including LGSOC lines
-y<- DGEList(counts=rawdata[,2:58], genes=rawdata[,1])
+### removed ORG71 and ORG71T
+y<- DGEList(counts=rawdata[,-c(1,44,45,59,60)], genes=rawdata[,1])
+
+### removing LGSOC lines from sampleinfo
+### removing ORG71 from sampleinfo
+### matching rownames of sampleinfo to colnames of y
+order <- rownames(y$samples)
+rownames(sampleinfo) <- sampleinfo$`Sample-ID`
+sampleinfo <- sampleinfo[order,]
 
 ### Changing batch from numeric to factor variable
 sampleinfo$Batch<- as.factor(sampleinfo$Batch)
@@ -56,7 +64,7 @@ batch <- as.factor(c(sampleinfo$Batch))
 type <- as.factor(c(sampleinfo$Type))
 pattern <- as.factor(c(sampleinfo$Pattern))
 responder <- as.factor(c(sampleinfo$Responder))
-design <- model.matrix(~pattern+type+batch)
+design <- model.matrix(~0+type+batch)
 rownames(design)<- sampleinfo$`Sample-ID`
 
 datatable(design)
@@ -71,7 +79,7 @@ y <- y[keep, , keep.lib.sizes=TRUE]
 
 ### Normalise by CPM 
 ### Log transform CPM values
-lcpm <- cpm(y, log=TRUE)
+lcpm <- edgeR::cpm(y, log=TRUE)
 
 ### Set colours for plots
 col <- brewer.pal(60, 'Paired')
@@ -94,17 +102,22 @@ Comments: Sequencing depth of ORG57, ORG65T, RMUG-parental, and ORG64_old are si
 
 ```{r}
 ### Removing inadequate samples from DGE list object, and sample info
-y <- y[,-c(50,39,56,36)]
-sampleinfo <- sampleinfo[-c(50,39,56,36),]
+y <- y[,-c(48,39,54,36)]
+sampleinfo <- sampleinfo[-c(48,39,54,36),]
 rownames(sampleinfo)<- sampleinfo$`Sample-ID`
-design <- design[-c(50,39,56,36),]
+design <- design[-c(48,39,54,36),]
+
+### clean up sample names using "Label" column from sampleinfo
+rownames(y$samples)<- sampleinfo$Label
+colnames(y$counts)<- sampleinfo$Label
+rownames(sampleinfo)<- sampleinfo$Label
 ```
 
 ### MDS plots{.tabset}
 ```{r}
 ### Setting colours for mds PLOTS
 col.type <- brewer.pal(5, 'Dark2')[sampleinfo$Type]
-col.pattern <- brewer.pal(3, 'Dark2')[sampleinfo$Pattern]
+col.pattern <- brewer.pal(4, 'Dark2')[sampleinfo$Pattern]
 col.batch <- brewer.pal(4, 'Dark2')[sampleinfo$Batch]
 ```
 
@@ -117,7 +130,7 @@ title('A. Sample Type')
 
 ### MDS plot colours by sample growth pattern
 plotMDS(y, col=col.pattern, pch=19)
-legend("topleft",legend=levels(sampleinfo$Pattern), fill = c('#7570B3','#D95F02','#1B9E77'))
+legend("topleft",legend=levels(sampleinfo$Pattern), fill = c('#7570B3','#D95F02','#1B9E77','#E7298A'))
 title('B. Growth pattern')
 
 ### MDS plot colours by sample batch
@@ -135,7 +148,7 @@ title('A. Sample Type')
 
 ### MDS plot colours by sample growth pattern
 plotMDS(y, col=col.pattern)
-legend("topleft",legend=levels(sampleinfo$Pattern), fill = c('#7570B3','#D95F02','#1B9E77'))
+legend("topleft",legend=levels(sampleinfo$Pattern), fill = c('#7570B3','#D95F02','#1B9E77','#E7298A'))
 title('B. Growth pattern')
 
 ### MDS plot colours by sample batch
@@ -176,34 +189,37 @@ downregulated <- DEgenes[DEgenes$logFC<0,]
 
 Between ORG and TUM samples:
 
-• 656 DE genes were upregulated
+• 676 DE genes were upregulated
 
-• 3928 DE genes were downregulated
+• 3370 DE genes were downregulated
 
 
 #### Visualisation
 
 ##### Basic Heatmap
-After ordering our table of DE genes (both upregulated and downregulated) by p-value, we cans elect the top 100 most significantly differentially expressed genes between ORG and TUM samples:
+After ordering our table of DE genes (both upregulated and downregulated) by p-value, we can select the top 100 most significantly differentially expressed genes between ORG and TUM samples:
 
 ```{r, fig.height=18, fig.width=18}
 order<- DEgenes$genes[1:100]
 lcpm <- cpm(y, prior.count=2, log=TRUE)
 rownames(lcpm)<- y$genes$genes
 top_100 <- lcpm[order[1:100],]
-type_annotation <- data.frame(Type=sampleinfo[,c(2)],
-                              Batch=sampleinfo[,c(5)], 
-                              TUM_type = sampleinfo[,c(7)],
-                              Stage = sampleinfo[,c(8)],
-                              Age = sampleinfo[,c(9)])
-rownames(type_annotation) <- sampleinfo$`Sample-ID`
+type_annotation <- data.frame(Type=sampleinfo[,c(3)],
+                              TUM_type = sampleinfo[,c(8)],
+                              Stage = sampleinfo[,c(9)],
+                              Age = sampleinfo[,c(10)])
+rownames(type_annotation) <- sampleinfo$Label
+ColorCode  = list(TUM_type = c(Primary="#f8729a",Recurrence="#9af872",UNK="#729af8"),
+                  Type=c(CAF="#f8729a",FIB="#9af872",LINES="#729af8",ORG="#72f8d0",TUM="#f8d072"),
+                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"),
+                  Age=c(`<50`="#f8729a",`>50`="#9af872",UNK="#729af8"))
 pheatmap(top_100,
          border_color = 'NA',
          cellwidth = 15,
          cellheight = 10, 
-         cutree_cols = 5,
          annotation_col = type_annotation,
-         main="Top 100 DE genes between ORG and TUM samples",
+         annotation_colors = ColorCode,
+         main="Top 50 DE genes between ORG and TUM samples",
          fontsize = 15)
 ```
 
@@ -238,8 +254,47 @@ dotplot(gse, showCategory = 5, title = "Enriched Pathways" , split=".sign") + fa
 #### Differential Expression
 
 ```{r}
+### reloading data 
+### removing samples with low library counts
+### removing non-ORG samples
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+
+y<- DGEList(counts=rawdata[,-c(1,2:14,37,40,44,45,51,56:60)], genes=rawdata[,1])
+
+### matching rownames of sampleinfo to colnames of y
+order <- rownames(y$samples)
+rownames(sampleinfo) <- sampleinfo$`Sample-ID`
+sampleinfo <- sampleinfo[order,]
+
+### clean up sample names using "Label" column from sampleinfo
+rownames(y$samples)<- sampleinfo$Label
+colnames(y$counts)<- sampleinfo$Label
+rownames(sampleinfo)<- sampleinfo$Label
+
+### new design matrix 
+sampleinfo <- droplevels(sampleinfo)
+pattern <- sampleinfo[,5]
+batch <- as.factor(sampleinfo[,6])
+design <- model.matrix(~pattern + batch)
+rownames(design) <- colnames(y)
+
+### Filtering to remove low counts
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+### Calculate normalisation factors
+y <- calcNormFactors(y) 
+
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
 ### Making contrasts
-res <- glmQLFTest(fit, coef=2)
+infVSexp <- makeContrasts(patternINF-patternEXP, levels=design)
+res <- glmQLFTest(fit, contrast=infVSexp)
 res <- res[res$table$logFC<= -2 | res$table$logFC>=2,]
 DEgenes <- topTags(res, p.value=0.05, n=100000)
 DEgenes <- DEgenes$table[DEgenes$table$logFC<= -2 | DEgenes$table$logFC>=2,]
@@ -251,6 +306,8 @@ Table of differentially expressed genes between INF and EXP samples:
 datatable(DEgenes)
 ```
 
+
+Next, we want to separate our list of DEgenes into upregulated (logFC>0) and downregulated (logFC<0) genes.
 ```{r}
 upregulated <- DEgenes[DEgenes$logFC>0,]
 downregulated <- DEgenes[DEgenes$logFC<0,]
@@ -258,9 +315,10 @@ downregulated <- DEgenes[DEgenes$logFC<0,]
 
 Between INF and EXP samples:
 
-•  582 DE genes were upregulated
+• 136 DE genes were upregulated
 
-•  329 DE genes were downregulated
+• 167 DE genes were downregulated
+
 
 #### Visualisation
 
@@ -269,22 +327,26 @@ After ordering our table of DE genes (both upregulated and downregulated) by p-v
 
 ```{r, fig.height=18, fig.width=18}
 order<- DEgenes$genes[1:100]
+lcpm <- cpm(y, prior.count=2, log=TRUE)
+rownames(lcpm)<- y$genes$genes
 top_100 <- lcpm[order[1:100],]
-pattern_annotation <- data.frame(Pattern=sampleinfo[,c(4)],
-                                 Batch=sampleinfo[,c(5)],
-                                 TUM_type = sampleinfo[,c(7)],
-                                 Stage = sampleinfo[,c(8)],
-                                 Age = sampleinfo[,c(9)])
-rownames(pattern_annotation) <- sampleinfo$`Sample-ID`
+type_annotation <- data.frame(Pattern=sampleinfo[,c(5)],
+                              TUM_type = sampleinfo[,c(8)],
+                              Stage = sampleinfo[,c(9)])
+rownames(type_annotation) <- sampleinfo$Label
+ColorCode  = list(Pattern = c(INF="#f8729a",EXP="#9af872",BDL="#f8d072",UNK="#729af8"),
+                  TUM_type = c(Primary="#f8729a",Recurrence="#729af8"),
+                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"))
 pheatmap(top_100,
          border_color = 'NA',
-         cellwidth = 15,
+         cellwidth = 18,
          cellheight = 10, 
-         cutree_cols = 4,
-         annotation_col = pattern_annotation,
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
          main="Top 100 DE genes between INF and EXP samples",
          fontsize = 15)
 ```
+
 
 ### Responders VS Non-responders (Olivia AUC)
 
@@ -297,28 +359,49 @@ This analysis is based off of Olivia's drug screen experiments where she identif
 #### Differential Expression
 
 ```{r}
-### Subset DGE object and sample info to only include relevant ORGs
-y2 <- y[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG55","ORG60","ORG64_new","ORG65","ORG66","ORG70","ORG73")]
-sampleinfo2 <- sampleinfo
-rownames(sampleinfo2)<- sampleinfo2$`Sample-ID`
-sampleinfo2 <- sampleinfo2[c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG55","ORG60","ORG64_new","ORG65","ORG66","ORG70","ORG73"),]
+### reloading data 
+### keeping only relevant samples to AUC 
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+
+y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG55","ORG60","ORG64_new","ORG65","ORG66","ORG70","ORG73")], genes=rawdata[,1])
+rownames(sampleinfo) <- sampleinfo$Label
+sampleinfo <- sampleinfo[c("ORG38-O","ORG41","ORG46-O","ORG55","ORG60","ORG64","ORG65","ORG66","ORG70","ORG73"),]
+sampleinfo <- droplevels(sampleinfo)
+
+### clean up sample names using "Label" column from sampleinfo
+rownames(y$samples)<- sampleinfo$Label
+colnames(y$counts)<- sampleinfo$Label
+rownames(sampleinfo)<- sampleinfo$Label
 
 ### Create new design matrix
-batch <- as.factor(c(sampleinfo2$Batch))
-pattern <- as.factor(c(sampleinfo2$Pattern))
-responder <- as.factor(c(sampleinfo2$Responder))
-design <- model.matrix(~batch+responder)
-rownames(design)<- rownames(sampleinfo2)
+batch <- as.factor(c(sampleinfo$Batch))
+responder <- as.factor(c(sampleinfo$Responder))
+design <- model.matrix(~0+responder+batch)
+rownames(design) <- sampleinfo$Label
+
+### Filtering to remove low counts
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+### Calculate normalisation factors
+y <- calcNormFactors(y) 
+
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
 
 ### Making contrasts
-fit <- glmQLFit(y2, design, robust=TRUE)
-res <- glmQLFTest(fit, coef=c("responderSENS"))
+resVSsens <- makeContrasts(responderSENS-responderRES, levels=design)
+res <- glmQLFTest(fit, contrast=resVSsens)
 res <- res[res$table$logFC<= -2 | res$table$logFC>=2,]
 DEgenes <- topTags(res, p.value=0.05, n=100000)
 DEgenes <- DEgenes$table[DEgenes$table$logFC<= -2 | DEgenes$table$logFC>=2,]
 ```
 
-Table of differentially expressed genes between INF and EXP samples:
+Table of differentially expressed genes between SENSITIVE and RESISTANT samples:
 
 ```{r}
 datatable(DEgenes)
@@ -331,32 +414,33 @@ downregulated <- DEgenes[DEgenes$logFC<0,]
 
 Between sensitive and resistant samples:
 
-•   281 DE genes were upregulated
+•   312 DE genes were upregulated
 
-•   52 DE genes were downregulated
+•   85 DE genes were downregulated
 
 #### Visualisation
 
 ##### Basic Heatmap
-After ordering our table of DE genes (both upregulated and downregulated) by p-value, we can select the top 100 most significantly differentially expressed genes between ORG and TUM samples:
+After ordering our table of DE genes (both upregulated and downregulated) by p-value, we can select the top 100 most significantly differentially expressed genes between "responder" and "non-responder" ORGS:
 
 ```{r, fig.height=18, fig.width=18}
 order<- DEgenes$genes[1:100]
-lcpm <- cpm(y2, prior.count=2, log=TRUE)
-rownames(lcpm)<- y2$genes$genes
+lcpm <- cpm(y, prior.count=2, log=TRUE)
+rownames(lcpm)<- y$genes$genes
 top_100 <- lcpm[order[1:100],]
-pattern_annotation <- data.frame(Pattern=sampleinfo[,c(4)],
-                                 Batch=sampleinfo[,c(5)],
-                                 TUM_type = sampleinfo[,c(7)],
-                                 Stage = sampleinfo[,c(8)],
-                                 Age = sampleinfo[,c(9)])
-rownames(pattern_annotation) <- sampleinfo$`Sample-ID`
+type_annotation <- data.frame(Responder=sampleinfo[,c(7)],
+                              Age = sampleinfo[,c(10)],
+                              Stage = sampleinfo[,c(9)])
+rownames(type_annotation) <- sampleinfo$Label
+ColorCode  = list(Pattern = c(RES="#f8729a",SENS="#9af872"),
+                  Age = c(`>50`="#f8729a",`<50`="#9af872",UNK="#729af8"),
+                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"))
 pheatmap(top_100,
          border_color = 'NA',
-         cellwidth = 15,
+         cellwidth = 70,
          cellheight = 10, 
-         cutree_cols = 2,
-         annotation_col = pattern_annotation,
-         main="Top 100 DE genes between sensitive and resistant samples",
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         main="Top 100 DE genes between SENSITIVE and RESISTANT samples",
          fontsize = 15)
 ```

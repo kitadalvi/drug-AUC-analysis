@@ -1,0 +1,458 @@
+---
+title: "RNA-seq APR 2025"
+output: html_document
+date: "2025-04-18"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message=FALSE,
+                      warning=FALSE)
+
+library(pheatmap)
+library(ggplot2)
+library(edgeR)
+library(limma)
+library(ggpubr)
+library(RColorBrewer)
+library(clusterProfiler)
+library(enrichplot)
+library(org.Hs.eg.db)
+library(DT)
+```
+
+```{r}
+### Functions 
+
+### buttons for datatables 
+create_dt <- function(x){
+  DT::datatable(x,
+                extensions = 'Buttons',
+                options = list(dom = 'Blfrtip',
+                               buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                               lengthMenu = list(c(10,25,50,-1),
+                                                 c(10,25,50,"All"))))
+}
+```
+## Data
+Paths to data: 
+
+Individual count data: '/home/ndalvi/RNAseq_STAR/Results/HTseq/'
+
+Collated counts matrix: '/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv'
+
+Sample info/metadata: '/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo.txt'
+
+Overall: 59 different samples sequenced over 4 batches. 
+
+```{r}
+### Loading in the data 
+###Loading in counts matrix
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+### Loading in sample metadata
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+```
+
+Based on previous analyses, we will remove the following samples due to type (LGSOC lines/ ORG71) or low library count:
+
+• LGSOC lines
+
+• ORG71/ORG71T
+
+• ORG57
+
+• ORG65T
+
+• RMUG-parental
+
+• ORG64_old
+
+```{r}
+### removing samples from sampleinfo 
+samples_to_remove <- c("ORG71", "ORG71T", "ORG57", "ORG65T", "RMUG-parental","ORG64_old", "SLC58", "VOA4627")
+sampleinfo <- sampleinfo[!sampleinfo$`Sample-ID` %in% samples_to_remove,]
+rawdata <- rawdata[,!colnames(rawdata) %in% samples_to_remove]
+```
+
+## ORGs VS TUMs  
+
+### Filtering and Preprocessing 
+```{r}
+### Initialising DGE object 
+y<- DGEList(counts=rawdata[,2:52], genes=rawdata[,1])
+
+### matching rownames of sampleinfo to colnames of DGE object 
+order <- rownames(y$samples)
+rownames(sampleinfo) <- sampleinfo$`Sample-ID`
+sampleinfo <- sampleinfo[order,]
+colnames(y) <- sampleinfo$Label
+```
+
+Factors to include in design matrix:
+
+• Batch
+
+• Type (TUM, ORG, LINES etc)
+
+• Pattern (INF, EXP, BDL, UNK)
+
+• Responder
+
+```{r}
+batch <- as.factor(sampleinfo$Batch)
+type <- as.factor(sampleinfo$Type)
+pattern <- as.factor(sampleinfo$Pattern)
+responder <- as.factor(sampleinfo$Responder)
+
+design <- model.matrix(~0+ type + batch)
+
+create_dt(design)
+```
+### Visualisation
+```{r}
+
+### Calculatng normalisation factors
+y <- calcNormFactors(y)
+paste("Number of genes BEFORE filtering =", length(y$genes$genes))
+
+### filter by cpm>10 in at least 2 samples
+keep <- rowSums(edgeR::cpm(y$counts)>10) >= 2
+counts <- y[keep,]
+
+paste("Number of genes AFTER filtering =", length(counts$genes$genes))
+
+### MDS plot, coloured by type
+col.type <- brewer.pal(5, 'Dark2')[sampleinfo$Type]
+plotMDS(counts, col=col.type)
+plotMDS(counts, col=col.type, pch=16)
+```
+Unsurprisingly, CAFS and fibroblasts cluster close together, with ORGs/TUMs/cell cell lines clustering on one side of the MDS plot. Within this, cell lines + ORGs cluster closer together and are separated from TUMs. 
+
+### edgeR differential expression
+```{r}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+orgVStum <- makeContrasts(typeORG-typeTUM, levels=design)
+res <- glmQLFTest(fit, contrast=orgVStum)
+DEgenes <- topTags(res, p.value=0.05, n=Inf)
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+```
+
+
+#### All samples
+```{r, fig.height=20, fig.width=20}
+
+### Top100 DE genes between orgs and tums
+### Create counts matrix of voom transformed counts for selected genes
+rownames(y$counts) <- y$genes$genes 
+top_100_genes <- DEgenes$genes[1:100]
+counts <- y$counts[top_100_genes,]
+lcpm <- edgeR::cpm(counts, log = TRUE)
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
+                              TUM_type = as.factor(sampleinfo[,c(8)]),
+                              Stage = as.factor(sampleinfo[,c(9)]),
+                              Age = as.factor(sampleinfo[,c(10)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(TUM_type = c(Primary="#f8729a",Recurrence="#9af872",UNK="#729af8"),
+                  Type=c(CAF="#f8729a",FIB="#9af872",LINES="#729af8",ORG="#72f8d0",TUM="#f8d072"),
+                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"),
+                  Age=c(`<50`="#f8729a",`>50`="#9af872",UNK="#729af8"))
+pheatmap(lcpm,
+         border_color = 'NA',
+         cellwidth = 15,
+         cellheight = 10, 
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         main="Top 100 DE genes between ORG and TUM samples in all samples",
+         fontsize = 15)
+```
+
+#### Only ORG/TUM
+```{r, fig.height=20, fig.width=20}
+
+### Subsetting sampleinfo
+sampleinfo_OrgTum <- sampleinfo[sampleinfo$Type=="ORG" | sampleinfo$Type == "TUM",]
+
+### subsetting voom transformed counts matrix 
+samples <- as.character(sampleinfo_OrgTum$Label)
+counts <- y$counts[,c(samples)]
+
+### Top100 DE genes between orgs and tums
+### Create counts matrix of voom transformed counts for selected genes
+counts <- counts[top_100_genes,]
+lcpm <- edgeR::cpm(counts, log = TRUE)
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
+                              TUM_type = as.factor(sampleinfo[,c(8)]),
+                              Stage = as.factor(sampleinfo[,c(9)]),
+                              Age = as.factor(sampleinfo[,c(10)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(TUM_type = c(Primary="#f8729a",Recurrence="#9af872",UNK="#729af8"),
+                  Type=c(CAF="#f8729a",FIB="#9af872",LINES="#729af8",ORG="#72f8d0",TUM="#f8d072"),
+                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"),
+                  Age=c(`<50`="#f8729a",`>50`="#9af872",UNK="#729af8"))
+pheatmap(lcpm,
+         border_color = 'NA',
+         cellwidth = 30,
+         cellheight = 12, 
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         main="Top 100 DE genes between ORG and TUM samples in ORG/TUM samples",
+         fontsize = 15)
+```
+## Platinum resistance
+```{r, fig.height=20, fig.width=20}
+counts <- y$counts[,c(samples)]
+lcpm <- edgeR::cpm(counts, log = TRUE)
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
+                              TUM_type = as.factor(sampleinfo[,c(8)]),
+                              Stage = as.factor(sampleinfo[,c(9)]),
+                              Age = as.factor(sampleinfo[,c(10)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(TUM_type = c(Primary="#f8729a",Recurrence="#9af872",UNK="#729af8"),
+                  Type=c(CAF="#f8729a",FIB="#9af872",LINES="#729af8",ORG="#72f8d0",TUM="#f8d072"),
+                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"),
+                  Age=c(`<50`="#f8729a",`>50`="#9af872",UNK="#729af8"))
+
+plat_resistance_genes <- c("E2F1", "KAT2B", "SLC31A1", "NFE2L2", "LRRFIP1", "ABCB1", "ABCC2", "ABCC3", "ABCC4", "RAD51C", "RAD51D", "PALB2", "MSH2", "MLH1", "CCND1", "BRCA1", "BRCA2", "NDRG1", "CYBRD1", "MT2A", "CNIH3", "DPYSL3","ERBB4", "ANK3", "B2M", "LRRTM4", "EYA4", "SLIT2")
+
+pheatmap(lcpm[plat_resistance_genes,],
+         border_color = 'NA',
+         cellwidth = 16,
+         cellheight = 30, 
+         #annotation_col = type_annotation,
+         #annotation_colors = ColorCode,
+         treeheight_row = 0,
+         treeheight_col = 0,
+         #main="Genes associated with platinum resistance ORG/TUM samples",
+         fontsize = 15)
+
+```
+
+## INF VS EXP 
+
+In this section we want to complete a differential gene expression analysis between our expansile and infiltrative sub-types in only the TUM samples. 
+```{r}
+### Loading in the data 
+###Loading in counts matrix
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+### Loading in sample metadata
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+
+### Remove everything that is NOT a tumour in both sampleinfo and rawdata
+sampleinfo <- sampleinfo[sampleinfo$Type=="TUM",]
+
+### remove ORG71
+sampleinfo <- sampleinfo[sampleinfo$`Sample-ID`!="ORG71T",]
+
+### seelct same samples from rawdata
+rawdata <- rawdata[,c("ENSEMBL_GeneID","ORG-16-TUMOUR","ORG46T","ORG55T","ORG59T","ORG63T","ORG65T","ORG70T","ORG73T","ORG74T","ORG49T","ORG60T")]
+
+### add coutns to DGE object <- 
+y<- DGEList(counts=rawdata[,2:12], genes=rawdata[,1])
+
+### change colnames to readable names
+colnames(y) <- sampleinfo$Label
+```
+
+### Filtering and preprocessing 
+Factors to include in design matrix:
+
+• Growth pattern
+
+• Batch 
+
+
+```{r}
+pattern <- droplevels(as.factor(sampleinfo$Pattern))
+batch <- as.factor(sampleinfo$Batch)
+type <- droplevels(as.factor(sampleinfo$TUM_type))
+stage <- as.factor(sampleinfo$Stage)
+
+design <- model.matrix(~0+ pattern + batch)
+rownames(design) <- sampleinfo$Label
+
+create_dt(design)
+```
+
+### Visualisation
+```{r}
+
+### Calculatng normalisation factors
+y <- calcNormFactors(y)
+paste("Number of genes BEFORE filtering =", length(y$genes$genes))
+
+### filter by cpm>10 in at least 2 samples
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+paste("Number of genes AFTER filtering =", length(y$genes$genes))
+
+### MDS plot, coloured by type
+col.type <- brewer.pal(5, 'Dark2')[sampleinfo$Pattern]
+plotMDS(y, col=col.type)
+plotMDS(y, col=col.type, pch=16)
+```
+
+### Fitting a model using EdgeR
+```{r}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+infVSexp <- makeContrasts(patternINF-patternEXP, levels=design)
+res <- glmQLFTest(fit, contrast=infVSexp)
+DEgenes <- topTags(res, p.value=0.05, n=Inf)
+
+infVSexp_genes <- DEgenes
+```
+
+
+```{r, fig.height=20, fig.width=20}
+
+### DE genes between INF and EXP tumours
+### Create counts matrix of voom transformed counts for selected genes
+genes <- infVSexp_genes$table$genes[1:40]
+rownames(y$counts)<- y$genes$genes
+v_counts <- y[genes,]
+rownames(v_counts) <- genes
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Pattern = as.factor(sampleinfo[,c(5)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+
+lcpm <- edgeR::cpm(v_counts, log = TRUE)
+### Assigning colours for each annotation 
+ColorCode  = list(Pattern = c(INF="#f8729a",EXP="#9af872"))
+pheatmap(lcpm,
+         border_color = 'NA',
+         cellwidth = 20,
+         cellheight = 15, 
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         main="DE genes between INF and EXP tumour subtypes",
+         fontsize = 15)
+```
+
+## Responders VS non-Responsers 
+
+In this section we want to complete a differential gene expression analysis between our resitant and sensitive organoids according to Olivia's drug screen results. 
+
+```{r}
+### Loading in the data 
+###Loading in counts matrix
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+### Loading in sample metadata
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+
+### Keep only ORGs we have drug screen data for 
+rownames(sampleinfo)<- sampleinfo$`Sample-ID`
+sampleinfo <- sampleinfo[c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG55","ORG60","ORG64_new","ORG65","ORG66","ORG70","ORG73"),]
+
+### seelct same samples from rawdata
+rawdata <- rawdata[,c("ENSEMBL_GeneID","ORG-38-ORG","ORG41","ORG-46-ORG","ORG55","ORG60","ORG64_new","ORG65","ORG66","ORG70","ORG73")]
+
+### add coutns to DGE object <- 
+y<- DGEList(counts=rawdata[,2:11], genes=rawdata[,1])
+
+### clean up sample names using "Label" column from sampleinfo
+rownames(y$samples)<- sampleinfo$Label
+colnames(y$counts)<- sampleinfo$Label
+rownames(sampleinfo)<- sampleinfo$Label
+
+sampleinfo<- droplevels(sampleinfo)
+```
+
+### Design Matrix
+```{r}
+batch <- as.factor(c(sampleinfo$Batch))
+responder <- as.factor(c(sampleinfo$Responder))
+design <- model.matrix(~0+responder+batch)
+rownames(design) <- sampleinfo$Label
+create_dt(design)
+```
+
+### Visualisation
+
+```{r}
+paste("Number of genes BEFORE filtering =", length(y$genes$genes))
+
+### filter by cpm>10 in at least 2 samples
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+paste("Number of genes AFTER filtering =", length(y$genes$genes))
+
+### Calculatng normalisation factors
+y <- calcNormFactors(y)
+
+### MDS plot, coloured by type
+col.type <- brewer.pal(3, 'Dark2')[sampleinfo$Responder]
+plotMDS(y, col=col.type)
+plotMDS(y, col=col.type, pch=16)
+```
+
+### Differential Expression
+```{r}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+resVSsens <- makeContrasts(responderSENS-responderRES, levels=design)
+res <- glmQLFTest(fit, contrast=resVSsens)
+DEgenes <- topTags(res, n=Inf)
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+```
+
+```{r, fig.height=20, fig.width=20}
+counts <- y$counts
+lcpm <- edgeR::cpm(counts, log = TRUE)
+rownames(lcpm) <- y$genes$genes
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Responder=as.factor(sampleinfo[,c(7)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(Responder = c(RES="#f8729a",SENS="#9af872"))
+
+genes <- DEgenes$genes
+
+pheatmap(lcpm[genes,],
+         border_color = 'NA',
+         cellwidth = 30,
+         cellheight = 15, 
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         treeheight_row = 0,
+         treeheight_col = 0,
+         #main="Genes associated with platinum resistance ORG/TUM samples",
+         fontsize = 15,
+         cutree_cols = 3)
+
+```

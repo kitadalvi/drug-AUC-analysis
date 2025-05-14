@@ -34,7 +34,7 @@ rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/co
  
 head(rawdata) 
 
-sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+sampleinfo <- read.delim2('/Users/dalvinikita/Documents/5_Drug Response Analysis/sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
 head(sampleinfo)
 
@@ -44,7 +44,7 @@ head(sampleinfo)
 ```{r, fig.height=10, fig.width=30, echo=FALSE}
 
 #creating a DGElist object 
-y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55","ORG60","ORG61","ORG64_new","ORG65","ORG66","ORG70","ORG71","ORG73")], genes=rawdata[,1])
+y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55","ORG60","ORG61","ORG64_new","ORG65","ORG66","ORG70","ORG73")], genes=rawdata[,1])
 
 #create factors to include in design matrix
 sampleinfo$Batch<- as.factor(sampleinfo$Batch)
@@ -84,23 +84,25 @@ col.batch <- c('darkorchid3', 'deeppink','darkolivegreen1')[sampleinfo$Batch]
 
 plotMDS(y, col=col.pattern, pch=19)
 title(main="B. Growth Pattern")
-legend("topleft",
-       fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
-       legend=levels(sampleinfo$PATTERN))
+#legend("topleft",
+       #fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
+       #legend=levels(sampleinfo$PATTERN))
 
 plotMDS(y, col=col.batch, pch=19)
 title(main="A. Batch")
-legend("topleft",
-       fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
-       legend=levels(sampleinfo$Batch))
+#legend("topleft",
+       #fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
+       #legend=levels(sampleinfo$Batch))
 
 ```
 
 ## Method 1: Fitting a GLM {.tabset}
 ```{r}
-sampleinfo <- read.delim2('/Users/dalvinikita/Documents/Drug Response Analysis/updated_sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+### re-load data 
 
-y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55","ORG60","ORG61","ORG64_new","ORG65","ORG66","ORG70","ORG71","ORG73")], genes=rawdata[,1])
+sampleinfo <- read.delim2('/Users/dalvinikita/Documents/5_Drug Response Analysis/sampleInfo.txt', header=TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55","ORG60","ORG61","ORG64_new","ORG65","ORG66","ORG70","ORG73")], genes=rawdata[,1])
 
 batch <- as.factor(sampleinfo$Batch)
 ```
@@ -168,7 +170,7 @@ irino_counts <- y
 design <- model.matrix(~batch+sampleinfo$Irinotecan)
 irinotecan <- as.numeric(sampleinfo$Irinotecan)
 design<- cbind(design[,1:3],irinotecan)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -220,7 +222,7 @@ topotecan_counts <- y
 design <- model.matrix(~batch+sampleinfo$Topotecan)
 topotecan <- as.numeric(sampleinfo$Topotecan)
 design<- cbind(design[,1:3],topotecan)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -237,6 +239,11 @@ topotecan_counts <- calcNormFactors(topotecan_counts)
 fit <- glmQLFit(topotecan_counts, design)
 topotecan_auc_fit <- glmQLFTest(fit, coef=c('topotecan'))
 genes <- topTags(topotecan_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -267,7 +274,7 @@ doxorubicin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Doxorubicin)
 doxorubicin <- as.numeric(sampleinfo$Doxorubicin)
 design<- cbind(design[,1:3],doxorubicin)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -284,6 +291,11 @@ doxorubicin_counts <- calcNormFactors(doxorubicin_counts)
 fit <- glmQLFit(doxorubicin_counts, design)
 doxorubicin_auc_fit <- glmQLFTest(fit, coef=c('doxorubicin'))
 genes <- topTags(doxorubicin_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -314,7 +326,7 @@ carboplatin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Carboplatin)
 carboplatin <- as.numeric(sampleinfo$Carboplatin)
 design<- cbind(design[,1:3],carboplatin)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -331,6 +343,11 @@ carboplatin_counts <- calcNormFactors(carboplatin_counts)
 fit <- glmQLFit(carboplatin_counts, design)
 carboplatin_auc_fit <- glmQLFTest(fit, coef=c('carboplatin'))
 genes <- topTags(carboplatin_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -361,7 +378,7 @@ oxaliplatin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Oxaliplatin)
 oxaliplatin <- as.numeric(sampleinfo$Oxaliplatin)
 design<- cbind(design[,1:3],oxaliplatin)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -378,6 +395,11 @@ oxaliplatin_counts <- calcNormFactors(oxaliplatin_counts)
 fit <- glmQLFit(oxaliplatin_counts, design)
 oxaliplatin_auc_fit <- glmQLFTest(fit, coef=c('oxaliplatin'))
 genes <- topTags(oxaliplatin_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -408,7 +430,7 @@ cisplatin_counts <- y
 design <- model.matrix(~batch+sampleinfo$Cisplatin)
 cisplatin <- as.numeric(sampleinfo$Cisplatin)
 design<- cbind(design[,1:3],cisplatin)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -425,6 +447,11 @@ cisplatin_counts <- calcNormFactors(cisplatin_counts)
 fit <- glmQLFit(cisplatin_counts, design)
 cisplatin_auc_fit <- glmQLFTest(fit, coef=c('cisplatin'))
 genes <- topTags(cisplatin_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -454,7 +481,7 @@ gemcitabine_counts <- y
 design <- model.matrix(~batch+sampleinfo$Gemcitabine)
 gemcitabine <- as.numeric(sampleinfo$Gemcitabine)
 design<- cbind(design[,1:3],gemcitabine)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -471,6 +498,11 @@ gemcitabine_counts <- calcNormFactors(gemcitabine_counts)
 fit <- glmQLFit(gemcitabine_counts, design)
 gemcitabine_auc_fit <- glmQLFTest(fit, coef=c('gemcitabine'))
 genes <- topTags(gemcitabine_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -501,7 +533,7 @@ docetaxel_counts <- y
 design <- model.matrix(~batch+sampleinfo$Docetaxel)
 docetaxel <- as.numeric(sampleinfo$Docetaxel)
 design<- cbind(design[,1:3],docetaxel)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -518,6 +550,11 @@ docetaxel_counts <- calcNormFactors(docetaxel_counts)
 fit <- glmQLFit(docetaxel_counts, design)
 docetaxel_auc_fit <- glmQLFTest(fit, coef=c('docetaxel'))
 genes <- topTags(docetaxel_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -548,7 +585,7 @@ paclitaxel_counts <- y
 design <- model.matrix(~batch+sampleinfo$Paclitaxel)
 paclitaxel <- as.numeric(sampleinfo$Paclitaxel)
 design<- cbind(design[,1:3],paclitaxel)
-rownames(design)<- sampleinfo$`Sample ID`
+rownames(design)<- sampleinfo$PATIENT
 ```
 
 Design matrix:
@@ -565,6 +602,11 @@ paclitaxel_counts <- calcNormFactors(paclitaxel_counts)
 fit <- glmQLFit(paclitaxel_counts, design)
 paclitaxel_auc_fit <- glmQLFTest(fit, coef=c('paclitaxel'))
 genes <- topTags(paclitaxel_auc_fit)
+
+EnhancedVolcano(genes$table,
+                lab = rownames(genes), 
+                x = 'logFC',
+                y = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -591,10 +633,11 @@ for (gene in top_genes) {
 
 ## Method 2: Differential Expression Analysis {.tabset}
 ### TOP1 inhibitors
-```{r}
+```{r, fig.height=8, fig.width=8}
 y1 <- y
-design <- model.matrix(~batch+sampleinfo$top_resistance)
-rownames(design)<- sampleinfo$`Sample ID`
+top_resistance <- sampleinfo$top_resistance
+design <- model.matrix(~batch+top_resistance)
+rownames(design)<- sampleinfo$PATIENT
 
 #filtering to remove low counts
 keep <- filterByExpr(y1, design = design)
@@ -604,23 +647,26 @@ y1 <- y1[keep, , keep.lib.sizes=FALSE]
 y1 <- calcNormFactors(y1)
 y1 <- estimateDisp(y1, design, robust=TRUE)
 fit <- glmQLFit(y1, design)
-lrt <- glmQLFTest(fit, coef=3)
+lrt <- glmQLFTest(fit, coef="top_resistanceSENSITIVE")
 genes <- topTags(lrt, n=Inf)
+
+datatable(as.data.frame(genes))
 
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                boxedLabels = TRUE,
+                boxedLabels = FALSE,
                 labSize = 4) + ggtitle("TOP1 inhibitors")
 ```
 
 ### Cytotoxic Antibiotics
-```{r}
+```{r, fig.height=8, fig.width=8}
 y2 <- y
-design <- model.matrix(~batch+sampleinfo$ca_resistance)
-rownames(design)<- sampleinfo$`Sample ID`
+ca_resistance <- sampleinfo$ca_resistance
+design <- model.matrix(~batch+ca_resistance)
+rownames(design)<- sampleinfo$PATIENT
 
 #filtering to remove low counts
 keep <- filterByExpr(y2, design = design)
@@ -630,24 +676,26 @@ y2 <- y2[keep, , keep.lib.sizes=FALSE]
 y2 <- calcNormFactors(y2)
 y2 <- estimateDisp(y2, design, robust=TRUE)
 fit <- glmQLFit(y2, design)
-lrt <- glmQLFTest(fit, coef=3)
+lrt <- glmQLFTest(fit, coef="ca_resistanceSENSITIVE")
 genes <- topTags(lrt, n=Inf)
 
+datatable(as.data.frame(genes))
 
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                boxedLabels = TRUE,
+                boxedLabels = FALSE,
                 labSize = 4) + ggtitle("Cytotoxic Antibiotics")
 ```
 
 ### Taxanes 
-```{r}
+```{r, fig.height=8, fig.width=8}
 y3 <- y
-design <- model.matrix(~batch+sampleinfo$taxane_resistance)
-rownames(design)<- sampleinfo$`Sample ID`
+taxane_resistance <- sampleinfo$taxane_resistance
+design <- model.matrix(~batch+taxane_resistance)
+rownames(design)<- sampleinfo$PATIENT
 
 #filtering to remove low counts
 keep <- filterByExpr(y3, design = design)
@@ -657,23 +705,26 @@ y3 <- y3[keep, , keep.lib.sizes=FALSE]
 y3 <- calcNormFactors(y3)
 y3 <- estimateDisp(y3, design, robust=TRUE)
 fit <- glmQLFit(y3, design)
-lrt <- glmQLFTest(fit, coef=3)
+lrt <- glmQLFTest(fit, coef="taxane_resistanceSENSITIVE")
 genes <- topTags(lrt, n=Inf)
+
+datatable(as.data.frame(genes))
 
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                boxedLabels = TRUE,
+                boxedLabels = FALSE,
                 labSize = 4)+ ggtitle("Taxanes")
 ```
 
 ### Platinum based
-```{r, fig.height=7, fig.width=7}
-y4 <- y
-design <- model.matrix(~batch+sampleinfo$plat_resistance)
-rownames(design)<- sampleinfo$`Sample ID`
+```{r, fig.height=8, fig.width=8}
+y4 <- y[,-4]
+plat_resistance <- sampleinfo$plat_resistance
+design <- model.matrix(~batch+plat_resistance)
+rownames(design)<- sampleinfo$PATIENT[-4]
 
 #filtering to remove low counts
 keep <- filterByExpr(y4, design = design)
@@ -683,14 +734,16 @@ y4 <- y4[keep, , keep.lib.sizes=FALSE]
 y4 <- calcNormFactors(y4)
 y4 <- estimateDisp(y4, design, robust=TRUE)
 fit <- glmQLFit(y4, design)
-lrt <- glmQLFTest(fit, coef=3)
+lrt <- glmQLFTest(fit, coef="plat_resistanceSENSITIVE")
 genes <- topTags(lrt, n=Inf)
+
+datatable(as.data.frame(genes))
 
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
                 y = 'FDR', 
                 pCutoff = 0.05,
-                boxedLabels = TRUE,
+                boxedLabels = FALSE,
                 labSize = 4)+ ggtitle("Platinum-based")
 ```
