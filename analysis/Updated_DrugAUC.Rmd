@@ -48,6 +48,7 @@ y<- DGEList(counts=rawdata[,c("ORG-38-ORG","ORG41","ORG-46-ORG","ORG49","ORG55",
 
 #create factors to include in design matrix
 sampleinfo$Batch<- as.factor(sampleinfo$Batch)
+sampleinfo$PATTERN <- as.factor(sampleinfo$PATTERN)
 batch <- (c(sampleinfo$Batch))
 patient <- as.factor(c(sampleinfo$PATIENT))
 pattern <- as.factor(c(sampleinfo$PATTERN))
@@ -79,20 +80,20 @@ title(main="B. Example: Normalised data",ylab="Log-cpm")
 par(mfrow=c(1,2))
 
 col.pattern <- c('darkorchid3', 'deeppink','darkolivegreen1')[sampleinfo$PATTERN]
-col.batch <- c('darkorchid3', 'deeppink','darkolivegreen1')[sampleinfo$Batch]
+col.batch <- c('darkorchid3', 'deeppink','darkolivegreen1', 'orange')[sampleinfo$Batch]
 
 
 plotMDS(y, col=col.pattern, pch=19)
 title(main="B. Growth Pattern")
-#legend("topleft",
-       #fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
-       #legend=levels(sampleinfo$PATTERN))
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
+       legend=levels(sampleinfo$PATTERN))
 
 plotMDS(y, col=col.batch, pch=19)
 title(main="A. Batch")
-#legend("topleft",
-       #fill=c('darkorchid3', 'deeppink','darkolivegreen1'), 
-       #legend=levels(sampleinfo$Batch))
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','darkolivegreen1', 'orange'), 
+       legend=levels(sampleinfo$Batch))
 
 ```
 
@@ -139,7 +140,9 @@ datatable(as.data.frame(genes))
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 ```
 
 Plotting top genes: 
@@ -191,7 +194,9 @@ genes <- topTags(irinotecan_auc_fit, n=Inf)
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -238,12 +243,14 @@ topotecan_counts <- calcNormFactors(topotecan_counts)
 #fit GLMs
 fit <- glmQLFit(topotecan_counts, design)
 topotecan_auc_fit <- glmQLFTest(fit, coef=c('topotecan'))
-genes <- topTags(topotecan_auc_fit)
+genes <- topTags(topotecan_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -290,12 +297,14 @@ doxorubicin_counts <- calcNormFactors(doxorubicin_counts)
 #fit GLMs
 fit <- glmQLFit(doxorubicin_counts, design)
 doxorubicin_auc_fit <- glmQLFTest(fit, coef=c('doxorubicin'))
-genes <- topTags(doxorubicin_auc_fit)
+genes <- topTags(doxorubicin_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -342,12 +351,14 @@ carboplatin_counts <- calcNormFactors(carboplatin_counts)
 #fit GLMs
 fit <- glmQLFit(carboplatin_counts, design)
 carboplatin_auc_fit <- glmQLFTest(fit, coef=c('carboplatin'))
-genes <- topTags(carboplatin_auc_fit)
+genes <- topTags(carboplatin_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -394,12 +405,14 @@ oxaliplatin_counts <- calcNormFactors(oxaliplatin_counts)
 #fit GLMs
 fit <- glmQLFit(oxaliplatin_counts, design)
 oxaliplatin_auc_fit <- glmQLFTest(fit, coef=c('oxaliplatin'))
-genes <- topTags(oxaliplatin_auc_fit)
+genes <- topTags(oxaliplatin_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -446,12 +459,14 @@ cisplatin_counts <- calcNormFactors(cisplatin_counts)
 #fit GLMs
 fit <- glmQLFit(cisplatin_counts, design)
 cisplatin_auc_fit <- glmQLFTest(fit, coef=c('cisplatin'))
-genes <- topTags(cisplatin_auc_fit)
+genes <- topTags(cisplatin_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -497,12 +512,14 @@ gemcitabine_counts <- calcNormFactors(gemcitabine_counts)
 #fit GLMs
 fit <- glmQLFit(gemcitabine_counts, design)
 gemcitabine_auc_fit <- glmQLFTest(fit, coef=c('gemcitabine'))
-genes <- topTags(gemcitabine_auc_fit)
+genes <- topTags(gemcitabine_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -549,12 +566,14 @@ docetaxel_counts <- calcNormFactors(docetaxel_counts)
 #fit GLMs
 fit <- glmQLFit(docetaxel_counts, design)
 docetaxel_auc_fit <- glmQLFTest(fit, coef=c('docetaxel'))
-genes <- topTags(docetaxel_auc_fit)
+genes <- topTags(docetaxel_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -601,12 +620,14 @@ paclitaxel_counts <- calcNormFactors(paclitaxel_counts)
 #fit GLMs
 fit <- glmQLFit(paclitaxel_counts, design)
 paclitaxel_auc_fit <- glmQLFTest(fit, coef=c('paclitaxel'))
-genes <- topTags(paclitaxel_auc_fit)
+genes <- topTags(paclitaxel_auc_fit, n=Inf)
 
 EnhancedVolcano(genes$table,
                 lab = rownames(genes), 
                 x = 'logFC',
-                y = 'FDR')
+                y = 'PValue',
+                pCutoff = 0.05,
+                pCutoffCol = 'FDR')
 
 datatable(as.data.frame(genes))
 ```
@@ -655,7 +676,8 @@ datatable(as.data.frame(genes))
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
-                y = 'FDR', 
+                y = 'PValue',
+                pCutoffCol = 'FDR',
                 pCutoff = 0.05,
                 boxedLabels = FALSE,
                 labSize = 4) + ggtitle("TOP1 inhibitors")
@@ -684,7 +706,8 @@ datatable(as.data.frame(genes))
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
-                y = 'FDR', 
+                y = 'PValue',
+                pCutoffCol = 'FDR',
                 pCutoff = 0.05,
                 boxedLabels = FALSE,
                 labSize = 4) + ggtitle("Cytotoxic Antibiotics")
@@ -713,10 +736,11 @@ datatable(as.data.frame(genes))
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
-                y = 'FDR', 
+                y = 'PValue',
+                pCutoffCol = 'FDR',
                 pCutoff = 0.05,
                 boxedLabels = FALSE,
-                labSize = 4)+ ggtitle("Taxanes")
+                labSize = 4) + ggtitle("Taxanes")
 ```
 
 ### Platinum based
@@ -742,8 +766,9 @@ datatable(as.data.frame(genes))
 EnhancedVolcano(genes$table,
                 lab = genes$table$genes, 
                 x = 'logFC',
-                y = 'FDR', 
+                y = 'PValue',
+                pCutoffCol = 'FDR',
                 pCutoff = 0.05,
                 boxedLabels = FALSE,
-                labSize = 4)+ ggtitle("Platinum-based")
+                labSize = 4) + ggtitle("Platinum-based")
 ```

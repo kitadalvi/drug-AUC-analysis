@@ -4,6 +4,7 @@ output: html_document
 date: "2025-04-18"
 ---
 
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE,
                       message=FALSE,
@@ -19,6 +20,13 @@ library(clusterProfiler)
 library(enrichplot)
 library(org.Hs.eg.db)
 library(DT)
+```
+
+Notes 28/05/2025
+```{r}
+
+### Add gene lists for everything and add buttons to tables to download 
+### GEMCITABINE as a separate drug class based on ATC code 
 ```
 
 ```{r}
@@ -102,7 +110,6 @@ Factors to include in design matrix:
 ```{r}
 batch <- as.factor(sampleinfo$Batch)
 type <- as.factor(sampleinfo$Type)
-pattern <- as.factor(sampleinfo$Pattern)
 responder <- as.factor(sampleinfo$Responder)
 
 design <- model.matrix(~0+ type + batch)
@@ -141,6 +148,8 @@ orgVStum <- makeContrasts(typeORG-typeTUM, levels=design)
 res <- glmQLFTest(fit, contrast=orgVStum)
 DEgenes <- topTags(res, p.value=0.05, n=Inf)
 DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
 ```
 
 
@@ -162,18 +171,27 @@ type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
 rownames(type_annotation) <- sampleinfo$Label
 
 ### Assigning colours for each annotation 
-ColorCode  = list(TUM_type = c(Primary="#f8729a",Recurrence="#9af872",UNK="#729af8"),
-                  Type=c(CAF="#f8729a",FIB="#9af872",LINES="#729af8",ORG="#72f8d0",TUM="#f8d072"),
-                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"),
-                  Age=c(`<50`="#f8729a",`>50`="#9af872",UNK="#729af8"))
+ColorCode  = list(TUM_type = c(Primary="#31A354",Recurrence="#006D2C",UNK="#000000"),
+                  Type=c(CAF="#F21A00",FIB="#FDB462",LINES="#FC8D62",ORG="steelblue",TUM="lightsteelblue1"),
+                  Stage=c(`1`="#FCCDE5",`2`="#BC80BD",Rec="#E78AC3",IV="#E6A0C4",UNK="#000000"),
+                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"))
+
+red_blue_palette <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
+
+#mypalette<-c(brewer.pal(name="Set3", n=12), brewer.pal(name="Set2", n=7),"steelblue", "lightsteelblue1", brewer.pal(name="Greens", n=5), wes_palette("Zissou1"),wes_palette("GrandBudapest2"))
+
+
 pheatmap(lcpm,
-         border_color = 'NA',
-         cellwidth = 15,
+         border_color = '#FFFFFF',
+         col=rev(red_blue_palette),
+         cellwidth = 20,
          cellheight = 10, 
          annotation_col = type_annotation,
          annotation_colors = ColorCode,
          main="Top 100 DE genes between ORG and TUM samples in all samples",
          fontsize = 15)
+
+
 ```
 
 #### Only ORG/TUM
@@ -199,19 +217,21 @@ type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
 rownames(type_annotation) <- sampleinfo$Label
 
 ### Assigning colours for each annotation 
-ColorCode  = list(TUM_type = c(Primary="#f8729a",Recurrence="#9af872",UNK="#729af8"),
-                  Type=c(CAF="#f8729a",FIB="#9af872",LINES="#729af8",ORG="#72f8d0",TUM="#f8d072"),
-                  Stage=c(`1`="#f8729a",`2`="#9af872",UNK="#729af8",Rec="#72f8d0",IV="#f8d072"),
-                  Age=c(`<50`="#f8729a",`>50`="#9af872",UNK="#729af8"))
+ColorCode  = list(TUM_type = c(Primary="#31A354",Recurrence="#006D2C",UNK="#000000"),
+                  Type=c(CAF="#F21A00",FIB="#FDB462",LINES="#FC8D62",ORG="steelblue",TUM="lightsteelblue1"),
+                  Stage=c(`1`="#FCCDE5",`2`="#BC80BD",Rec="#E78AC3",IV="#E6A0C4",UNK="#000000"),
+                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"))
 pheatmap(lcpm,
-         border_color = 'NA',
-         cellwidth = 30,
-         cellheight = 12, 
+         border_color = '#FFFFFF',
+         color=rev(red_blue_palette),
+         cellwidth = 20,
+         cellheight = 10, 
          annotation_col = type_annotation,
          annotation_colors = ColorCode,
          main="Top 100 DE genes between ORG and TUM samples in ORG/TUM samples",
          fontsize = 15)
 ```
+
 ## Platinum resistance
 ```{r, fig.height=20, fig.width=20}
 counts <- y$counts[,c(samples)]
@@ -323,6 +343,8 @@ fit <- glmQLFit(y, design, robust=TRUE)
 infVSexp <- makeContrasts(patternINF-patternEXP, levels=design)
 res <- glmQLFTest(fit, contrast=infVSexp)
 DEgenes <- topTags(res, p.value=0.05, n=Inf)
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
 
 infVSexp_genes <- DEgenes
 ```
@@ -427,6 +449,8 @@ resVSsens <- makeContrasts(responderSENS-responderRES, levels=design)
 res <- glmQLFTest(fit, contrast=resVSsens)
 DEgenes <- topTags(res, n=Inf)
 DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
 ```
 
 ```{r, fig.height=20, fig.width=20}

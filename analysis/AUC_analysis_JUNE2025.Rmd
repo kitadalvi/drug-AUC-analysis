@@ -1,0 +1,994 @@
+---
+title: "Drug AUC Analysis - June 2025"
+output: html_document
+date: "2025-06-03"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	fig.width = 5,
+	fig.height=5
+)
+library(pheatmap)
+library(ggplot2)
+library(edgeR)
+library(limma)
+library(ggpubr)
+library(RColorBrewer)
+library(clusterProfiler)
+library(enrichplot)
+library(org.Hs.eg.db)
+library(DT)
+library(EnhancedVolcano)
+library(readxl)
+```
+
+```{r}
+### Functions 
+
+### buttons for datatables 
+create_dt <- function(x){
+  DT::datatable(x,
+                extensions = 'Buttons',
+                options = list(dom = 'Blfrtip',
+                               buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                               lengthMenu = list(c(10,25,50,-1),
+                                                 c(10,25,50,"All"))))
+}
+```
+
+## Notes
+
+title: Drug AUC analysis
+last knit: 03/05/2025
+data location:
+• RNAseq data :'/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv'
+
+• AUC data: 'data/AUC_metadata.xlsx'
+
+## Data
+Taking a quick look at both the RNA-seq data and AUC data 
+
+RNA-seq data:
+```{r}
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+subset <- c('ENSEMBL_GeneID','ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
+head(rawdata[,subset] )
+```
+
+Relevant metadata:
+```{r}
+metadata <- read_excel("/Users/dalvinikita/Documents/7_GitHub/drug-AUC-analysis/data/AUC_metadata.xlsx", sheet='metadata')
+metadata <- metadata[c(-13),]
+create_dt(metadata)
+```
+*Note: We have removed ORG76 from the AUC metadata as there is no corresponding RNAseq, but AUC rankings are based on AUC values that included ORG76. 
+
+## QC and Normalisation
+### Design 
+Taking a look at the design matrix which includes growth pattern and batch of sequencing:
+```{r}
+### creating a DGElist object to include organoids with AUC data
+organoids <- c('ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
+y<- DGEList(counts=rawdata[,organoids], genes=rawdata[,1])
+
+### tidying up sample names
+colnames(y) <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+
+### tidying up metadata sample names to match counts matrix]
+metadata$PATIENT <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+rownames(metadata) <- metadata$PATIENT
+
+### creating factors to add into design matrix
+### including pattern and batch
+pattern <- as.factor(metadata$Pattern)
+batch <- as.factor(metadata$Batch)
+
+#create design matrix to include batch, growth pattern
+design <- model.matrix(~0+pattern+batch)
+rownames(design) <- metadata$PATIENT
+create_dt(design)
+```
+### Normalisation
+Filtering to remove genes with low counts:
+```{r, fig.width=7}
+#filtering to remove low counts
+keep <- filterByExpr(y, design)
+print(table(keep))
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+#Visualiszing library sizes pre and post normalisation
+col <- brewer.pal(32, 'Paired')
+
+par(mfrow=c(1,2))
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="A. Example: Unnormalised data",ylab="Log-cpm")
+
+y <- calcNormFactors(y) 
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="B. Example: Normalised data",ylab="Log-cpm")
+```
+
+### MDS plots {.tabset}
+```{r, echo=FALSE}
+col.pattern <- c('darkorchid3', 'deeppink')[as.factor(metadata$Pattern)]
+col.batch <- c('darkorchid3', 'deeppink', 'orange')[as.factor(metadata$Batch)]
+```
+
+#### Label
+```{r, fig.height=7, fig.width=14}
+par(mfrow=c(1,2))
+plotMDS(y, col=col.pattern)
+title(main="A. Growth Pattern")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink'), 
+       legend=levels(as.factor(metadata$Pattern)))
+
+plotMDS(y, col=col.batch)
+title(main="B. Batch")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','orange'), 
+       legend=levels(as.factor(metadata$Batch)))
+
+```
+
+#### Point
+```{r, fig.height=7, fig.width=14}
+par(mfrow=c(1,2))
+plotMDS(y, col=col.pattern, pch=19)
+title(main="A. Growth Pattern")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink'),
+       legend=levels(as.factor(metadata$Pattern)))
+
+plotMDS(y, col=col.batch, pch=19)
+title(main="B. Batch")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','orange'),
+       legend=levels(as.factor(metadata$Batch)))
+
+```
+
+## Method 1: Fitting a GLM {.tabset}
+In this approach, we run 11 separate analyses (for all drugs except Staurosporine) to identify genes associated with changes in AUC values for the respective drug, across our 12 organoid lines. Design matrices for all analysis will include: 
+
+• Growth pattern (INF/EXP)
+
+• Batch of sequencing (1,2,3)
+
+• AUC values for respective drug as a numeric/ continuous variable. 
+
+### 5FU
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+drug <- "5FU"
+counts <- y
+auc <- as.numeric(metadata$`5FU`)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to 5FU AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: Only 1 gene was found to have FDR < 0.05 and this gene did not satisfy logFC threshold.*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+auc_values <- auc
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+
+### Carboplatin
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Carboplatin)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Carboplatin AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Cisplatin
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Cisplatin)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Cisplatin AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Docetaxel 
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Docetaxel)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Docetaxel AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Doxorubicin
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Doxorubicin)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Doxorubicin AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: 1 gene was found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Gemcitabine
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Gemcitabine)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Gemcitabine AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Irinotecan
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Irinotecan)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Irinotecan AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: 1 gene was found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Mitomycin
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Mitomycin)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Mitomycin AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Oxaliplatin
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Oxaliplatin)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Oxaliplatin AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Paclitaxel
+
+#### Design Matrix 
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Paclitaxel)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Paclitaxel AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: No genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+### Topotecan
+
+#### Design Matrix
+
+Design matrix used for analysis:
+
+```{r}
+counts <- y
+auc <- as.numeric(metadata$Topotecan)
+auc_design <- cbind(design,auc)
+create_dt(auc_design)
+```
+
+#### Fitting GLM
+
+Top genes related to Topotecan AUC: 
+
+```{r}
+counts <- counts %>%
+  estimateDisp() %>%
+  estimateCommonDisp() %>%
+  estimateTagwiseDisp()
+
+fit <- glmQLFit(counts, design = auc_design, robust = TRUE)
+auc_fit <- glmQLFTest(fit, coef=c('auc'))
+genes <- topTags(auc_fit, n=Inf, p.value = 1)
+create_dt(as.data.frame(genes))
+
+```
+*Notes: 3 genes were found to have FDR < 0.05*
+
+#### Top genes
+
+Plotting top genes: 
+
+```{r}
+top_genes <- c(genes$table$genes)
+top_genes <- top_genes[1:5]
+
+for (gene in top_genes) {
+  gene <- as.character(gene)
+  y$cpm <- cpm(y, log = T) 
+  expression_values <- y$cpm[y$genes$genes==gene,]
+  plot<- ggplot(data = NULL, mapping = aes(x=auc, y=expression_values, colour = batch)) + 
+    geom_point() +
+    theme_linedraw() +
+    xlab('AUC values') + 
+    ylab('log(cpm)') +
+    ggtitle(label=gene)
+  print(plot)
+}
+```
+
+
+## Method 2: Differential expression analysis {.tabset}
+
+```{r}
+### Re-initialising DGElist object
+y<- DGEList(counts=rawdata[,organoids], genes=rawdata[,1])
+
+### tidying up sample names
+colnames(y) <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+
+### tidying up metadata sample names to match counts matrix]
+metadata$PATIENT <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+rownames(metadata) <- metadata$PATIENT
+
+```
+
+### TOP1-isomerase inhibitors (L01CE)
+```{r, fig.height=8, fig.width=8}
+y1 <- y
+response <- as.factor(metadata$top1_response)
+design <- model.matrix(~0+response+pattern+batch)
+rownames(design)<- metadata$PATIENT
+
+#filtering to remove low counts
+keep <- filterByExpr(y1, design = design)
+table(keep)
+y1 <- y1[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y1 <- calcNormFactors(y1)
+
+### estimate dispersion
+y1 <- estimateDisp(y1, design, robust=TRUE)
+
+### make contrast 
+resVSsens <- makeContrasts(responseRESISTANT-responseSENSITIVE, levels=design)
+
+### fit model
+fit <- glmQLFit(y1, design)
+lrt <- glmQLFTest(fit, contrast =resVSsens)
+genes <- topTags(lrt, n=Inf)
+
+create_dt(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("TOP1 isomerase inhibitors")
+```
+
+### Taxanes (L01CD)
+```{r, fig.height=8, fig.width=8}
+y2 <- y
+response <- as.factor(metadata$tax_response)
+design <- model.matrix(~0+response+pattern+batch)
+rownames(design)<- metadata$PATIENT
+
+#filtering to remove low counts
+keep <- filterByExpr(y2, design = design)
+table(keep)
+y2 <- y2[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y2 <- calcNormFactors(y2)
+
+### estimate dispersion
+y2 <- estimateDisp(y2, design, robust=TRUE)
+
+### make contrast 
+resVSsens <- makeContrasts(responseRESISTANT-responseSENSITIVE, levels=design)
+
+### fit model
+fit <- glmQLFit(y2, design)
+lrt <- glmQLFTest(fit, contrast =resVSsens)
+genes <- topTags(lrt, n=Inf)
+
+create_dt(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("Taxanes")
+```
+
+### Platinum-based agents (L01XA)
+```{r, fig.height=8, fig.width=8}
+y3 <- y
+response <- as.factor(metadata$plat_response)
+design <- model.matrix(~0+response+pattern+batch)
+rownames(design)<- metadata$PATIENT
+
+#filtering to remove low counts
+keep <- filterByExpr(y3, design = design)
+table(keep)
+y3 <- y3[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y3 <- calcNormFactors(y3)
+
+### estimate dispersion
+y3 <- estimateDisp(y3, design, robust=TRUE)
+
+### make contrast 
+resVSsens <- makeContrasts(responseRESISTANT-responseSENSITIVE, levels=design)
+
+### fit model
+fit <- glmQLFit(y3, design)
+lrt <- glmQLFTest(fit, contrast =resVSsens)
+genes <- topTags(lrt, n=Inf)
+
+create_dt(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("Platinum-based agents")
+```
+
+### Cytotoxic Antibiotics (L01D)
+```{r, fig.height=8, fig.width=8}
+y4 <- y
+response <- as.factor(metadata$CA_response)
+design <- model.matrix(~0+response+pattern+batch)
+rownames(design)<- metadata$PATIENT
+
+#filtering to remove low counts
+keep <- filterByExpr(y4, design = design)
+table(keep)
+y4 <- y4[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y4 <- calcNormFactors(y4)
+
+### estimate dispersion
+y4 <- estimateDisp(y4, design, robust=TRUE)
+
+### make contrast 
+resVSsens <- makeContrasts(responseRESISTANT-responseSENSITIVE, levels=design)
+
+### fit model
+fit <- glmQLFit(y4, design)
+lrt <- glmQLFTest(fit, contrast =resVSsens)
+genes <- topTags(lrt, n=Inf)
+
+create_dt(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("Cytotoxic Antibiotics")
+```
+
+### Pyrimidine Analogues (L01BC)
+```{r, fig.height=8, fig.width=8}
+y5 <- y
+response <- as.factor(metadata$PA_response)
+design <- model.matrix(~0+response+pattern+batch)
+rownames(design)<- metadata$PATIENT
+
+#filtering to remove low counts
+keep <- filterByExpr(y5, design = design)
+table(keep)
+y5 <- y5[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y5 <- calcNormFactors(y5)
+
+### estimate dispersion
+y5 <- estimateDisp(y5, design, robust=TRUE)
+
+### make contrast 
+resVSsens <- makeContrasts(responseRESISTANT-responseSENSITIVE, levels=design)
+
+### fit model
+fit <- glmQLFit(y5, design)
+lrt <- glmQLFTest(fit, contrast =resVSsens)
+genes <- topTags(lrt, n=Inf)
+
+create_dt(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("Pyrimidine Analogues")
+```
+
+### Plant Based Alkaloids and other natural products (L01C)
+```{r, fig.height=8, fig.width=8}
+y6 <- y
+response <- as.factor(metadata$L01C_response)
+design <- model.matrix(~0+response+pattern+batch)
+rownames(design)<- metadata$PATIENT
+
+#filtering to remove low counts
+keep <- filterByExpr(y6, design = design)
+table(keep)
+y6 <- y6[keep, , keep.lib.sizes=FALSE]
+
+#normalizing library sizes
+y6 <- calcNormFactors(y6)
+
+### estimate dispersion
+y6 <- estimateDisp(y6, design, robust=TRUE)
+
+### make contrast 
+resVSsens <- makeContrasts(responseRESISTANT-responseSENSITIVE, levels=design)
+
+### fit model
+fit <- glmQLFit(y6, design)
+lrt <- glmQLFTest(fit, contrast =resVSsens)
+genes <- topTags(lrt, n=Inf)
+
+create_dt(as.data.frame(genes))
+
+EnhancedVolcano(genes$table,
+                lab = genes$table$genes, 
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("Plant-based alkaloids and other natural products")
+```
