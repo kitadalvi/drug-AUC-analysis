@@ -20,6 +20,7 @@ library(clusterProfiler)
 library(enrichplot)
 library(org.Hs.eg.db)
 library(DT)
+library(EnhancedVolcano)
 ```
 
 Notes 28/05/2025
@@ -59,7 +60,7 @@ Overall: 59 different samples sequenced over 4 batches.
 rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
 ### Loading in sample metadata
-sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_master.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
 ```
 
 Based on previous analyses, we will remove the following samples due to type (LGSOC lines/ ORG71) or low library count:
@@ -167,19 +168,19 @@ lcpm <- edgeR::cpm(counts, log = TRUE)
 type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
                               TUM_type = as.factor(sampleinfo[,c(8)]),
                               Stage = as.factor(sampleinfo[,c(9)]),
-                              Age = as.factor(sampleinfo[,c(10)]))
+                              Age = as.factor(sampleinfo[,c(10)]),
+                              Morphology = as.factor(sampleinfo[,c(11)]))
 rownames(type_annotation) <- sampleinfo$Label
 
 ### Assigning colours for each annotation 
 ColorCode  = list(TUM_type = c(Primary="#31A354",Recurrence="#006D2C",UNK="#000000"),
                   Type=c(CAF="#F21A00",FIB="#FDB462",LINES="#FC8D62",ORG="steelblue",TUM="lightsteelblue1"),
                   Stage=c(`1`="#FCCDE5",`2`="#BC80BD",Rec="#E78AC3",IV="#E6A0C4",UNK="#000000"),
-                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"))
+                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"),
+                  Morphology=c(UNK="#000000", CYSTIC='#469990', `CYSTIC/BUBBLY`='#42d4f4', `CYSTIC/DENSE`='#000075', `CYSTIC/GLANDULAR`='#4363d8', DENSE='#bfef45', GLANDULAR='#dcbeff', `GLANDULAR/DENSE`='#f032e6' ))
+
 
 red_blue_palette <- colorRampPalette(brewer.pal(11, "RdBu"))(100)
-
-#mypalette<-c(brewer.pal(name="Set3", n=12), brewer.pal(name="Set2", n=7),"steelblue", "lightsteelblue1", brewer.pal(name="Greens", n=5), wes_palette("Zissou1"),wes_palette("GrandBudapest2"))
-
 
 pheatmap(lcpm,
          border_color = '#FFFFFF',
@@ -190,7 +191,6 @@ pheatmap(lcpm,
          annotation_colors = ColorCode,
          main="Top 100 DE genes between ORG and TUM samples in all samples",
          fontsize = 15)
-
 
 ```
 
@@ -213,14 +213,17 @@ lcpm <- edgeR::cpm(counts, log = TRUE)
 type_annotation <- data.frame(Type=as.factor(sampleinfo[,c(3)]),
                               TUM_type = as.factor(sampleinfo[,c(8)]),
                               Stage = as.factor(sampleinfo[,c(9)]),
-                              Age = as.factor(sampleinfo[,c(10)]))
+                              Age = as.factor(sampleinfo[,c(10)]),
+                              Morphology = as.factor(sampleinfo[,c(11)]))
 rownames(type_annotation) <- sampleinfo$Label
 
 ### Assigning colours for each annotation 
 ColorCode  = list(TUM_type = c(Primary="#31A354",Recurrence="#006D2C",UNK="#000000"),
                   Type=c(CAF="#F21A00",FIB="#FDB462",LINES="#FC8D62",ORG="steelblue",TUM="lightsteelblue1"),
                   Stage=c(`1`="#FCCDE5",`2`="#BC80BD",Rec="#E78AC3",IV="#E6A0C4",UNK="#000000"),
-                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"))
+                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"),
+                  Morphology=c(UNK="#000000", CYSTIC='#469990', `CYSTIC/BUBBLY`='#42d4f4', `CYSTIC/DENSE`='#000075', `CYSTIC/GLANDULAR`='#4363d8', DENSE='#bfef45', GLANDULAR='#dcbeff', `GLANDULAR/DENSE`='#f032e6' ))
+
 pheatmap(lcpm,
          border_color = '#FFFFFF',
          color=rev(red_blue_palette),
@@ -274,7 +277,7 @@ In this section we want to complete a differential gene expression analysis betw
 rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
 ### Loading in sample metadata
-sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_master.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
 
 ### Remove everything that is NOT a tumour in both sampleinfo and rawdata
 sampleinfo <- sampleinfo[sampleinfo$Type=="TUM",]
@@ -379,7 +382,7 @@ pheatmap(lcpm,
 
 ## Responders VS non-Responsers 
 
-In this section we want to complete a differential gene expression analysis between our resitant and sensitive organoids according to Olivia's drug screen results. 
+In this section we want to complete a differential gene expression analysis between our resistant and sensitive organoids according to Olivia's drug screen results. 
 
 ```{r}
 ### Loading in the data 
@@ -387,7 +390,7 @@ In this section we want to complete a differential gene expression analysis betw
 rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 
 ### Loading in sample metadata
-sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_update.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_master.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
 
 ### Keep only ORGs we have drug screen data for 
 rownames(sampleinfo)<- sampleinfo$`Sample-ID`
@@ -453,6 +456,7 @@ dt <- as.data.frame(DEgenes)
 create_dt(dt)
 ```
 
+### Visualisation
 ```{r, fig.height=20, fig.width=20}
 counts <- y$counts
 lcpm <- edgeR::cpm(counts, log = TRUE)
@@ -480,3 +484,280 @@ pheatmap(lcpm[genes,],
          cutree_cols = 3)
 
 ```
+
+## Morphology {.tabset}
+
+In this section we want to complete a differential gene expression analysis between our our different morphologies within the organoid samples to identify genes driving morphological changes. 
+
+```{r}
+### Loading in the data 
+###Loading in counts matrix
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+### Loading in sample metadata
+sampleinfo <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/sampleinfo_master.txt', header=TRUE, check.names = FALSE, stringsAsFactors = TRUE)
+rownames(sampleinfo) <- sampleinfo$`Sample-ID`
+samples <- c('ORG-16-1YEAR','ORG-38-ORG','ORG41','ORG-44-ORG','ORG-46-ORG','ORG-47-ORG','ORG55','ORG56','ORG61','ORG63','ORG64_new','ORG65','ORG66','ORG70','ORG73','ORG74','ORG49','ORG60','ORG62')
+
+
+### Keep only ORGs 
+sampleinfo <- sampleinfo[samples,]
+
+### seelct same samples from rawdata
+rawdata <- rawdata[,c("ENSEMBL_GeneID",'ORG-16-1YEAR','ORG-38-ORG','ORG41','ORG-44-ORG','ORG-46-ORG','ORG-47-ORG','ORG55','ORG56','ORG61','ORG63','ORG64_new','ORG65','ORG66','ORG70','ORG73','ORG74','ORG49','ORG60','ORG62')]
+
+### add coutns to DGE object <- 
+y<- DGEList(counts=rawdata[,2:20], genes=rawdata[,1])
+
+### clean up sample names using "Label" column from sampleinfo
+rownames(y$samples)<- sampleinfo$Label
+colnames(y$counts)<- sampleinfo$Label
+rownames(sampleinfo)<- sampleinfo$Label
+
+sampleinfo<- droplevels(sampleinfo)
+```
+
+### Cystic VS rest
+
+#### Design Matrix
+```{r}
+batch <- as.factor(c(sampleinfo$Batch))
+cystic <- as.factor(c(sampleinfo$CYSTIC))
+design <- model.matrix(~0+cystic+batch)
+rownames(design) <- sampleinfo$Label
+create_dt(design)
+```
+
+#### Visualisation
+```{r}
+paste("Number of genes BEFORE filtering =", length(y$genes$genes))
+
+### filter by cpm>10 in at least 2 samples
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+paste("Number of genes AFTER filtering =", length(y$genes$genes))
+
+### Calculatng normalisation factors
+y <- calcNormFactors(y)
+
+### MDS plot, coloured by type
+col.type <- brewer.pal(3, 'Dark2')[sampleinfo$CYSTIC]
+plotMDS(y, col=col.type)
+plotMDS(y, col=col.type, pch=16)
+```
+
+#### Differential Expression
+```{r, fig.height=8, fig.width=8}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+cystic_comparison <- makeContrasts(cysticYES-cysticNO, levels=design)
+res <- glmQLFTest(fit, contrast=cystic_comparison)
+DEgenes <- topTags(res, n=Inf)
+
+### volcano plot of results
+EnhancedVolcano(DEgenes$table, 
+                lab=DEgenes$table$genes,
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("DE genes between Cystic and non-Cystic organoids")
+
+### Table of DEgenes
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
+
+```
+
+```{r, fig.height=20, fig.width=20}
+counts <- y$counts
+lcpm <- edgeR::cpm(counts, log = TRUE)
+rownames(lcpm) <- y$genes$genes
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Stage = as.factor(sampleinfo[,c(9)]),
+                              Age = as.factor(sampleinfo[,c(10)]),
+                              Morphology = as.factor(sampleinfo[,c(11)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(Stage=c(`1`="#FCCDE5",`2`="#BC80BD",Rec="#E78AC3",IV="#E6A0C4",UNK="#000000"),
+                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"),
+                  Morphology=c(UNK="#000000", CYSTIC='#469990', `CYSTIC/BUBBLY`='#42d4f4', `CYSTIC/DENSE`='#000075', `CYSTIC/GLANDULAR`='#4363d8', DENSE='#bfef45', GLANDULAR='#dcbeff', `GLANDULAR/DENSE`='#f032e6' ))
+
+genes <- DEgenes[DEgenes$FDR< 0.05,1][1:50]
+
+pheatmap(lcpm[genes,],
+         border_color = 'NA',
+         cellwidth = 30,
+         cellheight = 15, 
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         treeheight_row = 0,
+         treeheight_col = 0,
+         #main="Genes associated with platinum resistance ORG/TUM samples",
+         fontsize = 15,
+         cutree_cols = 3)
+
+```
+
+
+### Dense VS rest
+
+#### Design Matrix
+```{r}
+batch <- as.factor(c(sampleinfo$Batch))
+dense <- as.factor(c(sampleinfo$DENSE))
+design <- model.matrix(~0+dense+batch)
+rownames(design) <- sampleinfo$Label
+create_dt(design)
+```
+
+#### Visualisation
+```{r}
+paste("Number of genes BEFORE filtering =", length(y$genes$genes))
+
+### filter by cpm>10 in at least 2 samples
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+paste("Number of genes AFTER filtering =", length(y$genes$genes))
+
+### Calculatng normalisation factors
+y <- calcNormFactors(y)
+
+### MDS plot, coloured by type
+col.type <- brewer.pal(3, 'Dark2')[sampleinfo$DENSE]
+plotMDS(y, col=col.type)
+plotMDS(y, col=col.type, pch=16)
+```
+
+#### Differential Expression
+```{r, fig.height=8, fig.width=8}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+dense_comparison <- makeContrasts(denseYES-denseNO, levels=design)
+res <- glmQLFTest(fit, contrast=dense_comparison)
+DEgenes <- topTags(res, n=Inf)
+
+### volcano plot of results
+EnhancedVolcano(DEgenes$table, 
+                lab=DEgenes$table$genes,
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("DE genes between Dense and non-Dense organoids")
+
+### Table of DEgenes
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
+
+```
+
+```{r, fig.height=20, fig.width=20}
+counts <- y$counts
+lcpm <- edgeR::cpm(counts, log = TRUE)
+rownames(lcpm) <- y$genes$genes
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Stage = as.factor(sampleinfo[,c(9)]),
+                              Age = as.factor(sampleinfo[,c(10)]),
+                              Morphology = as.factor(sampleinfo[,c(11)]))
+rownames(type_annotation) <- sampleinfo$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(Stage=c(`1`="#FCCDE5",`2`="#BC80BD",Rec="#E78AC3",IV="#E6A0C4",UNK="#000000"),
+                  Age=c(`<50`="#EBCC2A",`>50`="#E1AF00",UNK="#000000"),
+                  Morphology=c(UNK="#000000", CYSTIC='#469990', `CYSTIC/BUBBLY`='#42d4f4', `CYSTIC/DENSE`='#000075', `CYSTIC/GLANDULAR`='#4363d8', DENSE='#bfef45', GLANDULAR='#dcbeff', `GLANDULAR/DENSE`='#f032e6' ))
+
+genes <- DEgenes[DEgenes$FDR< 0.05,1][1:50]
+
+pheatmap(lcpm[genes,],
+         border_color = 'NA',
+         cellwidth = 30,
+         cellheight = 15, 
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         treeheight_row = 0,
+         treeheight_col = 0,
+         #main="Genes associated with platinum resistance ORG/TUM samples",
+         fontsize = 15,
+         cutree_cols = 3)
+
+```
+
+### Glandular vs rest 
+#### Design Matrix
+```{r}
+batch <- as.factor(c(sampleinfo$Batch))
+glandular <- as.factor(c(sampleinfo$GLANDULAR))
+design <- model.matrix(~0+glandular+batch)
+rownames(design) <- sampleinfo$Label
+create_dt(design)
+```
+
+#### Visualisation
+```{r}
+paste("Number of genes BEFORE filtering =", length(y$genes$genes))
+
+### filter by cpm>10 in at least 2 samples
+keep <- filterByExpr(y, design)
+table(keep)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+paste("Number of genes AFTER filtering =", length(y$genes$genes))
+
+### Calculatng normalisation factors
+y <- calcNormFactors(y)
+
+### MDS plot, coloured by type
+col.type <- brewer.pal(3, 'Dark2')[sampleinfo$GLANDULAR]
+plotMDS(y, col=col.type)
+plotMDS(y, col=col.type, pch=16)
+```
+
+#### Differential Expression
+```{r, fig.height=8, fig.width=8}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design, robust=TRUE)
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### Making contrasts
+glandular_comparison <- makeContrasts(glandularYES-glandularNO, levels=design)
+res <- glmQLFTest(fit, contrast=glandular_comparison)
+DEgenes <- topTags(res, n=Inf)
+
+### volcano plot of results
+EnhancedVolcano(DEgenes$table, 
+                lab=DEgenes$table$genes,
+                x = 'logFC',
+                y = 'PValue',
+                pCutoffCol = 'FDR',
+                pCutoff = 0.05,
+                boxedLabels = FALSE,
+                labSize = 4) + ggtitle("DE genes between Glandular and non-Glandular organoids")
+
+### Table of DEgenes
+DEgenes <- DEgenes$table[DEgenes$table$logFC<= -1 | DEgenes$table$logFC>=1,]
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
+
+```
+
