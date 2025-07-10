@@ -1,0 +1,39 @@
+---
+title: "test"
+output: html_document
+date: "2025-07-09"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(magrittr)
+```
+
+## Olivia Test
+
+```{r}
+df <- read.csv('/Users/dalvinikita/Downloads/PCA_Data_Olivia.csv', header=TRUE) %>%
+  mutate(sample = paste0(Org.line,'_',AUC))
+rownames(df) <- df$sample
+df <- df[,1:5]
+
+mypalette<-c(brewer.pal(name="Set3", n=12), brewer.pal(name="Set2", n=7),"steelblue", "hotpink")
+col.patient <- mypalette[as.factor(df$Drug)]
+shape_values <- c(22,23)
+shape <- shape_values[as.factor(df$Doses)]
+
+mds_cpFeatures <- cmdscale(dist(df),k=2)
+
+plot(mds_cpFeatures[, 1], 
+     mds_cpFeatures[, 2], 
+     type = "n", 
+     xlab = "MDS Dimension 1", 
+     ylab = "MDS Dimension 2")
+points(mds_cpFeatures[, 1], 
+       mds_cpFeatures[, 2], 
+       pch = shape, 
+       bg = col.patient)
+
+
+```
