@@ -1,5 +1,5 @@
 ---
-title: "Drug AUC Analysis - June 2025"
+title: "Identifying genes related to response using AUC of pred-probs from ML methods"
 output: html_document
 date: "2025-06-03"
 ---
@@ -12,6 +12,9 @@ knitr::opts_chunk$set(
 	fig.width = 5,
 	fig.height=5
 )
+```
+
+```{r}
 library(pheatmap)
 library(ggplot2)
 library(edgeR)
@@ -42,12 +45,13 @@ create_dt <- function(x){
 
 ## Notes
 
-title: Drug AUC analysis
-last knit: 03/05/2025
+This analysis aims to identify genes related to response in MOC organoids, by using AUC (of predicted probabilities generated from Image Analysis ML models) as a measure of sensitivity/response. 
+
 data location:
 • RNAseq data :'/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv'
 
 • AUC data: 'data/AUC_metadata.xlsx'
+
 
 ## Data
 Taking a quick look at both the RNA-seq data and AUC data 
@@ -68,8 +72,10 @@ create_dt(metadata)
 *Note: We have removed ORG76 from the AUC metadata as there is no corresponding RNAseq, but AUC rankings are based on AUC values that included ORG76. 
 
 ## QC and Normalisation
+
 ### Design 
 Taking a look at the design matrix which includes growth pattern and batch of sequencing:
+
 ```{r}
 ### creating a DGElist object to include organoids with AUC data
 organoids <- c('ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
@@ -92,6 +98,7 @@ design <- model.matrix(~0+pattern+batch)
 rownames(design) <- metadata$PATIENT
 create_dt(design)
 ```
+
 ### Normalisation
 Filtering to remove genes with low counts:
 ```{r, fig.width=7}

@@ -1,0 +1,207 @@
+---
+title: "Identifying genes related to response using drug screen metrics"
+output: html_document
+date: "2026-01-27"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	fig.width = 5,
+	fig.height=5
+)
+
+```
+
+```{r}
+library(pheatmap)
+library(ggplot2)
+library(edgeR)
+library(limma)
+library(DT)
+library(readxl)
+library(RColorBrewer)
+```
+
+```{r}
+### Functions 
+
+### buttons for datatables 
+create_dt <- function(x){
+  DT::datatable(x,
+                extensions = 'Buttons',
+                options = list(dom = 'Blfrtip',
+                               buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                               lengthMenu = list(c(10,25,50,-1),
+                                                 c(10,25,50,"All"))))
+}
+```
+
+## Notes
+
+The aim of this analysis is to use relative AUC values (generated from dose response curves of Olivia's organoid drug screens), as a metric of sensitivity/response, to identify genes related to response for diffferent chemotherapeutic drugs. 
+
+relAUC was calculated from dose response curves using the MESS package in R (cell viability vs log10(conc)), and the following cut offs were defined to assess response: 
+
+• 0 < relAUC < 0.5 -> SENSITIVE 
+
+• 0.5 < relAUC < 0.75 -> INTERMEDIATE
+
+• relAUC > 0.75 -> RESISTANT 
+
+We require at least n=3 for each response group within a drug to compare differences in gene expression between response. 
+
+DATA: 
+
+• RNAseq data :'/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv'
+
+• AUC data:'/data/AUC_metadata_JAN2026.xlsx'
+
+## Data
+Taking a quick look at both the RNA-seq data and AUC data 
+
+RNA-seq data:
+```{r}
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+subset <- c('ENSEMBL_GeneID','ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
+head(rawdata[,subset] )
+```
+
+Relevant metadata:
+```{r}
+metadata <- read_excel("/Users/dalvinikita/Documents/7_GitHub/drug-AUC-analysis/data/AUC_metadata_JAN2026.xlsx", sheet = 'discrete')
+metadata <- metadata[-c(5,14,15),]
+create_dt(metadata)
+```
+
+*Note: We have removed ORG76 from the AUC metadata as there is no corresponding RNAseq, and for organoids with AUC data for 1 dose AND 2 dose experimental methods, we keep data only from the 1 dose regimen for a more balanced dataset.*
+
+## QC and Normalisation
+
+### Design 
+Taking a look at the design matrix which includes growth pattern and batch of sequencing:
+
+```{r}
+### creating a DGElist object to include organoids with AUC data
+organoids <- c('ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
+y<- DGEList(counts=rawdata[,organoids], genes=rawdata[,1])
+
+### tidying up sample names
+colnames(y) <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+
+### tidying up metadata sample names to match counts matrix]
+metadata$PATIENT <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+rownames(metadata) <- metadata$PATIENT
+
+### creating factors to add into design matrix
+### including pattern and batch
+pattern <- as.factor(metadata$PATTERN)
+batch <- as.factor(metadata$BATCH)
+dose <- as.factor(metadata$DOSE)
+response <- as.factor(metadata$Mitomycin)
+
+#create design matrix to include batch, growth pattern
+design <- model.matrix(~0+response+pattern+batch+dose)
+rownames(design) <- metadata$PATIENT
+create_dt(design)
+```
+### Normalisation
+Filtering to remove genes with low counts:
+```{r, fig.width=7}
+#filtering to remove low counts
+keep <- filterByExpr(y, design)
+print(table(keep))
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+#Visualiszing library sizes pre and post normalisation
+col <- brewer.pal(32, 'Paired')
+
+par(mfrow=c(1,2))
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="A. Example: Unnormalised data",ylab="Log-cpm")
+
+y <- calcNormFactors(y) 
+lcpm <- cpm(y, log=TRUE)
+boxplot(lcpm, las=2, col=col, main="")
+title(main="B. Example: Normalised data",ylab="Log-cpm")
+```
+
+### MDS plots {.tabset}
+```{r, echo=FALSE}
+col.pattern <- c('darkorchid3', 'deeppink')[as.factor(metadata$PATTERN)]
+col.batch <- c('darkorchid3', 'deeppink', 'orange')[as.factor(metadata$BATCH)]
+col.dose <- c('darkorchid3', 'deeppink')[as.factor(metadata$DOSE)]
+```
+
+#### Label
+```{r, fig.height=10, fig.width=10}
+par(mfrow=c(2,2))
+plotMDS(y, col=col.pattern)
+title(main="A. Growth Pattern")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink'), 
+       legend=levels(as.factor(metadata$PATTERN)))
+
+plotMDS(y, col=col.batch)
+title(main="B. Batch")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','orange'), 
+       legend=levels(as.factor(metadata$BATCH)))
+
+plotMDS(y, col=col.dose)
+title(main="C. DOSE")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink'), 
+       legend=levels(as.factor(metadata$DOSE)))
+
+```
+
+#### Point
+```{r, fig.height=10, fig.width=10}
+par(mfrow=c(2,2))
+plotMDS(y, col=col.pattern, pch=19)
+title(main="A. Growth Pattern")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink'),
+       legend=levels(as.factor(metadata$PATTERN)))
+
+plotMDS(y, col=col.batch, pch=19)
+title(main="B. Batch")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink','orange'),
+       legend=levels(as.factor(metadata$BATCH)))
+
+plotMDS(y, col=col.dose, pch = 19)
+title(main="C. DOSE")
+legend("topleft",
+       fill=c('darkorchid3', 'deeppink'), 
+       legend=levels(as.factor(metadata$DOSE)))
+```
+
+## Differential Expression 
+
+To ensure adequate power, we require at least 3 samples in each group for comparison (i.e n=3 resistant, and n=3 sensitive). This requirement is only satisfied for Mitomycin: 
+
+```{r}
+table(metadata$Mitomycin)
+```
+
+Hence, we can look at the difference in expression between organoids resistant to mitomycin and those sensitive to mitomycin, while accounting for dose, sequencing batch, and growth pattern: 
+
+```{r}
+create_dt(design)
+
+### fit data to GLM
+fit <- glmQLFit(y, design, robust=TRUE)
+
+### create contrast
+resVSsens <- makeContrasts(responseResistant - responseSensitive, levels = colnames(design))
+res <- glmQLFTest(fit, contrast=resVSsens)
+DEgenes <- topTags(res, n=Inf)
+create_dt(DEgenes$table)
+
+```
+

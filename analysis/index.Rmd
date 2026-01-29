@@ -14,7 +14,9 @@ Welcome to my research website.
 
 [AUC JUNE 2025](AUC_analysis_JUNE2025.html)
 
-[Relative AUC Analysis](relative_AUC_analysis.html)
+[image analysis relAUC + RNAseq Analysis](relative_AUC_analysis.html)
+
+[Drug Screen relAUC + RNAseq Analysis](drugScreen_relAUC_JAN2026.html)
 
 
 
