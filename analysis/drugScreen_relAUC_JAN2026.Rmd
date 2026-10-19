@@ -66,9 +66,9 @@ Taking a quick look at both the RNA-seq data and AUC data
 
 RNA-seq data:
 ```{r}
-rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
-subset <- c('ENSEMBL_GeneID','ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
-head(rawdata[,subset] )
+rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq_merge/merged_counts_renamed.txt', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+subset <- c('ENSEMBL_GeneID','ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73R', 'ORG76p15')
+head(rawdata[, subset] )
 ```
 
 Relevant metadata:
@@ -76,7 +76,12 @@ Relevant metadata:
 ### relAUC values
 ```{r}
 metadata_continuous <- read_excel("/Users/dalvinikita/Documents/7_GitHub/drug-AUC-analysis/data/AUC_metadata_JAN2026.xlsx", sheet = 'continuous')
-metadata_continuous <- metadata_continuous[-c(5,14,15),]
+
+## REMOVING 2 DOSE + org76
+#metadata_continuous <- metadata_continuous[-c(5,14,15),]
+
+## REMOVING 1 DOSE for orgs where 2 drug screens were completed
+metadata_continuous <- metadata_continuous[-c(4,13),]
 create_dt(metadata_continuous)
 ```
 
@@ -84,7 +89,13 @@ create_dt(metadata_continuous)
 
 ```{r}
 metadata_discrete <- read_excel("/Users/dalvinikita/Documents/7_GitHub/drug-AUC-analysis/data/AUC_metadata_JAN2026.xlsx", sheet = 'discrete')
-metadata_discrete <- metadata_discrete[-c(5,14,15),]
+
+### REMOVING 2 DOSE + ORG76
+#metadata_discrete <- metadata_discrete[-c(5,14,15),]
+
+## REMOVING 1 DOSE for orgs where 2 drug screens were completed
+metadata_discrete <- metadata_discrete[-c(4,13),]
+
 create_dt(metadata_discrete)
 ```
 
@@ -99,14 +110,14 @@ Taking a look at the design matrix which includes growth pattern, batch of seque
 ```{r}
 
 ### creating a DGElist object to include organoids with AUC data
-organoids <- c('ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
-y<- DGEList(counts=rawdata[,organoids], genes=rawdata[,1])
+organoids <- c('ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73R', 'ORG76p15')
+y<- DGEList(counts=rawdata[-c(1:5),organoids], genes=rawdata[-c(1:5),c('ENSEMBL_GeneID')])
 
 ### tidying up sample names
-colnames(y) <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+colnames(y) <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73','ORG76')
 
 ### tidying up metadata sample names to match counts matrix]
-metadata_continuous$PATIENT <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73')
+metadata_continuous$PATIENT <- c('ORG38-O','ORG41','ORG46-O','ORG49','ORG55','ORG60','ORG61','ORG64','ORG65','ORG66','ORG70','ORG73','ORG76')
 rownames(metadata_continuous) <- metadata_continuous$PATIENT
 
 ### creating factors to add into design matrix
@@ -149,7 +160,7 @@ title(main="B. Example: Normalised data",ylab="Log-cpm")
 
 ```{r, echo=FALSE}
 col.pattern <- c('darkorchid3', 'deeppink')[as.factor(metadata_continuous$PATTERN)]
-col.batch <- c('darkorchid3', 'deeppink', 'orange')[as.factor(metadata_continuous$BATCH)]
+col.batch <- c('darkorchid3', 'deeppink', 'orange','skyblue')[as.factor(metadata_continuous$BATCH)]
 col.dose <- c('darkorchid3', 'deeppink')[as.factor(metadata_continuous$DOSE)]
 ```
 
@@ -165,7 +176,7 @@ legend("topleft",
 plotMDS(y, col=col.batch)
 title(main="B. Batch")
 legend("topleft",
-       fill=c('darkorchid3', 'deeppink','orange'), 
+       fill=c('darkorchid3', 'deeppink','orange','skyblue'), 
        legend=levels(as.factor(metadata_continuous$BATCH)))
 
 plotMDS(y, col=col.dose)
@@ -188,7 +199,7 @@ legend("topleft",
 plotMDS(y, col=col.batch, pch=19)
 title(main="B. Batch")
 legend("topleft",
-       fill=c('darkorchid3', 'deeppink','orange'),
+       fill=c('darkorchid3', 'deeppink','orange','skyblue'),
        legend=levels(as.factor(metadata_continuous$BATCH)))
 
 plotMDS(y, col=col.dose, pch = 19)
@@ -633,7 +644,9 @@ create_dt(DEgenes$table)
 rawdata <- read.delim2('/Volumes/bioinf/home/ndalvi/RNAseq_STAR/Results/HTseq/collated_counts.tsv', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
 subset <- c('ENSEMBL_GeneID','ORG-38-ORG','ORG41','ORG-46-ORG','ORG49','ORG55','ORG60','ORG61','ORG64_new','ORG65','ORG66','ORG70','ORG73')
 metadata_discrete <- read_excel("/Users/dalvinikita/Documents/7_GitHub/drug-AUC-analysis/data/AUC_metadata_JAN2026.xlsx", sheet = 'discrete')
-metadata_discrete <- metadata_discrete[-c(5,14,15),]
+#metadata_discrete <- metadata_discrete[-c(5,14,15),]
+
+metadata_discrete <- metadata_discrete[-c(4,13,15),]
 ```
 
 *Note: We have removed ORG76 from the AUC metadata as there is no corresponding RNAseq, and for organoids with AUC data for 1 dose AND 2 dose experimental methods, we keep data only from the 1 dose regimen for a more balanced dataset.*

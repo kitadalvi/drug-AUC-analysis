@@ -1,0 +1,278 @@
+---
+title: "INF vs EXP [CAFS]"
+output: html_document
+date: "2026-10-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE,
+                      message=FALSE,
+                      warning=FALSE,
+                      include = FALSE)
+```
+
+```{r}
+library(pheatmap)
+library(ggplot2)
+library(edgeR)
+library(limma)
+library(ggpubr)
+library(RColorBrewer)
+library(clusterProfiler)
+library(enrichplot)
+library(org.Hs.eg.db)
+library(DT)
+library(EnhancedVolcano)
+library(readxl)
+library(dplyr)
+library(tidyverse)
+```
+
+```{r}
+### Functions 
+
+### buttons for datatables 
+create_dt <- function(x){
+  DT::datatable(x,
+                extensions = 'Buttons',
+                options = list(dom = 'Blfrtip',
+                               buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                               lengthMenu = list(c(10,25,50,-1),
+                                                 c(10,25,50,"All"))))
+}
+```
+
+## Notes
+
+Friday 16th Oct, 2026: 
+
+This analysis aims to identify diferentially expressed genes between infiltrative and expansile CAF samples. The aligned RNAseq rawdata and sample metadata sheet used in this analysis are stored in: 
+
+• '/Lab Shared/Nikita/RNAseq_STAR_aligned/merged_counts_renamed.txt'
+
+• '/Lab Shared/Nikita/RNAseq_STAR_aligned/sampleinfo_master.xlsx'
+
+## Data
+
+Updated metadata sheet of all samples: 
+
+```{r}
+### Loading in the data 
+###Loading in counts matrix
+rawdata <- read.delim2('/Volumes/Lab Shared/Nikita/RNAseq_STAR_aligned/merged_counts_renamed.txt', header = TRUE, check.names = FALSE, stringsAsFactors = FALSE)
+
+### Loading in sample metadata
+sampleinfo <- read_excel('/Volumes/Lab Shared/Nikita/RNAseq_STAR_aligned/sampleinfo_master.xlsx')
+create_dt(sampleinfo)
+```
+
+For the purpose of this analysis, we focus on only the CAF samples:
+
+```{r}
+sampleinfo_cafs <- sampleinfo %>%
+  filter(Type=="CAF")
+
+create_dt(sampleinfo_cafs)
+```
+
+A quick look at the rawdata for the corresponding CAF samples: 
+
+```{r}
+### subset rawdata to only CAFs
+cols_of_interest <- c("ENSEMBL_GeneID","CAF55","CAF57","CAF58","CAF62","CAF63","CAF46","CAF65","CAF66","CAF67","CAF70","CAF76","CAF77","CAF78p3","CAF78p11","SCS15","SCS16")
+rawdata <- rawdata[, colnames(rawdata) %in% cols_of_interest]
+head(rawdata)
+```
+
+## Analysis
+
+### Infiltrative VS Expansile 
+
+```{r}
+### Initialising DGE object 
+y<- DGEList(counts=rawdata[-c(1:5),2:17], genes=rawdata[-c(1:5),1])
+
+### matching rownames of sampleinfo to colnames of DGE object 
+order <- rownames(y$samples)
+rownames(sampleinfo_cafs) <- sampleinfo_cafs$`Sample-ID`
+sampleinfo_cafs <- sampleinfo_cafs[order,]
+colnames(y) <- sampleinfo_cafs$Label
+```
+
+#### Design Matrix
+
+Factors to include in design:
+
+• Sequencing batch (1,2,3)
+
+• Growth pattern (INF,EXP,UNK)
+
+• Tumour Type (Primary, Recurrence)
+
+```{r}
+batch <- as.factor(sampleinfo_cafs$Batch)
+pattern <- as.factor(sampleinfo_cafs$Pattern)
+type <- as.factor(sampleinfo_cafs$TUM_type)
+
+design <- model.matrix(~0+ pattern + batch)
+
+create_dt(design)
+```
+
+#### Filtering/Normalisation
+
+```{r, fig.height=10, fig.width=30}
+col <- brewer.pal(32, 'Paired')
+
+genes_before_filtering <- y$genes$genes
+
+par(mfrow=c(1,2))
+lcpm <- as.data.frame(cpm(y, log=TRUE))
+boxplot(lcpm, las=2, col=col, main="")
+title(main="A. Example: Unnormalised data",ylab="Log-cpm")
+
+### filtering/normalisation
+### Calculatng normalisation factors
+
+y <- calcNormFactors(y) 
+
+### filter by cpm>10 in at least 2 samples
+keep <- filterByExpr(y, group = pattern)
+y <- y[keep, , keep.lib.sizes=TRUE]
+
+genes_after_filtering <- y$genes$genes
+
+lcpm <- as.data.frame(cpm(y, log=TRUE))
+boxplot(lcpm, col=col, main="")
+title(main="B. Example: Normalised data",ylab="Log-cpm")
+```
+
+```{r}
+paste("Number of genes BEFORE filtering =", length(genes_before_filtering))
+
+
+paste("Number of genes AFTER filtering =", length(genes_after_filtering))
+```
+
+#### MDS plot {.tabset}
+
+##### Growth pattern
+
+```{r}
+col.pattern <- brewer.pal(4, 'Pastel1')[pattern]
+plotMDS(y, col=col.pattern)
+title(main="A. Growth pattern")
+legend("bottomleft",
+       fill=c("#FBB4AE","#B3CDE3","#CCEBC5","#DECBE4"), 
+       legend=levels(pattern))
+
+plotMDS(y, col=col.pattern, pch=16)
+legend("bottomleft",
+       fill=c("#FBB4AE","#B3CDE3","#CCEBC5","#DECBE4"), 
+       legend=levels(pattern))
+```
+
+##### Batch
+
+```{r}
+col.batch <- brewer.pal(5, 'Pastel1')[as.factor(batch)]
+plotMDS(y, col=col.batch)
+title(main="B. Batch")
+legend("bottomleft",
+       fill=c('#FBB4AE', '#B3CDE3'), 
+       legend=levels(batch))
+
+plotMDS(y, col=col.batch, pch=16)
+title(main="B. Batch")
+legend("bottomleft",
+       fill=c('#FBB4AE', '#B3CDE3'), 
+       legend=levels(batch))
+```
+
+##### Tumour type
+
+```{r}
+col.type <- brewer.pal(5, 'Pastel1')[type]
+plotMDS(y, col=col.type)
+title(main="C. Tumour Type")
+legend("bottomleft",
+       fill=c('#FBB4AE', '#B3CDE3', '#CCEBC5'), 
+       legend=levels(type))
+
+plotMDS(y, col=col.type, pch = 16)
+title(main="C. Tumour Type")
+legend("bottomleft",
+       fill=c('#FBB4AE', '#B3CDE3', '#CCEBC5'), 
+       legend=levels(type))
+```
+#### Differential Expression
+
+##### DEGs
+
+Top differentially expressed genes between INF and EXP samples using significance threshold of FDR < 0.05:
+
+```{r}
+### Estimate dispersion
+### Fit data to GLM 
+y <- estimateDisp(y, design)
+fit <- glmQLFit(y, design)
+
+### Making contrasts
+infvsexp <- makeContrasts(patternINF-patternEXP, levels=design)
+res <- glmQLFTest(fit, contrast=infvsexp)
+genes <- topTags(res, p.value=1, n=Inf)
+DEgenes <- topTags(res, p.value=0.05, n=Inf)
+dt <- as.data.frame(DEgenes)
+create_dt(dt)
+```
+
+##### Volcano Plot
+
+```{r, fig.height=8, fig.width=6}
+EnhancedVolcano(genes$table, 
+                lab=genes$table$genes,
+                x = 'logFC',
+                y = 'FDR',
+                pCutoff = 0.05,
+                ylim = c(0,2.5),
+                boxedLabels = FALSE,
+                drawConnectors = TRUE,
+                max.overlaps = Inf,
+                arrowheads = FALSE,
+                maxoverlapsConnectors = Inf,
+                labSize = 4) + ggtitle("DE genes between INF and EXP CAFs")
+
+```
+
+##### Heatmap
+
+```{r}
+samples_of_interest <- sampleinfo_cafs %>%
+  filter(Pattern == "INF" | Pattern=="EXP")%>%
+  select(`Label`)
+
+y_subset <- y$counts %>%
+  as.data.frame() %>%
+  select(samples_of_interest$Label)
+
+lcpm <- edgeR::cpm(y_subset, log = TRUE)
+rownames(lcpm) <- y$genes$genes
+
+### Setting up annotation data frame
+type_annotation <- data.frame(Pattern = as.factor(sampleinfo_cafs$Pattern))
+rownames(type_annotation) <- sampleinfo_cafs$Label
+
+### Assigning colours for each annotation 
+ColorCode  = list(Pattern=c( INF='#bfef45', EXP='#dcbeff'))
+
+pheatmap(lcpm[DEgenes$table$genes,],
+         border_color = 'NA',
+         annotation_col = type_annotation,
+         annotation_colors = ColorCode,
+         cluster_cols = TRUE,
+         cellheight = 50,
+         cellwidth = 20,
+         #main="Genes associated with platinum resistance ORG/TUM samples",
+         fontsize = 15)
+
+```
